@@ -1,0 +1,19 @@
+{
+    "files.associations": {
+        ".env*": "dotenv",
+        "*.asm": "nasm",
+        "*.toml": "toml",
+        "x86.h": "c",
+        "user.h": "c",
+        "atomic": "c",
+        "fs.h": "c",
+        "types.h": "c",
+        "stat.h": "c",
+        "param.h": "c",
+        "stdio.h": "c",
+        "unistd.h": "c",
+        "stdlib.h": "c",
+        "string.h": "c",
+        "fcntl.h": "c"
+    }
+}
