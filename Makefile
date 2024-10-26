@@ -76,7 +76,7 @@ build/bootblock: $K/bootasm.S $K/bootmain.c
 	$(CC) $(CFLAGS) -fno-pic -nostdinc -I. -c $K/bootasm.S -o build/bootasm.o
 	$(LD) $(LDFLAGS) -N -e start -Ttext 0x7C00 -o build/bootblock.o build/bootasm.o build/bootmain.o
 	$(OBJCOPY) -S -O binary -j .text build/bootblock.o build/bootblock
-	./sign.pl ./build/bootblock
+	./scripts/sign.pl ./build/bootblock
 
 build/entryother: $K/entryother.S
 	$(CC) $(CFLAGS) -fno-pic -nostdinc -I. -c $K/entryother.S -o build/entryother.o
@@ -107,8 +107,8 @@ MEMFSOBJS = $(filter-out build/ide.o,$(OBJS)) build/memide.o
 kernelmemfs: $(MEMFSOBJS) build/entry.o build/entryother $U/build/initcode $K/kernel.ld fs.img
 	$(LD) $(LDFLAGS) -T $K/kernel.ld -o build/kernelmemfs build/entry.o  $(MEMFSOBJS) -b binary $U/build/initcode build/entryother fs.img
 
-$K/vectors.S: vectors.pl
-	./vectors.pl > $K/vectors.S
+$K/vectors.S: scripts/vectors.pl
+	./scripts/vectors.pl > $K/vectors.S
 
 ULIB = $U/build/ulib.o $U/build/usys.o $U/build/printf.o $U/build/umalloc.o
 
