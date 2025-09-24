@@ -1,13 +1,13 @@
 # Context switch
 #
-#   void swtch(struct context **old, struct context *new);
+#   void switch_context(struct context **old, struct context *new);
 # 
 # Save the current registers on the stack, creating
 # a struct context, and save its address in *old.
 # Switch stacks to new and pop previously-saved registers.
 
-.globl swtch
-swtch:
+.globl switch_context
+switch_context:
   movl 4(%esp), %eax
   movl 8(%esp), %edx
 
@@ -27,3 +27,13 @@ swtch:
   popl %ebx
   popl %ebp
   ret
+
+
+#struct context
+#{
+#    uint edi;
+#    uint esi;
+#    uint ebx;
+#    uint ebp;
+#    uint eip;
+#};

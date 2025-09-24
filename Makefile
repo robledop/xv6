@@ -52,7 +52,6 @@ ASFLAGS += $(INCLUDE)
 LDFLAGS += -m $(shell $(LD) -V | grep elf_i386 2>/dev/null | head -n 1)
 LDFLAGS += $(INCLUDE)
 
-
 # Disable PIE when possible (for Ubuntu 16.10 toolchain)
 ifneq ($(shell $(CC) -dumpspecs 2>/dev/null | grep -e '[^f]no-pie'),)
 CFLAGS += -fno-pie -no-pie
@@ -88,7 +87,7 @@ $U/build/initcode: $U/initcode.S
 	$(LD) $(LDFLAGS) -N -e start -Ttext 0 -o $U/build/initcode.out $U/build/initcode.o
 	$(OBJCOPY) -S -O binary $U/build/initcode.out $U/build/initcode
 
-build/kernel: $(OBJS) build/entry.o build/entryother $U/build/initcode $K/kernel.ld
+build/kernel: $(OBJS) build/entry.o build/entryother $U/build/initcode
 	$(LD) $(LDFLAGS) -T $K/kernel.ld -o build/kernel build/entry.o $(OBJS) -b binary $U/build/initcode build/entryother
 
 build/%.o: $K/%.c
@@ -104,7 +103,7 @@ build/%.o: $K/%.S
 # great for testing the kernel on real hardware without
 # needing a scratch disk.
 MEMFSOBJS = $(filter-out build/ide.o,$(OBJS)) build/memide.o
-kernelmemfs: $(MEMFSOBJS) build/entry.o build/entryother $U/build/initcode $K/kernel.ld fs.img
+build/kernelmemfs: $(MEMFSOBJS) build/entry.o build/entryother $U/build/initcode fs.img
 	$(LD) $(LDFLAGS) -T $K/kernel.ld -o build/kernelmemfs build/entry.o  $(MEMFSOBJS) -b binary $U/build/initcode build/entryother fs.img
 
 $K/vectors.S: scripts/vectors.pl
@@ -140,7 +139,7 @@ mkfs/mkfs: mkfs/mkfs.c
 # Prevent deletion of intermediate files, e.g. cat.o, after first build, so
 # that disk image changes after first build are persistent until clean.  More
 # details:
-# http://www.gnu.org/software/make/manual/html_node/Chained-Rules.html
+# https://www.gnu.org/software/make/manual/html_node/Chained-Rules.html
 # .PRECIOUS: %.o
 
 UPROGS=\
@@ -165,14 +164,6 @@ fs.img: mkfs/mkfs $(UPROGS)
 
 -include build/*.d $U/build/*.d
 
-clean: 
-	rm -f *.tex *.dvi *.idx *.aux *.log *.ind *.ilg \
-	*.o *.d *.asm *.sym vectors.S bootblock entryother \
-	initcode initcode.out kernel/*.o kernel/*.d user/*.o user/*.d xv6.img fs.img kernelmemfs \
-	xv6memfs.img mkfs/mkfs mkfs/*.h .gdbinit \
-	$(UPROGS)
-	rm -rf build
-	rm -rf $(U)/build
 
 bochs : fs.img xv6.img
 	if [ ! -e .bochsrc ]; then ln -s dot-bochsrc .bochsrc; fi
@@ -185,9 +176,9 @@ QEMUGDB = $(shell if $(QEMU) -help | grep -q '^-gdb'; \
 	then echo "-gdb tcp::$(GDBPORT)"; \
 	else echo "-s -p $(GDBPORT)"; fi)
 ifndef CPUS
-CPUS := 2
+CPUS := 10
 endif
-QEMUOPTS = -drive file=fs.img,index=1,media=disk,format=raw -drive file=xv6.img,index=0,media=disk,format=raw -smp $(CPUS) -m 512 $(QEMUEXTRA)
+QEMUOPTS = -drive file=fs.img,index=1,media=disk,format=raw -drive file=xv6.img,index=0,media=disk,format=raw -smp $(CPUS) -m 256 $(QEMUEXTRA)
 
 qemu: fs.img xv6.img
 	$(QEMU) -serial mon:stdio $(QEMUOPTS)
@@ -208,3 +199,13 @@ qemu-gdb: fs.img xv6.img .gdbinit
 qemu-nox-gdb: fs.img xv6.img .gdbinit
 	@echo "*** Now run 'gdb'." 1>&2
 	$(QEMU) -nographic $(QEMUOPTS) -S $(QEMUGDB)
+
+clean:
+	echo "Cleaning up..."
+	rm -f *.tex *.dvi *.idx *.aux *.log *.ind *.ilg \
+	*.o *.d *.asm *.sym vectors.S bootblock entryother \
+	initcode initcode.out kernel/*.o kernel/*.d user/*.o user/*.d xv6.img fs.img kernelmemfs \
+	xv6memfs.img mkfs/mkfs mkfs/*.h .gdbinit \
+	$(UPROGS)
+	rm -rf build
+	rm -rf $(U)/build

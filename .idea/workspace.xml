@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="BackendCodeEditorMiscSettings">
+    <option name="/Default/CodeEditing/CppDocumentationComment/AddBriefTag/@EntryValue" value="true" type="bool" />
+    <option name="/Default/CodeEditing/CppDocumentationComment/CommentStyle/@EntryValue" value="Eol" type="string" />
+    <option name="/Default/Environment/Hierarchy/GeneratedFilesCacheKey/Timestamp/@EntryValue" value="3" type="long" />
+    <option name="/Default/Environment/StickyLines/DisabledLanguageList/@EntryValue" value="Jupyter" type="string" />
+    <option name="/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=SwitchToGoToActionSuggester/@EntryIndexedValue" value="true" type="bool" />
+    <option name="/Default/Housekeeping/GlobalSettingsUpgraded/IsUpgraded/@EntryValue" value="true" type="bool" />
+    <option name="/Default/Housekeeping/OptionsDialog/SelectedPageId/@EntryValue" value="CppAggregateHintsOptions" type="string" />
+    <option name="/Default/RiderDebugger/RiderRestoreDecompile/RestoreDecompileSetting/@EntryValue" value="false" type="bool" />
+  </component>
+  <component name="CMakeProjectFlavorService">
+    <option name="flavorId" value="CMakePlainProjectFlavor" />
+  </component>
+  <component name="CMakeRunConfigurationManager">
+    <generated>
+      <config projectName="xv6" targetName="qemu-nox-gdb" />
+      <config projectName="xv6" targetName="qemu-gdb" />
+      <config projectName="xv6" targetName="qemu-nox" />
+      <config projectName="xv6" targetName="bochs" />
+      <config projectName="xv6" targetName="qemu" />
+      <config projectName="xv6" targetName="qemu-memfs" />
+    </generated>
+  </component>
+  <component name="CMakeSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="badc6783-4aa1-42d3-aec1-fa09c6e3af57" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/copilot.data.migration.agent.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/copilot.data.migration.ask.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/copilot.data.migration.ask2agent.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/copilot.data.migration.edit.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations/qemu.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/xv6.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.dir-locals.el" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/editor.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/editor.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LICENSE" beforeDir="false" afterPath="$PROJECT_DIR$/LICENSE.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TRICKS" beforeDir="false" afterPath="$PROJECT_DIR$/TRICKS.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dot-bochsrc" beforeDir="false" afterPath="$PROJECT_DIR$/dot-bochsrc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/defs.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/defs.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/mmu.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/mmu.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/proc.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/proc.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/x86.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/x86.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/console.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/console.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/entryother.S" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/entryother.S" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/exec.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/exec.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/ioapic.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/ioapic.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/kalloc.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/kalloc.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/main.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/picirq.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/picirq.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/proc.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/proc.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/sleeplock.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/sleeplock.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/spinlock.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/spinlock.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/swtch.S" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/swtch.S" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/syscall.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/syscall.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/sysproc.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/sysproc.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/trap.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/trap.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/vm.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/vm.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkfs/mkfs.c" beforeDir="false" afterPath="$PROJECT_DIR$/mkfs/mkfs.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/sh.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/sh.c" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;robledop&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/robledop/xv6&quot;,
+    &quot;accountId&quot;: &quot;e6e10e22-f055-49dd-a6d0-963e8a4d4a90&quot;
+  }
+}</component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/include/types.h" root0="SKIP_HIGHLIGHTING" />
+  </component>
+  <component name="MakefileLocalSettings">
+    <option name="toolchainName" value="Cross gcc" />
+    <option name="availableProjects">
+      <map>
+        <entry>
+          <key>
+            <ExternalProjectPojo>
+              <option name="name" value="xv6" />
+              <option name="path" value="$PROJECT_DIR$" />
+            </ExternalProjectPojo>
+          </key>
+          <value>
+            <list>
+              <ExternalProjectPojo>
+                <option name="name" value="xv6" />
+                <option name="path" value="$PROJECT_DIR$" />
+              </ExternalProjectPojo>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="projectSyncType">
+      <map>
+        <entry key="$PROJECT_DIR$" value="RE_IMPORT" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectApplicationVersion">
+    <option name="ide" value="CLion" />
+    <option name="majorVersion" value="2024" />
+    <option name="minorVersion" value="2.2" />
+    <option name="productBranch" value="Classic" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 6
+}</component>
+  <component name="ProjectId" id="2nz1uMyDexZgykrP9qgGnZglNit" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+    <option name="showVisibilityIcons" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Makefile Target.clean.executor": "Run",
+    "Makefile Target.qemu-nox-gdb.executor": "Run",
+    "Makefile Target.qemu-nox.executor": "Run",
+    "Makefile Target.qemu.executor": "Run",
+    "Native Application.qemu-gdb.executor": "Run",
+    "Native Application.qemu-nox.executor": "Run",
+    "Native Application.qemu.executor": "Debug",
+    "RunOnceActivity.RadMigrateCodeStyle": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "git-widget-placeholder": "master",
+    "junie.onboarding.icon.badge.shown": "true",
+    "last_opened_file_path": "/home/robledo/source/osdev/xv6",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "project.propVCSSupport.CommitDialog",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunManager" selected="Makefile Target.qemu-gdb">
+    <configuration name="bochs" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="xv6" TARGET_NAME="bochs" CONFIG_NAME="bochs" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="qemu-gdb" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="xv6" TARGET_NAME="qemu-gdb" CONFIG_NAME="qemu-gdb" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="qemu-memfs" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="xv6" TARGET_NAME="qemu-memfs" CONFIG_NAME="qemu-memfs" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="qemu-nox-gdb" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="xv6" TARGET_NAME="qemu-nox-gdb" CONFIG_NAME="qemu-nox-gdb" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="qemu-nox" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="xv6" TARGET_NAME="qemu-nox" CONFIG_NAME="qemu-nox" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="qemu" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="xv6" TARGET_NAME="qemu" CONFIG_NAME="qemu" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="clean" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile">
+      <makefile filename="$PROJECT_DIR$/Makefile" target="clean" workingDirectory="" arguments="">
+        <envs />
+      </makefile>
+      <method v="2" />
+    </configuration>
+    <configuration name="qemu-gdb" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile">
+      <makefile filename="$PROJECT_DIR$/Makefile" target="qemu-gdb" workingDirectory="" arguments="">
+        <envs>
+          <env name="PATH" value="$USER_HOME$/.cargo/bin:$USER_HOME$/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:$USER_HOME$/.dotnet/tools:$USER_HOME$/.local/share/JetBrains/Toolbox/scripts:$USER_HOME$/opt/cross/bin" />
+        </envs>
+      </makefile>
+      <method v="2">
+        <option name="RunConfigurationTask" enabled="false" run_configuration_name="clean" run_configuration_type="MAKEFILE_TARGET_RUN_CONFIGURATION" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Makefile Target.qemu" />
+      <item itemvalue="Makefile Target.qemu-gdb" />
+      <item itemvalue="Makefile Target.qemu-nox" />
+      <item itemvalue="Makefile Target.qemu-nox-gdb" />
+      <item itemvalue="Makefile Target.clean" />
+      <item itemvalue="Native Application.bochs" />
+      <item itemvalue="Native Application.qemu" />
+      <item itemvalue="Native Application.qemu-gdb" />
+      <item itemvalue="Native Application.qemu-memfs" />
+      <item itemvalue="Native Application.qemu-nox" />
+      <item itemvalue="Native Application.qemu-nox-gdb" />
+    </list>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="badc6783-4aa1-42d3-aec1-fa09c6e3af57" name="Changes" comment="" />
+      <created>1729961312189</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1729961312189</updated>
+      <workItem from="1729961313971" duration="378000" />
+      <workItem from="1729961724754" duration="2031000" />
+      <workItem from="1729969497354" duration="1041000" />
+      <workItem from="1729991594848" duration="2502000" />
+      <workItem from="1730251110080" duration="58000" />
+      <workItem from="1730488186133" duration="930000" />
+      <workItem from="1730564779425" duration="114000" />
+      <workItem from="1730756439975" duration="64000" />
+      <workItem from="1730759191135" duration="162000" />
+      <workItem from="1731800413244" duration="1771000" />
+      <workItem from="1733236110936" duration="13887000" />
+      <workItem from="1733255037483" duration="10335000" />
+      <workItem from="1733312448646" duration="2502000" />
+      <workItem from="1733317420000" duration="3861000" />
+      <workItem from="1733325800594" duration="2201000" />
+      <workItem from="1733331736423" duration="615000" />
+      <workItem from="1733341014965" duration="940000" />
+      <workItem from="1733346126236" duration="1204000" />
+      <workItem from="1733347645294" duration="1540000" />
+      <workItem from="1733353676008" duration="153000" />
+      <workItem from="1733393996625" duration="259000" />
+      <workItem from="1733394870997" duration="1217000" />
+      <workItem from="1733401406345" duration="17648000" />
+      <workItem from="1733427237910" duration="397000" />
+      <workItem from="1733428055978" duration="12072000" />
+      <workItem from="1733490275197" duration="3297000" />
+      <workItem from="1733504210147" duration="814000" />
+      <workItem from="1733506236603" duration="8487000" />
+      <workItem from="1733527679476" duration="1961000" />
+      <workItem from="1733575338941" duration="371000" />
+      <workItem from="1733580852246" duration="1172000" />
+      <workItem from="1733588058364" duration="966000" />
+      <workItem from="1733589470092" duration="4116000" />
+      <workItem from="1733687602396" duration="1588000" />
+      <workItem from="1733925550382" duration="514000" />
+      <workItem from="1757191305549" duration="261000" />
+      <workItem from="1757192536816" duration="1004000" />
+      <workItem from="1757244889847" duration="7627000" />
+      <workItem from="1757260870926" duration="679000" />
+      <workItem from="1757264556253" duration="1702000" />
+      <workItem from="1758681343703" duration="143000" />
+      <workItem from="1758752889252" duration="823000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/kernel/proc.c</url>
+          <line>297</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>

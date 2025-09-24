@@ -104,7 +104,7 @@ struct segdesc {
 typedef uint pte_t;
 
 // Task state segment format
-struct taskstate {
+struct task_state {
   uint link;         // Old ts selector
   uint esp0;         // Stack pointers and segment selectors
   ushort ss0;        //   after an increase in privilege level
@@ -145,7 +145,7 @@ struct taskstate {
 };
 
 // Gate descriptors for interrupts and traps
-struct gatedesc {
+struct gate_desc {
   uint off_15_0 : 16;   // low 16 bits of offset in segment
   uint cs : 16;         // code segment selector
   uint args : 5;        // # args, 0 for interrupt/trap gates

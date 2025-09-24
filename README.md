@@ -1,4 +1,4 @@
-This is my modifed version of xv6
+<mark>This is my modified version of xv6</mark>
 
 NOTE: we have stopped maintaining the x86 version of xv6, and switched
 our efforts to the RISC-V version

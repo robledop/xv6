@@ -133,22 +133,15 @@ int main(int argc, char *argv[])
 
     for (i = 2; i < argc; i++)
     {
-        // assert(index(argv[i], '/') == 0);
-        printf("mkfs: creating %s\n", argv[i]);
-
         if ((fd = open(argv[i], 0)) < 0)
         {
             perror(argv[i]);
             exit(1);
         }
 
-        // user/build
-
-        // Get the file name from the path
-        // char *file_name = strrchr(argv[i], '/');
-
+        // Skip "user/build/" prefix in name when writing to file system.
+        // This can be done in a better way
         argv[i] += 11;
-
 
         // Skip leading _ in name when writing to file system.
         // The binaries are named _rm, _cat, etc. to keep the
@@ -156,8 +149,7 @@ int main(int argc, char *argv[])
         // in place of system binaries like rm and cat.
         if (argv[i][0] == '_')
             ++argv[i];
-        
-        printf("mkfs: adding %s\n", argv[i]);
+
 
         inum = ialloc(T_FILE);
 

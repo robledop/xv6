@@ -13,3 +13,6 @@ initcode.out
 kernelmemfs
 .gdbinit
 build/
+user/build
+mkfs/*.h
+mkfs/mkfs

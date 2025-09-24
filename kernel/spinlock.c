@@ -106,21 +106,21 @@ pushcli(void)
 {
   int eflags;
 
-  eflags = readeflags();
+  eflags = read_eflags();
   cli();
   if(mycpu()->ncli == 0)
-    mycpu()->intena = eflags & FL_IF;
+    mycpu()->interrupts_enabled = eflags & FL_IF;
   mycpu()->ncli += 1;
 }
 
 void
 popcli(void)
 {
-  if(readeflags()&FL_IF)
+  if(read_eflags()&FL_IF)
     panic("popcli - interruptible");
   if(--mycpu()->ncli < 0)
     panic("popcli");
-  if(mycpu()->ncli == 0 && mycpu()->intena)
+  if(mycpu()->ncli == 0 && mycpu()->interrupts_enabled)
     sti();
 }
 

@@ -101,7 +101,6 @@ void            pipeclose(struct pipe*, int);
 int             piperead(struct pipe*, char*, int);
 int             pipewrite(struct pipe*, char*, int);
 
-//PAGEBREAK: 16
 // proc.c
 int             cpuid(void);
 void            exit(void);
@@ -116,13 +115,14 @@ void            scheduler(void) __attribute__((noreturn));
 void            sched(void);
 void            setproc(struct proc*);
 void            sleep(void*, struct spinlock*);
-void            userinit(void);
+void            user_init(void);
 int             wait(void);
 void            wakeup(void*);
 void            yield(void);
 
 // swtch.S
-void            swtch(struct context**, struct context*);
+// was swtch()
+void            switch_context(struct context**, struct context*);
 
 // spinlock.c
 void            acquire(struct spinlock*);
@@ -181,8 +181,8 @@ void            freevm(pde_t*);
 void            inituvm(pde_t*, char*, uint);
 int             loaduvm(pde_t*, char*, struct inode*, uint, uint);
 pde_t*          copyuvm(pde_t*, uint);
-void            switchuvm(struct proc*);
-void            switchkvm(void);
+void            switch_uvm(struct proc*);
+void            switch_kvm(void);
 int             copyout(pde_t*, uint, void*, uint);
 void            clearpteu(pde_t *pgdir, char *uva);
 
