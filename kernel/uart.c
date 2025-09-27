@@ -12,10 +12,13 @@
 #include "proc.h"
 #include "x86.h"
 
+/** @brief Base I/O port for the primary serial interface. */
 #define COM1    0x3f8
 
-static int uart;    // is there a uart?
+/** @brief Indicates whether a UART is present and initialized. */
+static int uart;
 
+/** @brief Initialize the 8250-compatible UART and announce availability. */
 void
 uartinit(void)
 {
@@ -48,6 +51,11 @@ uartinit(void)
     uartputc(*p);
 }
 
+/**
+ * @brief Send a byte over the serial port, waiting for space as needed.
+ *
+ * @param c Byte to transmit.
+ */
 void
 uartputc(int c)
 {
@@ -60,6 +68,11 @@ uartputc(int c)
   outb(COM1+0, c);
 }
 
+/**
+ * @brief Non-blocking read of the next received byte.
+ *
+ * @return Byte value or ::-1 if no data is available.
+ */
 static int
 uartgetc(void)
 {
@@ -70,6 +83,7 @@ uartgetc(void)
   return inb(COM1+0);
 }
 
+/** @brief UART interrupt handler that feeds the console input path. */
 void
 uartintr(void)
 {

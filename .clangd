@@ -1,0 +1,37 @@
+CompileFlags:
+  Add:
+    - -target
+    - i686-elf
+    - -ffreestanding
+    - -nostdlib
+    - -O3
+    - -falign-jumps
+    - -ffreestanding
+    - -falign-functions
+    - -falign-labels
+    - -falign-loops
+    - -fstrength-reduce
+    - -fno-omit-frame-pointer
+    - -Wno-unused-function
+    - -Wno-unused-variable
+    - -fno-inline-functions
+    - -fno-builtin
+    - -Wno-unused-label
+    - -Wno-cpp
+    - -Wno-unused-parameter
+    - -nostartfiles
+    - -nodefaultlibs
+    - -save-temps
+    - -std=gnu23
+    - -fstack-protector
+    - -fsanitize=undefined
+    - -pedantic
+    - -Werror
+    - -Wextra
+    - -Wall
+    - -I./include
+    - -Iinclude
+  Remove:
+    - -march=*
+    - -mcpu=*
+    - -mtune=*

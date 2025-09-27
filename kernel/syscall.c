@@ -13,7 +13,13 @@
 // library system call function. The saved user %esp points
 // to a saved program counter, and then the first argument.
 
-// Fetch the int at addr from the current process.
+/**
+ * @brief Copy an integer from user space into the kernel.
+ *
+ * @param addr User virtual address to read.
+ * @param ip Destination pointer in kernel space.
+ * @return ::0 on success, ::-1 if the address is invalid.
+ */
 int
 fetchint(uint addr, int* ip)
 {
@@ -25,9 +31,13 @@ fetchint(uint addr, int* ip)
     return 0;
 }
 
-// Fetch the nul-terminated string at addr from the current process.
-// Doesn't actually copy the string - just sets *pp to point at it.
-// Returns length of string, not including nul.
+/**
+ * @brief Validate a user string pointer and return its length.
+ *
+ * @param addr User address of the string.
+ * @param pp Receives the user pointer.
+ * @return Length excluding terminator, or ::-1 if invalid.
+ */
 int
 fetchstr(uint addr, char** pp)
 {
@@ -46,16 +56,27 @@ fetchstr(uint addr, char** pp)
     return -1;
 }
 
-// Fetch the nth 32-bit system call argument.
+/**
+ * @brief Fetch the n-th 32-bit system call argument as an integer.
+ *
+ * @param n Argument index.
+ * @param ip Destination pointer.
+ * @return ::0 on success, ::-1 on failure.
+ */
 int
 argint(int n, int* ip)
 {
     return fetchint((myproc()->trap_frame->esp) + 4 + 4 * n, ip);
 }
 
-// Fetch the nth word-sized system call argument as a pointer
-// to a block of memory of size bytes.  Check that the pointer
-// lies within the process address space.
+/**
+ * @brief Fetch a pointer-sized argument, validating a buffer of given size.
+ *
+ * @param n Argument index.
+ * @param pp Receives the user pointer.
+ * @param size Size in bytes that must fit within process memory.
+ * @return ::0 on success, ::-1 on failure.
+ */
 int
 argptr(int n, char** pp, int size)
 {
@@ -70,10 +91,13 @@ argptr(int n, char** pp, int size)
     return 0;
 }
 
-// Fetch the nth word-sized system call argument as a string pointer.
-// Check that the pointer is valid and the string is nul-terminated.
-// (There is no shared writable memory, so the string can't change
-// between this check and being used by the kernel.)
+/**
+ * @brief Fetch a string argument, ensuring it is valid and terminated.
+ *
+ * @param n Argument index.
+ * @param pp Receives the user string pointer.
+ * @return ::0 on success, ::-1 on failure.
+ */
 int
 argstr(int n, char** pp)
 {
@@ -105,6 +129,7 @@ extern int sys_wait(void);
 extern int sys_write(void);
 extern int sys_uptime(void);
 
+/** @brief Dispatch table mapping syscall numbers to handlers. */
 static int (*syscalls[])(void) = {
     [SYS_fork]sys_fork,
     [SYS_exit]sys_exit,
@@ -129,6 +154,9 @@ static int (*syscalls[])(void) = {
     [SYS_close]sys_close,
 };
 
+/**
+ * @brief Entry point for servicing a system call from user mode.
+ */
 void
 syscall(void)
 {

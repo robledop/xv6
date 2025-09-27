@@ -3,6 +3,19 @@
   <component name="CMakePythonSetting">
     <option name="pythonIntegrationState" value="YES" />
   </component>
+  <component name="CompDBSettings">
+    <option name="linkedExternalProjectsSettings">
+      <CompDBProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+          </set>
+        </option>
+      </CompDBProjectSettings>
+    </option>
+  </component>
+  <component name="CompDBWorkspace" PROJECT_DIR="$PROJECT_DIR$" />
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="MakefileSettings">
     <option name="linkedExternalProjectsSettings">

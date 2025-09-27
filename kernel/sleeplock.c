@@ -10,6 +10,12 @@
 #include "spinlock.h"
 #include "sleeplock.h"
 
+/**
+ * @brief Initialize a sleeplock that can block and wake processes.
+ *
+ * @param lk Sleeplock instance to initialize.
+ * @param name Human readable lock name for debugging.
+ */
 void
 initsleeplock(struct sleeplock* lk, char* name)
 {
@@ -19,6 +25,11 @@ initsleeplock(struct sleeplock* lk, char* name)
     lk->pid = 0;
 }
 
+/**
+ * @brief Acquire a sleeplock, sleeping while another process holds it.
+ *
+ * Records the owner PID to aid debugging.
+ */
 void
 acquiresleep(struct sleeplock* lk)
 {
@@ -32,6 +43,7 @@ acquiresleep(struct sleeplock* lk)
     release(&lk->lk);
 }
 
+/** @brief Release a sleeplock and wake any waiters. */
 void
 releasesleep(struct sleeplock* lk)
 {
@@ -42,6 +54,11 @@ releasesleep(struct sleeplock* lk)
     release(&lk->lk);
 }
 
+/**
+ * @brief Check whether the current process holds a sleeplock.
+ *
+ * @return Non-zero if held by the caller, zero otherwise.
+ */
 int
 holdingsleep(struct sleeplock* lk)
 {

@@ -16,8 +16,14 @@
 #include "file.h"
 #include "fcntl.h"
 
-// Fetch the nth word-sized system call argument as a file descriptor
-// and return both the descriptor and the corresponding struct file.
+/**
+ * @brief Fetch a file descriptor argument and return its struct file.
+ *
+ * @param n Argument index.
+ * @param pfd Optional destination for the descriptor value.
+ * @param pf Optional destination for the file pointer.
+ * @return ::0 on success, ::-1 if invalid.
+ */
 static int
 argfd(int n, int *pfd, struct file **pf)
 {
@@ -35,8 +41,14 @@ argfd(int n, int *pfd, struct file **pf)
   return 0;
 }
 
-// Allocate a file descriptor for the given file.
-// Takes over file reference from caller on success.
+/**
+ * @brief Allocate an unused file descriptor slot.
+ *
+ * Takes ownership of the file reference on success.
+ *
+ * @param f File to install.
+ * @return Descriptor number or ::-1 if table is full.
+ */
 static int
 fdalloc(struct file *f)
 {
@@ -52,6 +64,7 @@ fdalloc(struct file *f)
   return -1;
 }
 
+/** @brief Duplicate a file descriptor (exit variant handler). */
 int
 sys_dup(void)
 {
@@ -66,6 +79,7 @@ sys_dup(void)
   return fd;
 }
 
+/** @brief Read bytes from a file descriptor. */
 int
 sys_read(void)
 {
@@ -78,6 +92,7 @@ sys_read(void)
   return fileread(f, p, n);
 }
 
+/** @brief Write bytes to a file descriptor. */
 int
 sys_write(void)
 {
@@ -90,6 +105,7 @@ sys_write(void)
   return filewrite(f, p, n);
 }
 
+/** @brief Close a file descriptor. */
 int
 sys_close(void)
 {
@@ -103,6 +119,7 @@ sys_close(void)
   return 0;
 }
 
+/** @brief Return file statistics for a descriptor. */
 int
 sys_fstat(void)
 {
@@ -114,7 +131,11 @@ sys_fstat(void)
   return filestat(f, st);
 }
 
-// Create the path new as a link to the same inode as old.
+/**
+ * @brief Create hard link from a new path to an existing inode.
+ *
+ * @return ::0 on success, ::-1 on failure.
+ */
 int
 sys_link(void)
 {
@@ -164,7 +185,7 @@ bad:
   return -1;
 }
 
-// Is the directory dp empty except for "." and ".." ?
+/** @brief Check whether a directory contains entries other than "." and "..". */
 static int
 isdirempty(struct inode *dp)
 {
@@ -180,7 +201,7 @@ isdirempty(struct inode *dp)
   return 1;
 }
 
-//PAGEBREAK!
+/** @brief Remove a file or directory entry. */
 int
 sys_unlink(void)
 {
@@ -238,6 +259,15 @@ bad:
   return -1;
 }
 
+/**
+ * @brief Create a new inode or reuse an existing file inode.
+ *
+ * @param path Full path of the entry to create.
+ * @param type Inode type to create.
+ * @param major Major device number for devices.
+ * @param minor Minor device number for devices.
+ * @return Pointer to the created inode or ::0 on error.
+ */
 static struct inode*
 create(char *path, short type, short major, short minor)
 {
@@ -282,6 +312,7 @@ create(char *path, short type, short major, short minor)
   return ip;
 }
 
+/** @brief Open a file path with the requested mode. */
 int
 sys_open(void)
 {
@@ -332,6 +363,7 @@ sys_open(void)
   return fd;
 }
 
+/** @brief Create a new directory. */
 int
 sys_mkdir(void)
 {
@@ -348,6 +380,7 @@ sys_mkdir(void)
   return 0;
 }
 
+/** @brief Create a device inode. */
 int
 sys_mknod(void)
 {
@@ -368,6 +401,7 @@ sys_mknod(void)
   return 0;
 }
 
+/** @brief Change the current working directory. */
 int
 sys_chdir(void)
 {
@@ -393,6 +427,7 @@ sys_chdir(void)
   return 0;
 }
 
+/** @brief Replace the current process to execute a new program. */
 int
 sys_exec(void)
 {
@@ -419,6 +454,7 @@ sys_exec(void)
   return exec(path, argv);
 }
 
+/** @brief Create a unidirectional pipe and return its file descriptors. */
 int
 sys_pipe(void)
 {

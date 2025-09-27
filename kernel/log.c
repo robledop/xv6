@@ -29,13 +29,17 @@
 //   ...
 // Log appends are synchronous.
 
-// Contents of the header block, used for both the on-disk header block
-// and to keep track in memory of logged block# before commit.
+/**
+ * @brief Contents of the on-disk and in-memory log header block.
+ */
 struct logheader {
   int n;
   int block[LOGSIZE];
 };
 
+/**
+ * @brief Global logging state tracking outstanding operations and log layout.
+ */
 struct log {
   struct spinlock lock;
   int start;
@@ -45,11 +49,15 @@ struct log {
   int dev;
   struct logheader lh;
 };
+/** @brief Global log manager instance. */
 struct log log;
 
 static void recover_from_log(void);
 static void commit();
 
+/**
+ * @brief Initialize the log from disk metadata and recover any pending commit.
+ */
 void
 initlog(int dev)
 {
@@ -65,7 +73,7 @@ initlog(int dev)
   recover_from_log();
 }
 
-// Copy committed blocks from log to their home location
+/** @brief Copy committed log blocks to their home disk locations. */
 static void
 install_trans(void)
 {
@@ -81,7 +89,7 @@ install_trans(void)
   }
 }
 
-// Read the log header from disk into the in-memory log header
+/** @brief Read the log header from disk into memory. */
 static void
 read_head(void)
 {
@@ -95,9 +103,9 @@ read_head(void)
   brelse(buf);
 }
 
-// Write in-memory log header to disk.
-// This is the true point at which the
-// current transaction commits.
+/**
+ * @brief Persist the in-memory log header, committing the current transaction.
+ */
 static void
 write_head(void)
 {
@@ -112,6 +120,7 @@ write_head(void)
   brelse(buf);
 }
 
+/** @brief Replay the on-disk log and reset in-memory state. */
 static void
 recover_from_log(void)
 {
@@ -121,7 +130,7 @@ recover_from_log(void)
   write_head(); // clear the log
 }
 
-// called at the start of each FS system call.
+/** @brief Begin a filesystem log operation, waiting for space if needed. */
 void
 begin_op(void)
 {
@@ -140,8 +149,7 @@ begin_op(void)
   }
 }
 
-// called at the end of each FS system call.
-// commits if this was the last outstanding operation.
+/** @brief Complete a filesystem log operation, committing if last one. */
 void
 end_op(void)
 {
@@ -173,7 +181,7 @@ end_op(void)
   }
 }
 
-// Copy modified blocks from cache to log.
+/** @brief Copy modified cache blocks into the log. */
 static void
 write_log(void)
 {
@@ -189,6 +197,7 @@ write_log(void)
   }
 }
 
+/** @brief Commit the current transaction to disk and clear the log. */
 static void
 commit()
 {
@@ -201,15 +210,11 @@ commit()
   }
 }
 
-// Caller has modified b->data and is done with the buffer.
-// Record the block number and pin in the cache with B_DIRTY.
-// commit()/write_log() will do the disk write.
-//
-// log_write() replaces bwrite(); a typical use is:
-//   bp = bread(...)
-//   modify bp->data[]
-//   log_write(bp)
-//   brelse(bp)
+/**
+ * @brief Mark a buffer as part of the current transaction and pin it in cache.
+ *
+ * Replaces direct ::bwrite usage inside a transaction.
+ */
 void
 log_write(struct buf *b)
 {

@@ -10,14 +10,17 @@
 #include "spinlock.h"
 
 void freerange(void *vstart, void *vend);
+/** @brief First address after kernel loaded from ELF file */
 extern char end[]; // first address after kernel loaded from ELF file
                    // defined by the kernel linker script in kernel.ld
 
+/** @brief Linked list node for free pages */
 struct run
 {
     struct run *next;
 };
 
+/** @brief Kernel memory allocator state */
 struct
 {
     struct spinlock lock;
@@ -30,6 +33,7 @@ struct
 // the pages mapped by entrypgdir on free list.
 // 2. main() calls kinit2() with the rest of the physical pages
 // after installing a full page table that maps them on all cores.
+/** @brief Initialize kernel memory allocator phase 1 */
 void kinit1(void *vstart, void *vend)
 {
     initlock(&kmem.lock, "kmem");
@@ -37,12 +41,14 @@ void kinit1(void *vstart, void *vend)
     freerange(vstart, vend);
 }
 
+/** @brief Initialize kernel memory allocator phase 2 */
 void kinit2(void *vstart, void *vend)
 {
     freerange(vstart, vend);
     kmem.use_lock = 1;
 }
 
+/** @brief Free a range of memory */
 void freerange(void *vstart, void *vend)
 {
     char *p;
@@ -55,6 +61,7 @@ void freerange(void *vstart, void *vend)
 //  which normally should have been returned by a
 //  call to kalloc().  (The exception is when
 //  initializing the allocator; see kinit above.)
+/** @brief Free the page of physical memory */
 void kfree(char *v)
 {
     struct run *r;
@@ -77,6 +84,7 @@ void kfree(char *v)
 // Allocate one 4096-byte page of physical memory.
 // Returns a pointer that the kernel can use.
 // Returns 0 if the memory cannot be allocated.
+/** @brief Allocate one 4096-byte page of physical memory */
 char *
 kalloc(void)
 {

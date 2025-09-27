@@ -9,6 +9,12 @@
 #include "proc.h"
 #include "spinlock.h"
 
+/**
+ * @brief Initialize a spinlock with the provided debug name.
+ *
+ * @param lk Spinlock to initialize.
+ * @param name Identifier for diagnostics and panic messages.
+ */
 void
 initlock(struct spinlock *lk, char *name)
 {
@@ -17,10 +23,12 @@ initlock(struct spinlock *lk, char *name)
   lk->cpu = 0;
 }
 
-// Acquire the lock.
-// Loops (spins) until the lock is acquired.
-// Holding a lock for a long time may cause
-// other CPUs to waste time spinning to acquire it.
+/**
+ * @brief Acquire a spinlock, spinning until it becomes available.
+ *
+ * Disables interrupts on the current CPU to prevent deadlocks and records
+ * the owning CPU and caller PCs for debugging.
+ */
 void
 acquire(struct spinlock *lk)
 {
@@ -42,7 +50,9 @@ acquire(struct spinlock *lk)
   getcallerpcs(&lk, lk->pcs);
 }
 
-// Release the lock.
+/**
+ * @brief Release a spinlock and restore interrupts if appropriate.
+ */
 void
 release(struct spinlock *lk)
 {
@@ -67,7 +77,12 @@ release(struct spinlock *lk)
   popcli();
 }
 
-// Record the current call stack in pcs[] by following the %ebp chain.
+/**
+ * @brief Capture the current call stack by walking the frame pointer chain.
+ *
+ * @param v Starting frame pointer (obtained from the caller).
+ * @param pcs Output array of return addresses; unfilled entries set to zero.
+ */
 void
 getcallerpcs(void *v, uint pcs[])
 {
@@ -85,7 +100,11 @@ getcallerpcs(void *v, uint pcs[])
     pcs[i] = 0;
 }
 
-// Check whether this cpu is holding the lock.
+/**
+ * @brief Check whether the current CPU holds a spinlock.
+ *
+ * @return Non-zero if held by this CPU, zero otherwise.
+ */
 int
 holding(struct spinlock *lock)
 {
@@ -97,10 +116,9 @@ holding(struct spinlock *lock)
 }
 
 
-// Pushcli/popcli are like cli/sti except that they are matched:
-// it takes two popcli to undo two pushcli.  Also, if interrupts
-// are off, then pushcli, popcli leaves them off.
-
+/**
+ * @brief Disable interrupts with nesting semantics to pair with popcli().
+ */
 void
 pushcli(void)
 {
@@ -113,6 +131,9 @@ pushcli(void)
   mycpu()->ncli += 1;
 }
 
+/**
+ * @brief Restore interrupts when the outermost pushcli() is unwound.
+ */
 void
 popcli(void)
 {

@@ -22,12 +22,19 @@
 #include "file.h"
 
 #define min(a, b) ((a) < (b) ? (a) : (b))
+/** @brief Truncate an inode, releasing all associated blocks. */
 static void itrunc(struct inode*);
 // there should be one superblock per disk device, but we run with
 // only one device
-struct superblock sb; 
+/** @brief Cached superblock for the single disk device. */
+struct superblock super_block;
 
-// Read the super block.
+/**
+ * @brief Read the on-disk superblock into memory.
+ *
+ * @param dev Device number to read from.
+ * @param sb Destination superblock structure.
+ */
 void
 readsb(int dev, struct superblock *sb)
 {
@@ -38,7 +45,12 @@ readsb(int dev, struct superblock *sb)
   brelse(bp);
 }
 
-// Zero a block.
+/**
+ * @brief Zero out a disk block and write it through the log.
+ *
+ * @param dev Device containing the block.
+ * @param bno Block number to clear.
+ */
 static void
 bzero(int dev, int bno)
 {
@@ -52,7 +64,12 @@ bzero(int dev, int bno)
 
 // Blocks.
 
-// Allocate a zeroed disk block.
+/**
+ * @brief Allocate a zero-initialized disk block.
+ *
+ * @param dev Device to allocate from.
+ * @return Block number of the allocated block.
+ */
 static uint
 balloc(uint dev)
 {
@@ -60,9 +77,9 @@ balloc(uint dev)
   struct buf *bp;
 
   bp = 0;
-  for(b = 0; b < sb.size; b += BPB){
-    bp = bread(dev, BBLOCK(b, sb));
-    for(bi = 0; bi < BPB && b + bi < sb.size; bi++){
+  for(b = 0; b < super_block.size; b += BPB){
+    bp = bread(dev, BBLOCK(b, super_block));
+    for(bi = 0; bi < BPB && b + bi < super_block.size; bi++){
       m = 1 << (bi % 8);
       if((bp->data[bi/8] & m) == 0){  // Is block free?
         bp->data[bi/8] |= m;  // Mark block in use.
@@ -77,14 +94,19 @@ balloc(uint dev)
   panic("balloc: out of blocks");
 }
 
-// Free a disk block.
+/**
+ * @brief Release a disk block back to the free map.
+ *
+ * @param dev Device the block belongs to.
+ * @param b Block number to free.
+ */
 static void
 bfree(int dev, uint b)
 {
   struct buf *bp;
   int bi, m;
 
-  bp = bread(dev, BBLOCK(b, sb));
+  bp = bread(dev, BBLOCK(b, super_block));
   bi = b % BPB;
   m = 1 << (bi % 8);
   if((bp->data[bi/8] & m) == 0)
@@ -163,11 +185,17 @@ bfree(int dev, uint b)
 // dev, and inum.  One must hold ip->lock in order to
 // read or write that inode's ip->valid, ip->size, ip->type, &c.
 
+/** @brief In-memory inode cache protected by a spinlock. */
 struct {
   struct spinlock lock;
   struct inode inode[NINODE];
 } icache;
 
+/**
+ * @brief Initialize the inode cache and read the superblock.
+ *
+ * @param dev Device number containing the filesystem.
+ */
 void
 iinit(int dev)
 {
@@ -178,19 +206,22 @@ iinit(int dev)
     initsleeplock(&icache.inode[i].lock, "inode");
   }
 
-  readsb(dev, &sb);
+  readsb(dev, &super_block);
   cprintf("sb: size %d nblocks %d ninodes %d nlog %d logstart %d\
- inodestart %d bmap start %d\n", sb.size, sb.nblocks,
-          sb.ninodes, sb.nlog, sb.logstart, sb.inodestart,
-          sb.bmapstart);
+ inodestart %d bmap start %d\n", super_block.size, super_block.nblocks,
+          super_block.ninodes, super_block.nlog, super_block.logstart, super_block.inodestart,
+          super_block.bmapstart);
 }
 
 static struct inode* iget(uint dev, uint inum);
 
-//PAGEBREAK!
-// Allocate an inode on device dev.
-// Mark it as allocated by  giving it type type.
-// Returns an unlocked but allocated and referenced inode.
+/**
+ * @brief Allocate a fresh inode of the given type.
+ *
+ * @param dev Device identifier.
+ * @param type Inode type to assign.
+ * @return Referenced but unlocked inode structure.
+ */
 struct inode*
 ialloc(uint dev, short type)
 {
@@ -198,8 +229,8 @@ ialloc(uint dev, short type)
   struct buf *bp;
   struct dinode *dip;
 
-  for(inum = 1; inum < sb.ninodes; inum++){
-    bp = bread(dev, IBLOCK(inum, sb));
+  for(inum = 1; inum < super_block.ninodes; inum++){
+    bp = bread(dev, IBLOCK(inum, super_block));
     dip = (struct dinode*)bp->data + inum%IPB;
     if(dip->type == 0){  // a free inode
       memset(dip, 0, sizeof(*dip));
@@ -213,17 +244,20 @@ ialloc(uint dev, short type)
   panic("ialloc: no inodes");
 }
 
-// Copy a modified in-memory inode to disk.
-// Must be called after every change to an ip->xxx field
-// that lives on disk, since i-node cache is write-through.
-// Caller must hold ip->lock.
+/**
+ * @brief Write an in-memory inode back to disk.
+ *
+ * Callers must hold the inode's sleeplock.
+ *
+ * @param ip Inode to flush.
+ */
 void
 iupdate(struct inode *ip)
 {
   struct buf *bp;
   struct dinode *dip;
 
-  bp = bread(ip->dev, IBLOCK(ip->inum, sb));
+  bp = bread(ip->dev, IBLOCK(ip->inum, super_block));
   dip = (struct dinode*)bp->data + ip->inum%IPB;
   dip->type = ip->type;
   dip->major = ip->major;
@@ -235,9 +269,15 @@ iupdate(struct inode *ip)
   brelse(bp);
 }
 
-// Find the inode with number inum on device dev
-// and return the in-memory copy. Does not lock
-// the inode and does not read it from disk.
+/**
+ * @brief Fetch an inode from the cache, creating an entry if needed.
+ *
+ * The returned inode is referenced but unlocked.
+ *
+ * @param dev Device identifier.
+ * @param inum Inode number on disk.
+ * @return In-core inode pointer.
+ */
 static struct inode*
 iget(uint dev, uint inum)
 {
@@ -271,8 +311,12 @@ iget(uint dev, uint inum)
   return ip;
 }
 
-// Increment reference count for ip.
-// Returns ip to enable ip = idup(ip1) idiom.
+/**
+ * @brief Increment the reference count on an inode.
+ *
+ * @param ip Inode to retain.
+ * @return The same inode pointer.
+ */
 struct inode*
 idup(struct inode *ip)
 {
@@ -282,8 +326,11 @@ idup(struct inode *ip)
   return ip;
 }
 
-// Lock the given inode.
-// Reads the inode from disk if necessary.
+/**
+ * @brief Acquire an inode's sleeplock and populate it from disk if needed.
+ *
+ * @param ip Inode to lock.
+ */
 void
 ilock(struct inode *ip)
 {
@@ -296,7 +343,7 @@ ilock(struct inode *ip)
   acquiresleep(&ip->lock);
 
   if(ip->valid == 0){
-    bp = bread(ip->dev, IBLOCK(ip->inum, sb));
+    bp = bread(ip->dev, IBLOCK(ip->inum, super_block));
     dip = (struct dinode*)bp->data + ip->inum%IPB;
     ip->type = dip->type;
     ip->major = dip->major;
@@ -311,7 +358,7 @@ ilock(struct inode *ip)
   }
 }
 
-// Unlock the given inode.
+/** @brief Release an inode's sleeplock. */
 void
 iunlock(struct inode *ip)
 {
@@ -321,13 +368,13 @@ iunlock(struct inode *ip)
   releasesleep(&ip->lock);
 }
 
-// Drop a reference to an in-memory inode.
-// If that was the last reference, the inode cache entry can
-// be recycled.
-// If that was the last reference and the inode has no links
-// to it, free the inode (and its content) on disk.
-// All calls to iput() must be inside a transaction in
-// case it has to free the inode.
+/**
+ * @brief Release a reference to an inode, freeing it if unlinked.
+ *
+ * Must be called within a log transaction when it might free disk blocks.
+ *
+ * @param ip Inode to release.
+ */
 void
 iput(struct inode *ip)
 {
@@ -351,7 +398,11 @@ iput(struct inode *ip)
   release(&icache.lock);
 }
 
-// Common idiom: unlock, then put.
+/**
+ * @brief Convenience helper to unlock and then release an inode reference.
+ *
+ * @param ip Inode to unlock and drop.
+ */
 void
 iunlockput(struct inode *ip)
 {
@@ -359,7 +410,6 @@ iunlockput(struct inode *ip)
   iput(ip);
 }
 
-//PAGEBREAK!
 // Inode content
 //
 // The content (data) associated with each inode is stored
@@ -367,8 +417,15 @@ iunlockput(struct inode *ip)
 // are listed in ip->addrs[].  The next NINDIRECT blocks are
 // listed in block ip->addrs[NDIRECT].
 
-// Return the disk block address of the nth block in inode ip.
-// If there is no such block, bmap allocates one.
+/**
+ * @brief Translate a file-relative block number to a disk block.
+ *
+ * Allocates new direct or indirect blocks as required.
+ *
+ * @param ip Target inode.
+ * @param bn Block number within the file.
+ * @return Physical block number on disk.
+ */
 static uint
 bmap(struct inode *ip, uint bn)
 {
@@ -399,11 +456,13 @@ bmap(struct inode *ip, uint bn)
   panic("bmap: out of range");
 }
 
-// Truncate inode (discard contents).
-// Only called when the inode has no links
-// to it (no directory entries referring to it)
-// and has no in-memory reference to it (is
-// not an open file or current directory).
+/**
+ * @brief Truncate an inode, freeing all associated data blocks.
+ *
+ * Only called once the inode is orphaned (no links, single reference).
+ *
+ * @param ip Inode to truncate.
+ */
 static void
 itrunc(struct inode *ip)
 {
@@ -434,8 +493,14 @@ itrunc(struct inode *ip)
   iupdate(ip);
 }
 
-// Copy stat information from inode.
-// Caller must hold ip->lock.
+/**
+ * @brief Populate a ::stat structure from an inode.
+ *
+ * Caller must hold the inode's sleeplock.
+ *
+ * @param ip Source inode.
+ * @param st Destination stat buffer.
+ */
 void
 stati(struct inode *ip, struct stat *st)
 {
@@ -446,9 +511,18 @@ stati(struct inode *ip, struct stat *st)
   st->size = ip->size;
 }
 
-//PAGEBREAK!
-// Read data from inode.
-// Caller must hold ip->lock.
+/**
+ * @brief Read bytes from an inode into memory.
+ *
+ * Caller must hold the inode's sleeplock (except for device files, which
+ * delegate to driver read callbacks).
+ *
+ * @param ip Inode to read.
+ * @param dst Destination buffer.
+ * @param off Byte offset within the file.
+ * @param n Number of bytes to read.
+ * @return Bytes read or ::-1 on error.
+ */
 int
 readi(struct inode *ip, char *dst, uint off, uint n)
 {
@@ -475,9 +549,18 @@ readi(struct inode *ip, char *dst, uint off, uint n)
   return n;
 }
 
-// PAGEBREAK!
-// Write data to inode.
-// Caller must hold ip->lock.
+/**
+ * @brief Write bytes from memory into an inode.
+ *
+ * The caller must hold the inode's sleeplock; device files are forwarded to
+ * driver write callbacks.
+ *
+ * @param ip Destination inode.
+ * @param src Source buffer.
+ * @param off Byte offset within the file.
+ * @param n Number of bytes to write.
+ * @return Bytes written or ::-1 on error.
+ */
 int
 writei(struct inode *ip, char *src, uint off, uint n)
 {
@@ -510,17 +593,29 @@ writei(struct inode *ip, char *src, uint off, uint n)
   return n;
 }
 
-//PAGEBREAK!
 // Directories
 
+/**
+ * @brief Compare directory entry names with fixed-size semantics.
+ *
+ * @param s First name.
+ * @param t Second name.
+ * @return Result of ::strncmp limited to DIRSIZ bytes.
+ */
 int
 namecmp(const char *s, const char *t)
 {
   return strncmp(s, t, DIRSIZ);
 }
 
-// Look for a directory entry in a directory.
-// If found, set *poff to byte offset of entry.
+/**
+ * @brief Look up a directory entry by name.
+ *
+ * @param dp Directory inode.
+ * @param name Entry to search for.
+ * @param poff Optional pointer to receive byte offset of the entry.
+ * @return Referenced inode on success, or ::0 if not found.
+ */
 struct inode*
 dirlookup(struct inode *dp, char *name, uint *poff)
 {
@@ -547,7 +642,14 @@ dirlookup(struct inode *dp, char *name, uint *poff)
   return 0;
 }
 
-// Write a new directory entry (name, inum) into the directory dp.
+/**
+ * @brief Insert a new directory entry.
+ *
+ * @param dp Directory inode to modify.
+ * @param name Entry name to create.
+ * @param inum Inode number to reference.
+ * @return ::0 on success or ::-1 if the name already exists.
+ */
 int
 dirlink(struct inode *dp, char *name, uint inum)
 {
@@ -577,7 +679,6 @@ dirlink(struct inode *dp, char *name, uint inum)
   return 0;
 }
 
-//PAGEBREAK!
 // Paths
 
 // Copy the next path element from path into name.
@@ -592,6 +693,13 @@ dirlink(struct inode *dp, char *name, uint inum)
 //   skipelem("a", name) = "", setting name = "a"
 //   skipelem("", name) = skipelem("////", name) = 0
 //
+/**
+ * @brief Extract the next path element from a slash-delimited string.
+ *
+ * @param path Input path.
+ * @param name Buffer receiving the next element (DIRSIZ bytes).
+ * @return Pointer to the remaining path or ::0 if no elements remain.
+ */
 static char*
 skipelem(char *path, char *name)
 {
@@ -621,6 +729,14 @@ skipelem(char *path, char *name)
 // If parent != 0, return the inode for the parent and copy the final
 // path element into name, which must have room for DIRSIZ bytes.
 // Must be called inside a transaction since it calls iput().
+/**
+ * @brief Resolve a path to an inode, optionally returning the parent.
+ *
+ * @param path Path string to traverse.
+ * @param nameiparent Non-zero to return parent directory inode.
+ * @param name Buffer receiving the final path element.
+ * @return Referenced inode on success, ::0 if the path cannot be resolved.
+ */
 static struct inode*
 namex(char *path, int nameiparent, char *name)
 {
@@ -656,6 +772,12 @@ namex(char *path, int nameiparent, char *name)
   return ip;
 }
 
+/**
+ * @brief Resolve a path to its final inode.
+ *
+ * @param path Path string.
+ * @return Referenced inode or ::0 if resolution fails.
+ */
 struct inode*
 namei(char *path)
 {
@@ -663,6 +785,13 @@ namei(char *path)
   return namex(path, 0, name);
 }
 
+/**
+ * @brief Resolve a path to its parent directory inode.
+ *
+ * @param path Path string.
+ * @param name Buffer to receive the final element.
+ * @return Referenced parent inode or ::0 if resolution fails.
+ */
 struct inode*
 nameiparent(char *path, char *name)
 {

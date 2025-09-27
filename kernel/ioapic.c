@@ -6,25 +6,27 @@
 #include "defs.h"
 #include "traps.h"
 
-#define IOAPIC  0xFEC00000   // Default physical address of IO APIC
+#define IOAPIC 0xFEC00000 // Default physical address of IO APIC
 
-#define REG_ID     0x00  // Register index: ID
-#define REG_VER    0x01  // Register index: version
-#define REG_TABLE  0x10  // Redirection table base
+#define REG_ID 0x00    // Register index: ID
+#define REG_VER 0x01   // Register index: version
+#define REG_TABLE 0x10 // Redirection table base
 
 // The redirection table starts at REG_TABLE and uses
 // two registers to configure each interrupt.
 // The first (low) register in a pair contains configuration bits.
 // The second (high) register contains a bitmask telling which
 // CPUs can serve that interrupt.
-#define INT_DISABLED   0x00010000  // Interrupt disabled
-#define INT_LEVEL      0x00008000  // Level-triggered (vs edge-)
-#define INT_ACTIVELOW  0x00002000  // Active low (vs high)
-#define INT_LOGICAL    0x00000800  // Destination is CPU id (vs APIC ID)
+#define INT_DISABLED 0x00010000  // Interrupt disabled
+#define INT_LEVEL 0x00008000     // Level-triggered (vs edge-)
+#define INT_ACTIVELOW 0x00002000 // Active low (vs high)
+#define INT_LOGICAL 0x00000800   // Destination is CPU id (vs APIC ID)
 
-volatile struct ioapic* ioapic;
+/** @brief Memory-mapped base pointer to the I/O APIC. */
+volatile struct ioapic *ioapic;
 
 // IO APIC MMIO structure: write reg, then read or write data.
+/** @brief Memory-mapped register layout of the I/O APIC. */
 struct ioapic
 {
     uint reg;
@@ -32,6 +34,12 @@ struct ioapic
     uint data;
 };
 
+/**
+ * @brief Read a 32-bit value from an I/O APIC register.
+ *
+ * @param reg Register index to read.
+ * @return Contents of the requested register.
+ */
 static uint
 ioapicread(int reg)
 {
@@ -39,6 +47,12 @@ ioapicread(int reg)
     return ioapic->data;
 }
 
+/**
+ * @brief Write a 32-bit value to an I/O APIC register.
+ *
+ * @param reg Register index to write.
+ * @param data Value to store.
+ */
 static void
 ioapicwrite(int reg, uint data)
 {
@@ -46,12 +60,12 @@ ioapicwrite(int reg, uint data)
     ioapic->data = data;
 }
 
-void
-ioapicinit(void)
+/** @brief Initialize the I/O APIC and mask all interrupts. */
+void ioapicinit(void)
 {
     int i, id, maxintr;
 
-    ioapic = (volatile struct ioapic*)IOAPIC;
+    ioapic = (volatile struct ioapic *)IOAPIC;
     maxintr = (ioapicread(REG_VER) >> 16) & 0xFF;
     id = ioapicread(REG_ID) >> 24;
     if (id != ioapicid)
@@ -66,8 +80,13 @@ ioapicinit(void)
     }
 }
 
-void
-ioapicenable(int irq, int cpunum)
+/**
+ * @brief Route an external interrupt to a specific CPU.
+ *
+ * @param irq IRQ line to enable.
+ * @param cpunum APIC ID of the destination CPU.
+ */
+void ioapicenable(int irq, int cpunum)
 {
     // Mark interrupt edge-triggered, active high,
     // enabled, and routed to the given cpunum,

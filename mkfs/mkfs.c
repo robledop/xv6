@@ -33,7 +33,7 @@ int nmeta;   // Number of meta blocks (boot, sb, nlog, inode, bitmap)
 int nblocks; // Number of data blocks
 
 int fsfd;
-struct superblock sb;
+struct superblock super_block;
 char zeroes[BSIZE];
 uint freeinode = 1;
 uint freeblock;
@@ -98,13 +98,13 @@ int main(int argc, char *argv[])
     nmeta = 2 + nlog + ninodeblocks + nbitmap;
     nblocks = FSSIZE - nmeta;
 
-    sb.size = xint(FSSIZE);
-    sb.nblocks = xint(nblocks);
-    sb.ninodes = xint(NINODES);
-    sb.nlog = xint(nlog);
-    sb.logstart = xint(2);
-    sb.inodestart = xint(2 + nlog);
-    sb.bmapstart = xint(2 + nlog + ninodeblocks);
+    super_block.size = xint(FSSIZE);
+    super_block.nblocks = xint(nblocks);
+    super_block.ninodes = xint(NINODES);
+    super_block.nlog = xint(nlog);
+    super_block.logstart = xint(2);
+    super_block.inodestart = xint(2 + nlog);
+    super_block.bmapstart = xint(2 + nlog + ninodeblocks);
 
     printf("nmeta %d (boot, super, log blocks %u inode blocks %u, bitmap blocks %u) blocks %d total %d\n",
            nmeta, nlog, ninodeblocks, nbitmap, nblocks, FSSIZE);
@@ -115,7 +115,7 @@ int main(int argc, char *argv[])
         wsect(i, zeroes);
 
     memset(buf, 0, sizeof(buf));
-    memmove(buf, &sb, sizeof(sb));
+    memmove(buf, &super_block, sizeof(super_block));
     wsect(1, buf);
 
     rootino = ialloc(T_DIR);
@@ -196,7 +196,7 @@ void winode(uint inum, struct dinode *ip)
     uint bn;
     struct dinode *dip;
 
-    bn = IBLOCK(inum, sb);
+    bn = IBLOCK(inum, super_block);
     rsect(bn, buf);
     dip = ((struct dinode *)buf) + (inum % IPB);
     *dip = *ip;
@@ -209,7 +209,7 @@ void rinode(uint inum, struct dinode *ip)
     uint bn;
     struct dinode *dip;
 
-    bn = IBLOCK(inum, sb);
+    bn = IBLOCK(inum, super_block);
     rsect(bn, buf);
     dip = ((struct dinode *)buf) + (inum % IPB);
     *ip = *dip;
@@ -254,8 +254,8 @@ void balloc(int used)
     {
         buf[i / 8] = buf[i / 8] | (0x1 << (i % 8));
     }
-    printf("balloc: write bitmap block at sector %d\n", sb.bmapstart);
-    wsect(sb.bmapstart, buf);
+    printf("balloc: write bitmap block at sector %d\n", super_block.bmapstart);
+    wsect(super_block.bmapstart, buf);
 }
 
 #define min(a, b) ((a) < (b) ? (a) : (b))

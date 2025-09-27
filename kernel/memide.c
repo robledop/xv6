@@ -1,7 +1,7 @@
 // Fake IDE disk; stores blocks in memory.
 // Useful for running kernel without scratch disk.
 
-#include "types.h"
+#include <types.h>
 #include "defs.h"
 #include "param.h"
 #include "mmu.h"
@@ -15,9 +15,12 @@
 
 extern uchar _binary_fs_img_start[], _binary_fs_img_size[];
 
+/** @brief Number of disk blocks exposed by the in-memory disk. */
 static int disksize;
+/** @brief Pointer to the start of the in-memory disk image. */
 static uchar *memdisk;
 
+/** @brief Initialize the memory-backed disk using the embedded fs image. */
 void
 ideinit(void)
 {
@@ -25,16 +28,18 @@ ideinit(void)
   disksize = (uint)_binary_fs_img_size/BSIZE;
 }
 
-// Interrupt handler.
+/** @brief Memory disk interrupt handler (no-op placeholder). */
 void
 ideintr(void)
 {
   // no-op
 }
 
-// Sync buf with disk.
-// If B_DIRTY is set, write buf to disk, clear B_DIRTY, set B_VALID.
-// Else if B_VALID is not set, read buf from disk, set B_VALID.
+/**
+ * @brief Synchronize a buffer with the memory disk backing store.
+ *
+ * @param b Buffer to read or write; must be locked on entry.
+ */
 void
 iderw(struct buf *b)
 {

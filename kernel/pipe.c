@@ -8,17 +8,31 @@
 #include "sleeplock.h"
 #include "file.h"
 
+/** @brief Maximum number of buffered bytes per pipe. */
 #define PIPESIZE 512
 
+/**
+ * @brief Kernel representation of a unidirectional pipe.
+ *
+ * Synchronizes readers and writers via a spinlock and keeps a ring buffer
+ * that tracks read/write offsets along with open counts for each endpoint.
+ */
 struct pipe {
   struct spinlock lock;
   char data[PIPESIZE];
-  uint nread;     // number of bytes read
-  uint nwrite;    // number of bytes written
-  int readopen;   // read fd is still open
-  int writeopen;  // write fd is still open
+  uint nread;     /**< Number of bytes read from the buffer. */
+  uint nwrite;    /**< Number of bytes written to the buffer. */
+  int readopen;   /**< Non-zero while the read end remains open. */
+  int writeopen;  /**< Non-zero while the write end remains open. */
 };
 
+/**
+ * @brief Allocate and initialize a pipe along with the file descriptors.
+ *
+ * @param f0 Output pointer for the read end file.
+ * @param f1 Output pointer for the write end file.
+ * @return ::0 on success, ::-1 on allocation failure.
+ */
 int
 pipealloc(struct file **f0, struct file **f1)
 {
@@ -45,7 +59,6 @@ pipealloc(struct file **f0, struct file **f1)
   (*f1)->pipe = p;
   return 0;
 
-//PAGEBREAK: 20
  bad:
   if(p)
     kfree((char*)p);
@@ -55,7 +68,12 @@ pipealloc(struct file **f0, struct file **f1)
     fileclose(*f1);
   return -1;
 }
-
+/**
+ * @brief Close one endpoint of a pipe and wake waiting peers as needed.
+ *
+ * @param p Pipe being closed.
+ * @param writable Non-zero when closing the write end.
+ */
 void
 pipeclose(struct pipe *p, int writable)
 {
@@ -74,7 +92,14 @@ pipeclose(struct pipe *p, int writable)
     release(&p->lock);
 }
 
-//PAGEBREAK: 40
+/**
+ * @brief Write bytes into a pipe, blocking while the buffer is full.
+ *
+ * @param p Pipe to write to.
+ * @param addr User buffer with bytes to copy.
+ * @param n Number of bytes requested.
+ * @return Count of bytes written or ::-1 if interrupted/closed.
+ */
 int
 pipewrite(struct pipe *p, char *addr, int n)
 {
@@ -96,7 +121,14 @@ pipewrite(struct pipe *p, char *addr, int n)
   release(&p->lock);
   return n;
 }
-
+/**
+ * @brief Read bytes from a pipe, blocking until data or closure.
+ *
+ * @param p Pipe to read from.
+ * @param addr Destination buffer to fill.
+ * @param n Maximum number of bytes to copy.
+ * @return Count of bytes read or ::-1 if interrupted.
+ */
 int
 piperead(struct pipe *p, char *addr, int n)
 {

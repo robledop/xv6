@@ -10,7 +10,7 @@
     <option name="/Default/Environment/StickyLines/DisabledLanguageList/@EntryValue" value="Jupyter" type="string" />
     <option name="/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=SwitchToGoToActionSuggester/@EntryIndexedValue" value="true" type="bool" />
     <option name="/Default/Housekeeping/GlobalSettingsUpgraded/IsUpgraded/@EntryValue" value="true" type="bool" />
-    <option name="/Default/Housekeeping/OptionsDialog/SelectedPageId/@EntryValue" value="CppAggregateHintsOptions" type="string" />
+    <option name="/Default/Housekeeping/OptionsDialog/SelectedPageId/@EntryValue" value="CppGeneralOptions" type="string" />
     <option name="/Default/RiderDebugger/RiderRestoreDecompile/RestoreDecompileSetting/@EntryValue" value="false" type="bool" />
   </component>
   <component name="CMakeProjectFlavorService">
@@ -32,46 +32,61 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="badc6783-4aa1-42d3-aec1-fa09c6e3af57" name="Changes" comment="">
+    <list default="true" id="badc6783-4aa1-42d3-aec1-fa09c6e3af57" name="Changes" comment="Improve code consistency and readability by renaming variables and structures, removing unnecessary comments, and updating formatting across multiple files.">
+      <change afterPath="$PROJECT_DIR$/.clangd" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/.idea/copilot.data.migration.agent.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/.idea/copilot.data.migration.ask.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/.idea/copilot.data.migration.ask2agent.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/.idea/copilot.data.migration.edit.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations/qemu.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/xv6.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.dir-locals.el" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations/clean.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations/qemu_gdb.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/kernel/vectors.S" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mkfs/fs.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mkfs/param.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mkfs/stat.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mkfs/types.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/editor.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/editor.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LICENSE" beforeDir="false" afterPath="$PROJECT_DIR$/LICENSE.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/qemu.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/qemu.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/xv6.iml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TRICKS" beforeDir="false" afterPath="$PROJECT_DIR$/TRICKS.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dot-bochsrc" beforeDir="false" afterPath="$PROJECT_DIR$/dot-bochsrc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/defs.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/defs.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/mmu.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/mmu.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/proc.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/proc.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/x86.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/x86.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/asm.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/asm.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/buf.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/buf.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/fs.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/fs.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/mp.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/mp.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/sleeplock.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/sleeplock.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/spinlock.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/spinlock.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/types.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/types.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/bio.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/bio.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/bootasm.S" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/bootasm.S" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/bootmain.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/bootmain.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kernel/console.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/console.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kernel/entryother.S" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/entryother.S" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kernel/exec.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/exec.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/file.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/file.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/fs.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/fs.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/ide.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/ide.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kernel/ioapic.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/ioapic.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kernel/kalloc.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/kalloc.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/lapic.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/lapic.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/log.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/log.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kernel/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/main.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/memide.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/memide.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kernel/picirq.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/picirq.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/pipe.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/pipe.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kernel/proc.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/proc.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kernel/sleeplock.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/sleeplock.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kernel/spinlock.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/spinlock.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kernel/swtch.S" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/swtch.S" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/string.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/string.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kernel/syscall.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/syscall.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/sysfile.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/sysfile.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/sysfilexit.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/sysfilexit.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kernel/sysproc.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/sysproc.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kernel/trap.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/trap.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/uart.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/uart.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kernel/vm.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/vm.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mkfs/mkfs.c" beforeDir="false" afterPath="$PROJECT_DIR$/mkfs/mkfs.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user/sh.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/sh.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -80,6 +95,33 @@
   </component>
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="CompDBLocalSettings">
+    <option name="availableProjects">
+      <map>
+        <entry>
+          <key>
+            <ExternalProjectPojo>
+              <option name="name" value="xv6" />
+              <option name="path" value="$PROJECT_DIR$" />
+            </ExternalProjectPojo>
+          </key>
+          <value>
+            <list>
+              <ExternalProjectPojo>
+                <option name="name" value="xv6" />
+                <option name="path" value="$PROJECT_DIR$" />
+              </ExternalProjectPojo>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="projectSyncType">
+      <map>
+        <entry key="$PROJECT_DIR$" value="RE_IMPORT" />
+      </map>
+    </option>
   </component>
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
@@ -102,7 +144,13 @@
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/include/types.h" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/asm.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/buf.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/fs.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/sleeplock.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/spinlock.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/types.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/kernel/memide.c" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MakefileLocalSettings">
     <option name="toolchainName" value="Cross gcc" />
@@ -148,38 +196,47 @@
     <option name="showLibraryContents" value="true" />
     <option name="showVisibilityIcons" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Makefile Target.clean.executor": "Run",
-    "Makefile Target.qemu-nox-gdb.executor": "Run",
-    "Makefile Target.qemu-nox.executor": "Run",
-    "Makefile Target.qemu.executor": "Run",
-    "Native Application.qemu-gdb.executor": "Run",
-    "Native Application.qemu-nox.executor": "Run",
-    "Native Application.qemu.executor": "Debug",
-    "RunOnceActivity.RadMigrateCodeStyle": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.cidr.known.project.marker": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.readMode.enableVisualFormatting": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "cf.first.check.clang-format": "false",
-    "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "master",
-    "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "/home/robledo/source/osdev/xv6",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "project.propVCSSupport.CommitDialog",
-    "to.speed.mode.migration.done": "true",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Makefile Target.clean.executor&quot;: &quot;Run&quot;,
+    &quot;Makefile Target.qemu-gdb.executor&quot;: &quot;Run&quot;,
+    &quot;Makefile Target.qemu-nox-gdb.executor&quot;: &quot;Run&quot;,
+    &quot;Makefile Target.qemu-nox.executor&quot;: &quot;Run&quot;,
+    &quot;Makefile Target.qemu.executor&quot;: &quot;Run&quot;,
+    &quot;Native Application.qemu-gdb.executor&quot;: &quot;Run&quot;,
+    &quot;Native Application.qemu-nox.executor&quot;: &quot;Run&quot;,
+    &quot;Native Application.qemu.executor&quot;: &quot;Debug&quot;,
+    &quot;Remote Debug.Unnamed.executor&quot;: &quot;Debug&quot;,
+    &quot;Remote Debug.qemu.executor&quot;: &quot;Debug&quot;,
+    &quot;RunOnceActivity.RadMigrateCodeStyle&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/robledo/source/osdev/xv6&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;settings.sync&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
-  <component name="RunManager" selected="Makefile Target.qemu-gdb">
-    <configuration name="bochs" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="xv6" TARGET_NAME="bochs" CONFIG_NAME="bochs" version="1">
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Remote Debug.qemu">
+    <configuration name="bochs" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="xv6" TARGET_NAME="bochs" version="1">
       <method v="2">
         <option name="CLION.COMPOUND.BUILD" enabled="true" />
       </method>
@@ -194,7 +251,7 @@
         <option name="CLION.COMPOUND.BUILD" enabled="true" />
       </method>
     </configuration>
-    <configuration name="qemu-nox-gdb" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="xv6" TARGET_NAME="qemu-nox-gdb" CONFIG_NAME="qemu-nox-gdb" version="1">
+    <configuration name="qemu-nox-gdb" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="xv6" TARGET_NAME="qemu-nox-gdb" version="1">
       <method v="2">
         <option name="CLION.COMPOUND.BUILD" enabled="true" />
       </method>
@@ -209,24 +266,7 @@
         <option name="CLION.COMPOUND.BUILD" enabled="true" />
       </method>
     </configuration>
-    <configuration name="clean" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile">
-      <makefile filename="$PROJECT_DIR$/Makefile" target="clean" workingDirectory="" arguments="">
-        <envs />
-      </makefile>
-      <method v="2" />
-    </configuration>
-    <configuration name="qemu-gdb" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile">
-      <makefile filename="$PROJECT_DIR$/Makefile" target="qemu-gdb" workingDirectory="" arguments="">
-        <envs>
-          <env name="PATH" value="$USER_HOME$/.cargo/bin:$USER_HOME$/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:$USER_HOME$/.dotnet/tools:$USER_HOME$/.local/share/JetBrains/Toolbox/scripts:$USER_HOME$/opt/cross/bin" />
-        </envs>
-      </makefile>
-      <method v="2">
-        <option name="RunConfigurationTask" enabled="false" run_configuration_name="clean" run_configuration_type="MAKEFILE_TARGET_RUN_CONFIGURATION" />
-      </method>
-    </configuration>
     <list>
-      <item itemvalue="Makefile Target.qemu" />
       <item itemvalue="Makefile Target.qemu-gdb" />
       <item itemvalue="Makefile Target.qemu-nox" />
       <item itemvalue="Makefile Target.qemu-nox-gdb" />
@@ -237,6 +277,7 @@
       <item itemvalue="Native Application.qemu-memfs" />
       <item itemvalue="Native Application.qemu-nox" />
       <item itemvalue="Native Application.qemu-nox-gdb" />
+      <item itemvalue="Remote Debug.qemu" />
     </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -288,19 +329,37 @@
       <workItem from="1757260870926" duration="679000" />
       <workItem from="1757264556253" duration="1702000" />
       <workItem from="1758681343703" duration="143000" />
-      <workItem from="1758752889252" duration="823000" />
+      <workItem from="1758752889252" duration="914000" />
+      <workItem from="1758761183646" duration="2020000" />
+      <workItem from="1758842985060" duration="137000" />
+      <workItem from="1759006600262" duration="2780000" />
+      <workItem from="1759009399906" duration="528000" />
+      <workItem from="1759009944647" duration="344000" />
     </task>
+    <task id="LOCAL-00001" summary="Improve code consistency and readability by renaming variables and structures, removing unnecessary comments, and updating formatting across multiple files.">
+      <option name="closed" value="true" />
+      <created>1758753792298</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1758753792298</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Improve code consistency and readability by renaming variables and structures, removing unnecessary comments, and updating formatting across multiple files." />
+    <option name="LAST_COMMIT_MESSAGE" value="Improve code consistency and readability by renaming variables and structures, removing unnecessary comments, and updating formatting across multiple files." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/kernel/proc.c</url>
-          <line>297</line>
+          <line>332</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
       </breakpoints>

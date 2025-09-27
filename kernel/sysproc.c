@@ -7,12 +7,14 @@
 #include "mmu.h"
 #include "proc.h"
 
+/** @brief System call wrapper for ::fork. */
 int
 sys_fork(void)
 {
   return fork();
 }
 
+/** @brief System call wrapper for ::exit. */
 int
 sys_exit(void)
 {
@@ -20,12 +22,14 @@ sys_exit(void)
   return 0;  // not reached
 }
 
+/** @brief System call wrapper for ::wait. */
 int
 sys_wait(void)
 {
   return wait();
 }
 
+/** @brief Terminate a process by PID (syscall handler). */
 int
 sys_kill(void)
 {
@@ -36,12 +40,18 @@ sys_kill(void)
   return kill(pid);
 }
 
+/** @brief Return the current process ID. */
 int
 sys_getpid(void)
 {
   return myproc()->pid;
 }
 
+/**
+ * @brief Adjust process memory size by a delta (syscall handler).
+ *
+ * @return Previous end-of-heap address or ::-1 on error.
+ */
 int
 sys_sbrk(void)
 {
@@ -56,6 +66,11 @@ sys_sbrk(void)
   return addr;
 }
 
+/**
+ * @brief Sleep for a number of clock ticks (syscall handler).
+ *
+ * @return ::0 on success, ::-1 if interrupted.
+ */
 int
 sys_sleep(void)
 {
@@ -77,8 +92,9 @@ sys_sleep(void)
   return 0;
 }
 
-// return how many clock tick interrupts have occurred
-// since start.
+/**
+ * @brief Return the number of clock ticks since boot.
+ */
 int
 sys_uptime(void)
 {

@@ -13,28 +13,41 @@
 #include "fs.h"
 #include "buf.h"
 
+/** @brief Size in bytes of a hardware IDE sector. */
 #define SECTOR_SIZE   512
+/** @brief Controller busy flag. */
 #define IDE_BSY       0x80
+/** @brief Device ready flag. */
 #define IDE_DRDY      0x40
+/** @brief Device fault flag. */
 #define IDE_DF        0x20
+/** @brief Generic error flag. */
 #define IDE_ERR       0x01
 
+/** @brief PIO read command for a single sector. */
 #define IDE_CMD_READ  0x20
+/** @brief PIO write command for a single sector. */
 #define IDE_CMD_WRITE 0x30
+/** @brief PIO read command for multiple sectors. */
 #define IDE_CMD_RDMUL 0xc4
+/** @brief PIO write command for multiple sectors. */
 #define IDE_CMD_WRMUL 0xc5
 
-// idequeue points to the buf now being read/written to the disk.
-// idequeue->qnext points to the next buf to be processed.
-// You must hold idelock while manipulating queue.
-
+/** @brief Protects access to the IDE request queue. */
 static struct spinlock idelock;
+/** @brief Linked list of pending IDE requests. */
 static struct buf *idequeue;
 
+/** @brief Tracks whether a second disk device responded. */
 static int havedisk1;
 static void idestart(struct buf*);
 
-// Wait for IDE disk to become ready.
+/**
+ * @brief Busy-wait for the IDE device to become ready.
+ *
+ * @param checkerr When non-zero, validate that no fault/error flags are set.
+ * @return ::0 when ready, ::-1 if an error was detected.
+ */
 static int
 idewait(int checkerr)
 {
@@ -47,6 +60,7 @@ idewait(int checkerr)
   return 0;
 }
 
+/** @brief Initialize the IDE controller and detect attached drives. */
 void
 ideinit(void)
 {
@@ -69,7 +83,11 @@ ideinit(void)
   outb(0x1f6, 0xe0 | (0<<4));
 }
 
-// Start the request for b.  Caller must hold idelock.
+/**
+ * @brief Issue a command to service the given buffer.
+ *
+ * Caller must hold ::idelock.
+ */
 static void
 idestart(struct buf *b)
 {
@@ -99,7 +117,7 @@ idestart(struct buf *b)
   }
 }
 
-// Interrupt handler.
+/** @brief Interrupt handler that completes the active IDE request. */
 void
 ideintr(void)
 {
@@ -130,10 +148,11 @@ ideintr(void)
   release(&idelock);
 }
 
-//PAGEBREAK!
-// Sync buf with disk.
-// If B_DIRTY is set, write buf to disk, clear B_DIRTY, set B_VALID.
-// Else if B_VALID is not set, read buf from disk, set B_VALID.
+/**
+ * @brief Synchronize a buffer with disk, reading or writing as required.
+ *
+ * @param b Buffer to schedule; must be locked by the caller.
+ */
 void
 iderw(struct buf *b)
 {

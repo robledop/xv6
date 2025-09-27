@@ -7,14 +7,20 @@
 #include "proc.h"
 #include "elf.h"
 
+/** @brief End of kernel text; defined in linker script. */
 extern char data[]; // defined by kernel.ld
-pde_t* kpgdir; // for use in scheduler()
+/** @brief Kernel page directory shared across CPUs when idle. */
+pde_t *kpgdir; // for use in scheduler()
 
-// Set up CPU's kernel segment descriptors.
-// Run once on entry on each CPU.
+/**
+ * @brief Initialize the per-CPU segment descriptors.
+ *
+ * Must be invoked once on each CPU during startup to configure the GDT for
+ * kernel and user segments before enabling interrupts.
+ */
 void seginit(void)
 {
-    struct cpu* c;
+    struct cpu *c;
 
     // Map "logical" addresses to virtual addresses using identity map.
     // Cannot share a CODE descriptor for both kernel and user
@@ -28,23 +34,28 @@ void seginit(void)
     lgdt(c->gdt, sizeof(c->gdt));
 }
 
-// Return the address of the PTE in page table pgdir
-// that corresponds to virtual address va.  If alloc!=0,
-// create any required page table pages.
-static pte_t*
-walkpgdir(pde_t* pgdir, const void* va, int alloc)
+/**
+ * @brief Locate or optionally allocate the PTE for a virtual address.
+ *
+ * @param pgdir Page directory to search.
+ * @param va Virtual address whose page-table entry is requested.
+ * @param alloc When non-zero, allocate intermediate page tables on demand.
+ * @return Pointer to the requested PTE, or ::0 on allocation failure.
+ */
+static pte_t *
+walkpgdir(pde_t *pgdir, const void *va, int alloc)
 {
-    pde_t* pde;
-    pte_t* pgtab;
+    pde_t *pde;
+    pte_t *pgtab;
 
     pde = &pgdir[PDX(va)];
     if (*pde & PTE_P)
     {
-        pgtab = (pte_t*)P2V(PTE_ADDR(*pde));
+        pgtab = (pte_t *)P2V(PTE_ADDR(*pde));
     }
     else
     {
-        if (!alloc || (pgtab = (pte_t*)kalloc()) == 0)
+        if (!alloc || (pgtab = (pte_t *)kalloc()) == 0)
             return 0;
         // Make sure all those PTE_P bits are zero.
         memset(pgtab, 0, PGSIZE);
@@ -56,17 +67,24 @@ walkpgdir(pde_t* pgdir, const void* va, int alloc)
     return &pgtab[PTX(va)];
 }
 
-// Create PTEs for virtual addresses starting at va that refer to
-// physical addresses starting at pa. va and size might not
-// be page-aligned.
+/**
+ * @brief Map a range of virtual addresses to physical memory.
+ *
+ * @param pgdir Page directory to modify.
+ * @param va Starting virtual address; need not be page-aligned.
+ * @param size Size in bytes of the region to map.
+ * @param pa Starting physical address.
+ * @param perm Permission bits to set on each mapping.
+ * @return ::0 on success or ::-1 if allocation fails.
+ */
 static int
-mappages(pde_t* pgdir, void* va, uint size, uint pa, int perm)
+mappages(pde_t *pgdir, void *va, uint size, uint pa, int perm)
 {
     char *a, *last;
-    pte_t* pte;
+    pte_t *pte;
 
-    a = (char*)PGROUNDDOWN((uint)va);
-    last = (char*)PGROUNDDOWN(((uint)va) + size - 1);
+    a = (char *)PGROUNDDOWN((uint)va);
+    last = (char *)PGROUNDDOWN(((uint)va) + size - 1);
     for (;;)
     {
         if ((pte = walkpgdir(pgdir, a, 1)) == 0)
@@ -103,31 +121,34 @@ mappages(pde_t* pgdir, void* va, uint size, uint pa, int perm)
 // between V2P(end) and the end of physical memory (PHYSTOP)
 // (directly addressable from end..P2V(PHYSTOP)).
 
-// This table defines the kernel's mappings, which are present in
-// every process's page table.
+/** @brief Static kernel mapping template present in every page directory. */
 static struct kmap
 {
-    void* virt;
+    void *virt;
     uint phys_start;
     uint phys_end;
     int perm;
 } kmap[] = {
-    {(void*)KERNBASE, 0, EXTMEM, PTE_W}, // I/O space
-    {(void*)KERNLINK, V2P(KERNLINK), V2P(data), 0}, // kern text+rodata
-    {(void*)data, V2P(data), PHYSTOP, PTE_W}, // kern data+memory
-    {(void*)DEVSPACE, DEVSPACE, 0, PTE_W}, // more devices
+    {(void *)KERNBASE, 0, EXTMEM, PTE_W},            // I/O space
+    {(void *)KERNLINK, V2P(KERNLINK), V2P(data), 0}, // kern text+rodata
+    {(void *)data, V2P(data), PHYSTOP, PTE_W},       // kern data+memory
+    {(void *)DEVSPACE, DEVSPACE, 0, PTE_W},          // more devices
 };
 
-// Set up kernel part of a page table.
-pde_t* setupkvm(void)
+/**
+ * @brief Build the kernel portion of a new page directory.
+ *
+ * @return Pointer to the initialized page directory or ::0 on failure.
+ */
+pde_t *setupkvm(void)
 {
-    pde_t* pgdir;
-    struct kmap* k;
+    pde_t *pgdir;
+    struct kmap *k;
 
-    if ((pgdir = (pde_t*)kalloc()) == 0)
+    if ((pgdir = (pde_t *)kalloc()) == 0)
         return 0;
     memset(pgdir, 0, PGSIZE);
-    if (P2V(PHYSTOP) > (void*)DEVSPACE)
+    if (P2V(PHYSTOP) > (void *)DEVSPACE)
         panic("PHYSTOP too high");
     for (k = kmap; k < &kmap[NELEM(kmap)]; k++)
         if (mappages(pgdir, k->virt, k->phys_end - k->phys_start,
@@ -139,23 +160,25 @@ pde_t* setupkvm(void)
     return pgdir;
 }
 
-// Allocate one page table for the machine for the kernel address
-// space for scheduler processes.
+/** @brief Allocate the kernel page directory and activate it. */
 void kvmalloc(void)
 {
     kpgdir = setupkvm();
     switch_kvm();
 }
 
-// Switch h/w page table register to the kernel-only page table,
-// for when no process is running.
+/** @brief Switch to the kernel-only page table for the idle CPU. */
 void switch_kvm(void)
 {
     lcr3(V2P(kpgdir)); // switch to the kernel page table
 }
 
-// Switch TSS and h/w page table to correspond to process p.
-void switch_uvm(struct proc* p)
+/**
+ * @brief Activate a process's address space and task state.
+ *
+ * @param p Process whose page table and TSS should become active.
+ */
+void switch_uvm(struct proc *p)
 {
     if (p == 0)
         panic("switchuvm: no process");
@@ -178,11 +201,16 @@ void switch_uvm(struct proc* p)
     popcli();
 }
 
-// Load the initcode into address 0 of pgdir.
-// sz must be less than a page.
-void inituvm(pde_t* pgdir, char* init, uint sz)
+/**
+ * @brief Load the initcode into the first page of a page directory.
+ *
+ * @param pgdir Destination page directory.
+ * @param init Pointer to the initcode image.
+ * @param sz Size of the image in bytes; must be less than a page.
+ */
+void inituvm(pde_t *pgdir, char *init, uint sz)
 {
-    char* mem;
+    char *mem;
 
     if (sz >= PGSIZE)
     {
@@ -194,12 +222,20 @@ void inituvm(pde_t* pgdir, char* init, uint sz)
     memmove(mem, init, sz);
 }
 
-// Load a program segment into pgdir.  addr must be page-aligned
-// and the pages from addr to addr+sz must already be mapped.
-int loaduvm(pde_t* pgdir, char* addr, struct inode* ip, uint offset, uint sz)
+/**
+ * @brief Load a program segment from disk into memory.
+ *
+ * @param pgdir Destination page directory.
+ * @param addr Virtual address of the mapped destination region.
+ * @param ip Inode providing the segment contents.
+ * @param offset Byte offset into the file.
+ * @param sz Number of bytes to read.
+ * @return ::0 on success, ::-1 if disk I/O fails.
+ */
+int loaduvm(pde_t *pgdir, char *addr, struct inode *ip, uint offset, uint sz)
 {
     uint i, pa, n;
-    pte_t* pte;
+    pte_t *pte;
 
     if ((uint)addr % PGSIZE != 0)
         panic("loaduvm: addr must be page aligned");
@@ -218,11 +254,19 @@ int loaduvm(pde_t* pgdir, char* addr, struct inode* ip, uint offset, uint sz)
     return 0;
 }
 
-// Allocate page tables and physical memory to grow process from oldsz to
-// newsz, which need not be page aligned.  Returns new size or 0 on error.
-int allocuvm(pde_t* pgdir, uint oldsz, uint newsz)
+/**
+ * @brief Grow a process's address space.
+ *
+ * Allocates physical pages and maps them into the supplied page directory.
+ *
+ * @param pgdir Page directory to extend.
+ * @param oldsz Current size in bytes.
+ * @param newsz Requested new size in bytes.
+ * @return The resulting size on success, or ::0 on failure.
+ */
+int allocuvm(pde_t *pgdir, uint oldsz, uint newsz)
 {
-    char* mem;
+    char *mem;
     uint a;
 
     if (newsz >= KERNBASE)
@@ -241,7 +285,7 @@ int allocuvm(pde_t* pgdir, uint oldsz, uint newsz)
             return 0;
         }
         memset(mem, 0, PGSIZE);
-        if (mappages(pgdir, (char*)a, PGSIZE, V2P(mem), PTE_W | PTE_U) < 0)
+        if (mappages(pgdir, (char *)a, PGSIZE, V2P(mem), PTE_W | PTE_U) < 0)
         {
             cprintf("allocuvm out of memory (2)\n");
             deallocuvm(pgdir, newsz, oldsz);
@@ -252,13 +296,19 @@ int allocuvm(pde_t* pgdir, uint oldsz, uint newsz)
     return newsz;
 }
 
-// Deallocate user pages to bring the process size from oldsz to
-// newsz.  oldsz and newsz need not be page-aligned, nor does newsz
-// need to be less than oldsz.  oldsz can be larger than the actual
-// process size.  Returns the new process size.
-int deallocuvm(pde_t* pgdir, uint oldsz, uint newsz)
+/**
+ * @brief Shrink a process's address space.
+ *
+ * Frees user pages between @p newsz and @p oldsz.
+ *
+ * @param pgdir Page directory to trim.
+ * @param oldsz Current size in bytes.
+ * @param newsz Desired size in bytes.
+ * @return The resulting size after deallocation.
+ */
+int deallocuvm(pde_t *pgdir, uint oldsz, uint newsz)
 {
-    pte_t* pte;
+    pte_t *pte;
     uint a, pa;
 
     if (newsz >= oldsz)
@@ -267,7 +317,7 @@ int deallocuvm(pde_t* pgdir, uint oldsz, uint newsz)
     a = PGROUNDUP(newsz);
     for (; a < oldsz; a += PGSIZE)
     {
-        pte = walkpgdir(pgdir, (char*)a, 0);
+        pte = walkpgdir(pgdir, (char *)a, 0);
         if (!pte)
             a = PGADDR(PDX(a) + 1, 0, 0) - PGSIZE;
         else if ((*pte & PTE_P) != 0)
@@ -275,7 +325,7 @@ int deallocuvm(pde_t* pgdir, uint oldsz, uint newsz)
             pa = PTE_ADDR(*pte);
             if (pa == 0)
                 panic("kfree");
-            char* v = P2V(pa);
+            char *v = P2V(pa);
             kfree(v);
             *pte = 0;
         }
@@ -283,9 +333,8 @@ int deallocuvm(pde_t* pgdir, uint oldsz, uint newsz)
     return newsz;
 }
 
-// Free a page table and all the physical memory pages
-// in the user part.
-void freevm(pde_t* pgdir)
+/** @brief Free a user page table and all associated physical pages. */
+void freevm(pde_t *pgdir)
 {
     uint i;
 
@@ -296,18 +345,22 @@ void freevm(pde_t* pgdir)
     {
         if (pgdir[i] & PTE_P)
         {
-            char* v = P2V(PTE_ADDR(pgdir[i]));
+            char *v = P2V(PTE_ADDR(pgdir[i]));
             kfree(v);
         }
     }
-    kfree((char*)pgdir);
+    kfree((char *)pgdir);
 }
 
-// Clear PTE_U on a page. Used to create an inaccessible
-// page beneath the user stack.
-void clearpteu(pde_t* pgdir, char* uva)
+/**
+ * @brief Clear the user-accessible bit on a page-table entry.
+ *
+ * @param pgdir Page directory containing the mapping.
+ * @param uva User virtual address whose entry should become supervisor-only.
+ */
+void clearpteu(pde_t *pgdir, char *uva)
 {
-    pte_t* pte;
+    pte_t *pte;
 
     pte = walkpgdir(pgdir, uva, 0);
     if (pte == 0)
@@ -315,21 +368,26 @@ void clearpteu(pde_t* pgdir, char* uva)
     *pte &= ~PTE_U;
 }
 
-// Given a parent process's page table, create a copy
-// of it for a child.
-pde_t*
-copyuvm(pde_t* pgdir, uint sz)
+/**
+ * @brief Clone a process address space for fork().
+ *
+ * @param pgdir Parent page directory.
+ * @param sz Size in bytes of the address space to copy.
+ * @return Newly allocated page directory on success, or ::0 on failure.
+ */
+pde_t *
+copyuvm(pde_t *pgdir, uint sz)
 {
-    pde_t* d;
-    pte_t* pte;
+    pde_t *d;
+    pte_t *pte;
     uint pa, i, flags;
-    char* mem;
+    char *mem;
 
     if ((d = setupkvm()) == 0)
         return 0;
     for (i = 0; i < sz; i += PGSIZE)
     {
-        if ((pte = walkpgdir(pgdir, (void*)i, 0)) == 0)
+        if ((pte = walkpgdir(pgdir, (void *)i, 0)) == 0)
             panic("copyuvm: pte should exist");
         if (!(*pte & PTE_P))
             panic("copyuvm: page not present");
@@ -337,8 +395,8 @@ copyuvm(pde_t* pgdir, uint sz)
         flags = PTE_FLAGS(*pte);
         if ((mem = kalloc()) == 0)
             goto bad;
-        memmove(mem, (char*)P2V(pa), PGSIZE);
-        if (mappages(d, (void*)i, PGSIZE, V2P(mem), flags) < 0)
+        memmove(mem, (char *)P2V(pa), PGSIZE);
+        if (mappages(d, (void *)i, PGSIZE, V2P(mem), flags) < 0)
         {
             kfree(mem);
             goto bad;
@@ -351,34 +409,45 @@ bad:
     return 0;
 }
 
-// PAGEBREAK!
-//  Map user virtual address to kernel address.
-char*
-uva2ka(pde_t* pgdir, char* uva)
+/**
+ * @brief Translate a user virtual address to a kernel-mapped pointer.
+ *
+ * @param pgdir Page directory containing the mapping.
+ * @param uva User virtual address.
+ * @return Kernel virtual address if accessible, otherwise ::0.
+ */
+char *
+uva2ka(pde_t *pgdir, char *uva)
 {
-    pte_t* pte;
+    pte_t *pte;
 
     pte = walkpgdir(pgdir, uva, 0);
     if ((*pte & PTE_P) == 0)
         return 0;
     if ((*pte & PTE_U) == 0)
         return 0;
-    return (char*)P2V(PTE_ADDR(*pte));
+    return (char *)P2V(PTE_ADDR(*pte));
 }
 
-// Copy len bytes from p to user address va in page table pgdir.
-// Most useful when pgdir is not the current page table.
-// uva2ka ensures this only works for PTE_U pages.
-int copyout(pde_t* pgdir, uint va, void* p, uint len)
+/**
+ * @brief Copy data from kernel space to user memory.
+ *
+ * @param pgdir Target page directory.
+ * @param va User virtual address to begin writing.
+ * @param p Source buffer in kernel space.
+ * @param len Number of bytes to copy.
+ * @return ::0 on success, ::-1 if a mapping is inaccessible.
+ */
+int copyout(pde_t *pgdir, uint va, void *p, uint len)
 {
     char *buf, *pa0;
     uint n, va0;
 
-    buf = (char*)p;
+    buf = (char *)p;
     while (len > 0)
     {
         va0 = (uint)PGROUNDDOWN(va);
-        pa0 = uva2ka(pgdir, (char*)va0);
+        pa0 = uva2ka(pgdir, (char *)va0);
         if (pa0 == 0)
             return -1;
         n = PGSIZE - (va - va0);

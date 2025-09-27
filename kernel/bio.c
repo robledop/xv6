@@ -26,6 +26,9 @@
 #include "fs.h"
 #include "buf.h"
 
+/**
+ * @brief Global buffer cache containing disk block replicas.
+ */
 struct {
   struct spinlock lock;
   struct buf buf[NBUF];
@@ -35,6 +38,9 @@ struct {
   struct buf head;
 } bcache;
 
+/**
+ * @brief Initialize the buffer cache structures and MRU list.
+ */
 void
 binit(void)
 {
@@ -42,7 +48,6 @@ binit(void)
 
   initlock(&bcache.lock, "bcache");
 
-//PAGEBREAK!
   // Create linked list of buffers
   bcache.head.prev = &bcache.head;
   bcache.head.next = &bcache.head;
@@ -55,9 +60,11 @@ binit(void)
   }
 }
 
-// Look through buffer cache for block on device dev.
-// If not found, allocate a buffer.
-// In either case, return locked buffer.
+/**
+ * @brief Fetch a buffer for the given block, allocating if necessary.
+ *
+ * Returns a locked buffer with refcount incremented.
+ */
 static struct buf*
 bget(uint dev, uint blockno)
 {
@@ -92,7 +99,7 @@ bget(uint dev, uint blockno)
   panic("bget: no buffers");
 }
 
-// Return a locked buf with the contents of the indicated block.
+/** @brief Return a locked buffer filled with the requested block. */
 struct buf*
 bread(uint dev, uint blockno)
 {
@@ -105,7 +112,7 @@ bread(uint dev, uint blockno)
   return b;
 }
 
-// Write b's contents to disk.  Must be locked.
+/** @brief Write a locked buffer's contents to disk via the IDE layer. */
 void
 bwrite(struct buf *b)
 {
@@ -115,8 +122,9 @@ bwrite(struct buf *b)
   iderw(b);
 }
 
-// Release a locked buffer.
-// Move to the head of the MRU list.
+/**
+ * @brief Release a locked buffer and move it to the MRU position.
+ */
 void
 brelse(struct buf *b)
 {
@@ -139,6 +147,4 @@ brelse(struct buf *b)
   
   release(&bcache.lock);
 }
-//PAGEBREAK!
-// Blank page.
 

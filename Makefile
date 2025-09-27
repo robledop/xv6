@@ -1,3 +1,6 @@
+PATH := $(HOME)/opt/cross/bin:$(PATH)
+export PATH
+
 K=kernel
 U=user
 
@@ -41,7 +44,7 @@ QEMU = qemu-system-i386
 CC = $(TOOLPREFIX)gcc
 AS = $(TOOLPREFIX)gas
 LD = $(TOOLPREFIX)ld
-INCLUDE= -I./include
+INCLUDE = -I./include
 OBJCOPY = $(TOOLPREFIX)objcopy
 OBJDUMP = $(TOOLPREFIX)objdump
 CFLAGS = -fno-pic -static -fno-builtin -fno-strict-aliasing -O2 -Wall -MD -ggdb -m32 -fno-omit-frame-pointer
@@ -49,8 +52,9 @@ CFLAGS += $(shell $(CC) -fno-stack-protector -E -x c /dev/null >/dev/null 2>&1 &
 CFLAGS += $(INCLUDE)
 ASFLAGS = -m32 -gdwarf-2 -Wa,-divide
 ASFLAGS += $(INCLUDE)
-LDFLAGS += -m $(shell $(LD) -V | grep elf_i386 2>/dev/null | head -n 1)
-LDFLAGS += $(INCLUDE)
+#LDFLAGS += -m $(shell $(LD) -V | grep elf_i386 2>/dev/null | head -n 1)
+#LDFLAGS += $(INCLUDE)
+LDFLAGS += -m elf_i386
 
 # Disable PIE when possible (for Ubuntu 16.10 toolchain)
 ifneq ($(shell $(CC) -dumpspecs 2>/dev/null | grep -e '[^f]no-pie'),)
@@ -171,14 +175,10 @@ bochs : fs.img xv6.img
 
 # try to generate a unique GDB port
 GDBPORT = $(shell expr `id -u` % 5000 + 25000)
-# QEMU's gdb stub command line changed in 0.11
-QEMUGDB = $(shell if $(QEMU) -help | grep -q '^-gdb'; \
-	then echo "-gdb tcp::$(GDBPORT)"; \
-	else echo "-s -p $(GDBPORT)"; fi)
-ifndef CPUS
-CPUS := 10
-endif
+QEMUGDB = -gdb tcp::$(GDBPORT)
 QEMUOPTS = -drive file=fs.img,index=1,media=disk,format=raw -drive file=xv6.img,index=0,media=disk,format=raw -smp $(CPUS) -m 256 $(QEMUEXTRA)
+CPUS := 2
+QEMUEXTRA :=
 
 qemu: fs.img xv6.img
 	$(QEMU) -serial mon:stdio $(QEMUOPTS)

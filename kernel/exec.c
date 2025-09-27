@@ -1,12 +1,18 @@
 #include "types.h"
 #include "param.h"
-#include "memlayout.h"
 #include "mmu.h"
 #include "proc.h"
 #include "defs.h"
 #include "x86.h"
 #include "elf.h"
 
+/**
+ * @brief Replace the current process image with a new program.
+ *
+ * @param path Path to the executable file.
+ * @param argv Argument vector terminated by a null pointer.
+ * @return ::0 on success, ::-1 on failure.
+ */
 int
 exec(char* path, char** argv)
 {
@@ -16,7 +22,7 @@ exec(char* path, char** argv)
     struct elfhdr elf;
     struct inode* ip;
     struct proghdr ph;
-    pde_t *pgdir, *oldpgdir;
+    pde_t* oldpgdir;
     struct proc* curproc = myproc();
 
     begin_op();
@@ -28,7 +34,7 @@ exec(char* path, char** argv)
         return -1;
     }
     ilock(ip);
-    pgdir = 0;
+    pde_t* pgdir = 0;
 
     // Check ELF header
     if (readi(ip, (char*)&elf, 0, sizeof(elf)) != sizeof(elf))
