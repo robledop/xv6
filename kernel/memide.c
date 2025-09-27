@@ -21,18 +21,16 @@ static int disksize;
 static uchar *memdisk;
 
 /** @brief Initialize the memory-backed disk using the embedded fs image. */
-void
-ideinit(void)
+void ideinit(void)
 {
-  memdisk = _binary_fs_img_start;
-  disksize = (uint)_binary_fs_img_size/BSIZE;
+    memdisk = _binary_fs_img_start;
+    disksize = (uint)_binary_fs_img_size / BSIZE;
 }
 
 /** @brief Memory disk interrupt handler (no-op placeholder). */
-void
-ideintr(void)
+void ideintr(void)
 {
-  // no-op
+    // no-op
 }
 
 /**
@@ -40,26 +38,27 @@ ideintr(void)
  *
  * @param b Buffer to read or write; must be locked on entry.
  */
-void
-iderw(struct buf *b)
+void iderw(struct buf *b)
 {
-  uchar *p;
+    uchar *p;
 
-  if(!holdingsleep(&b->lock))
-    panic("iderw: buf not locked");
-  if((b->flags & (B_VALID|B_DIRTY)) == B_VALID)
-    panic("iderw: nothing to do");
-  if(b->dev != 1)
-    panic("iderw: request not for disk 1");
-  if(b->blockno >= disksize)
-    panic("iderw: block out of range");
+    if (!holdingsleep(&b->lock))
+        panic("iderw: buf not locked");
+    if ((b->flags & (B_VALID | B_DIRTY)) == B_VALID)
+        panic("iderw: nothing to do");
+    if (b->dev != 1)
+        panic("iderw: request not for disk 1");
+    if (b->blockno >= disksize)
+        panic("iderw: block out of range");
 
-  p = memdisk + b->blockno*BSIZE;
+    p = memdisk + b->blockno * BSIZE;
 
-  if(b->flags & B_DIRTY){
-    b->flags &= ~B_DIRTY;
-    memmove(p, b->data, BSIZE);
-  } else
-    memmove(b->data, p, BSIZE);
-  b->flags |= B_VALID;
+    if (b->flags & B_DIRTY)
+    {
+        b->flags &= ~B_DIRTY;
+        memmove(p, b->data, BSIZE);
+    }
+    else
+        memmove(b->data, p, BSIZE);
+    b->flags |= B_VALID;
 }

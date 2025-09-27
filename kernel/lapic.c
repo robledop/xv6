@@ -1,13 +1,11 @@
 // The local APIC manages internal (non-I/O) interrupts.
 // See Chapter 8 & Appendix C of Intel processor manual volume 3.
 
-#include "param.h"
 #include "types.h"
 #include "defs.h"
 #include "date.h"
 #include "memlayout.h"
 #include "traps.h"
-#include "mmu.h"
 #include "x86.h"
 
 // Local APIC registers, divided by 4 for use as uint[] indices.
@@ -42,7 +40,7 @@
 #define TDCR (0x03E0 / 4)   // Timer Divide Configuration
 
 /** @brief Memory-mapped base address of the local APIC. */
-volatile uint *lapic; // Initialized in mp.c
+volatile uint* lapic; // Initialized in mp.c
 
 /**
  * @brief Write a value to a local APIC register.
@@ -96,8 +94,7 @@ void lapicinit(void)
     // Send an Init Level De-Assert to synchronise arbitration ID's.
     lapicw(ICRHI, 0);
     lapicw(ICRLO, BCAST | INIT | LEVEL);
-    while (lapic[ICRLO] & DELIVS)
-        ;
+    while (lapic[ICRLO] & DELIVS);
 
     // Enable interrupts on the APIC (but not on the processor).
     lapicw(TPR, 0);
@@ -127,7 +124,7 @@ void lapiceoi(void)
  *
  * @note Stubbed to no-op; real hardware would require calibration.
  */
-void microdelay(int us)
+void microdelay([[maybe_unused]] int us)
 {
 }
 
@@ -206,7 +203,7 @@ cmos_read(uint reg)
  * @param r Output date structure.
  */
 static void
-fill_rtcdate(struct rtcdate *r)
+fill_rtcdate(struct rtcdate* r)
 {
     r->second = cmos_read(SECS);
     r->minute = cmos_read(MINS);
@@ -223,7 +220,7 @@ fill_rtcdate(struct rtcdate *r)
  *
  * @param r Output structure receiving the current date and time.
  */
-void cmostime(struct rtcdate *r)
+void cmostime(struct rtcdate* r)
 {
     struct rtcdate t1, t2;
 

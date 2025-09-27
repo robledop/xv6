@@ -17,13 +17,14 @@
  * Synchronizes readers and writers via a spinlock and keeps a ring buffer
  * that tracks read/write offsets along with open counts for each endpoint.
  */
-struct pipe {
-  struct spinlock lock;
-  char data[PIPESIZE];
-  uint nread;     /**< Number of bytes read from the buffer. */
-  uint nwrite;    /**< Number of bytes written to the buffer. */
-  int readopen;   /**< Non-zero while the read end remains open. */
-  int writeopen;  /**< Non-zero while the write end remains open. */
+struct pipe
+{
+    struct spinlock lock;
+    char data[PIPESIZE];
+    uint nread;    /**< Number of bytes read from the buffer. */
+    uint nwrite;   /**< Number of bytes written to the buffer. */
+    int readopen;  /**< Non-zero while the read end remains open. */
+    int writeopen; /**< Non-zero while the write end remains open. */
 };
 
 /**
@@ -33,38 +34,37 @@ struct pipe {
  * @param f1 Output pointer for the write end file.
  * @return ::0 on success, ::-1 on allocation failure.
  */
-int
-pipealloc(struct file **f0, struct file **f1)
+int pipealloc(struct file **f0, struct file **f1)
 {
-  struct pipe* p = 0;
-  *f0 = *f1 = 0;
-  if((*f0 = filealloc()) == 0 || (*f1 = filealloc()) == 0)
-    goto bad;
-  if((p = (struct pipe*)kalloc()) == 0)
-    goto bad;
-  p->readopen = 1;
-  p->writeopen = 1;
-  p->nwrite = 0;
-  p->nread = 0;
-  initlock(&p->lock, "pipe");
-  (*f0)->type = FD_PIPE;
-  (*f0)->readable = 1;
-  (*f0)->writable = 0;
-  (*f0)->pipe = p;
-  (*f1)->type = FD_PIPE;
-  (*f1)->readable = 0;
-  (*f1)->writable = 1;
-  (*f1)->pipe = p;
-  return 0;
+    struct pipe *p = 0;
+    *f0 = *f1 = 0;
+    if ((*f0 = filealloc()) == 0 || (*f1 = filealloc()) == 0)
+        goto bad;
+    if ((p = (struct pipe *)kalloc()) == 0)
+        goto bad;
+    p->readopen = 1;
+    p->writeopen = 1;
+    p->nwrite = 0;
+    p->nread = 0;
+    initlock(&p->lock, "pipe");
+    (*f0)->type = FD_PIPE;
+    (*f0)->readable = 1;
+    (*f0)->writable = 0;
+    (*f0)->pipe = p;
+    (*f1)->type = FD_PIPE;
+    (*f1)->readable = 0;
+    (*f1)->writable = 1;
+    (*f1)->pipe = p;
+    return 0;
 
- bad:
-  if(p)
-    kfree((char*)p);
-  if(*f0)
-    fileclose(*f0);
-  if(*f1)
-    fileclose(*f1);
-  return -1;
+bad:
+    if (p)
+        kfree((char *)p);
+    if (*f0)
+        fileclose(*f0);
+    if (*f1)
+        fileclose(*f1);
+    return -1;
 }
 /**
  * @brief Close one endpoint of a pipe and wake waiting peers as needed.
@@ -72,22 +72,26 @@ pipealloc(struct file **f0, struct file **f1)
  * @param p Pipe being closed.
  * @param writable Non-zero when closing the write end.
  */
-void
-pipeclose(struct pipe *p, int writable)
+void pipeclose(struct pipe *p, int writable)
 {
-  acquire(&p->lock);
-  if(writable){
-    p->writeopen = 0;
-    wakeup(&p->nread);
-  } else {
-    p->readopen = 0;
-    wakeup(&p->nwrite);
-  }
-  if(p->readopen == 0 && p->writeopen == 0){
-    release(&p->lock);
-    kfree((char*)p);
-  } else
-    release(&p->lock);
+    acquire(&p->lock);
+    if (writable)
+    {
+        p->writeopen = 0;
+        wakeup(&p->nread);
+    }
+    else
+    {
+        p->readopen = 0;
+        wakeup(&p->nwrite);
+    }
+    if (p->readopen == 0 && p->writeopen == 0)
+    {
+        release(&p->lock);
+        kfree((char *)p);
+    }
+    else
+        release(&p->lock);
 }
 
 /**
@@ -98,24 +102,26 @@ pipeclose(struct pipe *p, int writable)
  * @param n Number of bytes requested.
  * @return Count of bytes written or ::-1 if interrupted/closed.
  */
-int
-pipewrite(struct pipe *p, char *addr, int n)
+int pipewrite(struct pipe *p, char *addr, int n)
 {
-  acquire(&p->lock);
-  for(int i = 0; i < n; i++){
-    while(p->nwrite == p->nread + PIPESIZE){  //DOC: pipewrite-full
-      if(p->readopen == 0 || myproc()->killed){
-        release(&p->lock);
-        return -1;
-      }
-      wakeup(&p->nread);
-      sleep(&p->nwrite, &p->lock);  //DOC: pipewrite-sleep
+    acquire(&p->lock);
+    for (int i = 0; i < n; i++)
+    {
+        while (p->nwrite == p->nread + PIPESIZE)
+        { // DOC: pipewrite-full
+            if (p->readopen == 0 || myproc()->killed)
+            {
+                release(&p->lock);
+                return -1;
+            }
+            wakeup(&p->nread);
+            sleep(&p->nwrite, &p->lock); // DOC: pipewrite-sleep
+        }
+        p->data[p->nwrite++ % PIPESIZE] = addr[i];
     }
-    p->data[p->nwrite++ % PIPESIZE] = addr[i];
-  }
-  wakeup(&p->nread);  //DOC: pipewrite-wakeup1
-  release(&p->lock);
-  return n;
+    wakeup(&p->nread); // DOC: pipewrite-wakeup1
+    release(&p->lock);
+    return n;
 }
 /**
  * @brief Read bytes from a pipe, blocking until data or closure.
@@ -125,25 +131,27 @@ pipewrite(struct pipe *p, char *addr, int n)
  * @param n Maximum number of bytes to copy.
  * @return Count of bytes read or ::-1 if interrupted.
  */
-int
-piperead(struct pipe *p, char *addr, int n)
+int piperead(struct pipe *p, char *addr, int n)
 {
-  int i;
+    int i;
 
-  acquire(&p->lock);
-  while(p->nread == p->nwrite && p->writeopen){  //DOC: pipe-empty
-    if(myproc()->killed){
-      release(&p->lock);
-      return -1;
+    acquire(&p->lock);
+    while (p->nread == p->nwrite && p->writeopen)
+    { // DOC: pipe-empty
+        if (myproc()->killed)
+        {
+            release(&p->lock);
+            return -1;
+        }
+        sleep(&p->nread, &p->lock); // DOC: piperead-sleep
     }
-    sleep(&p->nread, &p->lock); //DOC: piperead-sleep
-  }
-  for(i = 0; i < n; i++){  //DOC: piperead-copy
-    if(p->nread == p->nwrite)
-      break;
-    addr[i] = p->data[p->nread++ % PIPESIZE];
-  }
-  wakeup(&p->nwrite);  //DOC: piperead-wakeup
-  release(&p->lock);
-  return i;
+    for (i = 0; i < n; i++)
+    { // DOC: piperead-copy
+        if (p->nread == p->nwrite)
+            break;
+        addr[i] = p->data[p->nread++ % PIPESIZE];
+    }
+    wakeup(&p->nwrite); // DOC: piperead-wakeup
+    release(&p->lock);
+    return i;
 }

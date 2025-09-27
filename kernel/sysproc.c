@@ -8,43 +8,38 @@
 #include "proc.h"
 
 /** @brief System call wrapper for ::fork. */
-int
-sys_fork(void)
+int sys_fork(void)
 {
-  return fork();
+    return fork();
 }
 
 /** @brief System call wrapper for ::exit. */
-int
-sys_exit(void)
+int sys_exit(void)
 {
-  exit();
-  return 0;  // not reached
+    exit();
+    return 0; // not reached
 }
 
 /** @brief System call wrapper for ::wait. */
-int
-sys_wait(void)
+int sys_wait(void)
 {
-  return wait();
+    return wait();
 }
 
 /** @brief Terminate a process by PID (syscall handler). */
-int
-sys_kill(void)
+int sys_kill(void)
 {
-  int pid;
+    int pid;
 
-  if(argint(0, &pid) < 0)
-    return -1;
-  return kill(pid);
+    if (argint(0, &pid) < 0)
+        return -1;
+    return kill(pid);
 }
 
 /** @brief Return the current process ID. */
-int
-sys_getpid(void)
+int sys_getpid(void)
 {
-  return myproc()->pid;
+    return myproc()->pid;
 }
 
 /**
@@ -52,17 +47,16 @@ sys_getpid(void)
  *
  * @return Previous end-of-heap address or ::-1 on error.
  */
-int
-sys_sbrk(void)
+int sys_sbrk(void)
 {
-  int n;
+    int n;
 
-  if(argint(0, &n) < 0)
-    return -1;
-  int addr = myproc()->size;
-  if(growproc(n) < 0)
-    return -1;
-  return addr;
+    if (argint(0, &n) < 0)
+        return -1;
+    int addr = myproc()->size;
+    if (growproc(n) < 0)
+        return -1;
+    return addr;
 }
 
 /**
@@ -70,34 +64,34 @@ sys_sbrk(void)
  *
  * @return ::0 on success, ::-1 if interrupted.
  */
-int
-sys_sleep(void)
+int sys_sleep(void)
 {
-  int n;
+    int n;
 
-  if(argint(0, &n) < 0)
-    return -1;
-  acquire(&tickslock);
-  uint ticks0 = ticks;
-  while(ticks - ticks0 < n){
-    if(myproc()->killed){
-      release(&tickslock);
-      return -1;
+    if (argint(0, &n) < 0)
+        return -1;
+    acquire(&tickslock);
+    uint ticks0 = ticks;
+    while (ticks - ticks0 < n)
+    {
+        if (myproc()->killed)
+        {
+            release(&tickslock);
+            return -1;
+        }
+        sleep(&ticks, &tickslock);
     }
-    sleep(&ticks, &tickslock);
-  }
-  release(&tickslock);
-  return 0;
+    release(&tickslock);
+    return 0;
 }
 
 /**
  * @brief Return the number of clock ticks since boot.
  */
-int
-sys_uptime(void)
+int sys_uptime(void)
 {
-  acquire(&tickslock);
-  uint xticks = ticks;
-  release(&tickslock);
-  return xticks;
+    acquire(&tickslock);
+    uint xticks = ticks;
+    release(&tickslock);
+    return xticks;
 }
