@@ -11,18 +11,18 @@
  *
  * @param path Path to the executable file.
  * @param argv Argument vector terminated by a null pointer.
- * @return ::0 on success, ::-1 on failure.
+ * @return 0 on success, -1 on failure.
  */
-int exec(char *path, char **argv)
+int exec(char* path, char** argv)
 {
     char *s, *last;
     int i, off;
     uint argc, sz, sp, ustack[3 + MAXARG + 1];
     struct elfhdr elf;
-    struct inode *ip;
+    struct inode* ip;
     struct proghdr ph;
-    pde_t *oldpgdir;
-    struct proc *curproc = myproc();
+    pde_t* oldpgdir;
+    struct proc* curproc = myproc();
 
     begin_op();
 
@@ -33,10 +33,23 @@ int exec(char *path, char **argv)
         return -1;
     }
     ilock(ip);
-    pde_t *pgdir = 0;
+    pde_t* pgdir = 0;
+
+    // NOTE: All the ELF loading is done here, but it is done in a simplified way.
+    // This only works if the executables are linked with the -N flag (no paging).
+    // ld’s -N flag (aka --omagic) forces the linker to put all loadable sections into
+    // a single RWX segment that starts at virtual address 0. That gives us an ELF
+    // where the one and only PT_LOAD entry is page aligned and covers .text, .data,
+    // and .bss contiguously (readelf -l user/build/_echo shows this when -N is present).
+    // The xv6 loader leans on that simplification, it insists that
+    // every ELF loadable segment satisfy ph.vaddr % PGSIZE == 0, and the inner loop
+    // in loaduvm() copies whole pages at a time starting on page
+    // boundaries. Once you drop -N, ld emits a second PT_LOAD for .data whose
+    // p_vaddr is something like 0x1824, and the loader immediately rejects the
+    // program with the page-alignment check.
 
     // Check ELF header
-    if (readi(ip, (char *)&elf, 0, sizeof(elf)) != sizeof(elf))
+    if (readi(ip, (char*)&elf, 0, sizeof(elf)) != sizeof(elf))
         goto bad;
     if (elf.magic != ELF_MAGIC)
         goto bad;
@@ -48,7 +61,7 @@ int exec(char *path, char **argv)
     sz = 0;
     for (i = 0, off = elf.phoff; i < elf.phnum; i++, off += sizeof(ph))
     {
-        if (readi(ip, (char *)&ph, off, sizeof(ph)) != sizeof(ph))
+        if (readi(ip, (char*)&ph, off, sizeof(ph)) != sizeof(ph))
             goto bad;
         if (ph.type != ELF_PROG_LOAD)
             continue;
@@ -60,7 +73,7 @@ int exec(char *path, char **argv)
             goto bad;
         if (ph.vaddr % PGSIZE != 0)
             goto bad;
-        if (loaduvm(pgdir, (char *)ph.vaddr, ip, ph.off, ph.filesz) < 0)
+        if (loaduvm(pgdir, (char*)ph.vaddr, ip, ph.off, ph.filesz) < 0)
             goto bad;
     }
     iunlockput(ip);
@@ -72,7 +85,7 @@ int exec(char *path, char **argv)
     sz = PGROUNDUP(sz);
     if ((sz = allocuvm(pgdir, sz, sz + 2 * PGSIZE)) == 0)
         goto bad;
-    clearpteu(pgdir, (char *)(sz - 2 * PGSIZE));
+    clearpteu(pgdir, (char*)(sz - 2 * PGSIZE));
     sp = sz;
 
     // Push argument strings, prepare rest of stack in ustack.
