@@ -85,17 +85,14 @@ static void startothers(void)
 {
     // This name depends on the path of the entryohter file. I moved it to the build folder
     extern uchar _binary_build_entryother_start[], _binary_build_entryother_size[];
-    uchar *code;
-    struct cpu *c;
-    char *stack;
 
     // Write entry code to unused memory at 0x7000.
     // The linker has placed the image of entryother.S in
     // _binary_entryother_start.
-    code = P2V(0x7000);
+    uchar* code = P2V(0x7000);
     memmove(code, _binary_build_entryother_start, (uint)_binary_build_entryother_size);
 
-    for (c = cpus; c < cpus + ncpu; c++)
+    for (struct cpu* c = cpus; c < cpus + ncpu; c++)
     {
         if (c == mycpu()) // We've started already.
             continue;
@@ -103,7 +100,7 @@ static void startothers(void)
         // Tell entryother.S what stack to use, where to enter, and what
         // pgdir to use. We cannot use kpgdir yet, because the AP processor
         // is running in low  memory, so we use entrypgdir for the APs too.
-        stack = kalloc();
+        char* stack = kalloc();
         *(void **)(code - 4) = stack + KSTACKSIZE;
         *(void (**)(void))(code - 8) = mpenter;
         *(int **)(code - 12) = (void *)V2P(entrypgdir);

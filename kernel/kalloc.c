@@ -51,8 +51,7 @@ void kinit2(void *vstart, void *vend)
 /** @brief Free a range of memory */
 void freerange(void *vstart, void *vend)
 {
-    char *p;
-    p = (char *)PGROUNDUP((uint)vstart);
+    char* p = (char*)PGROUNDUP((uint)vstart);
     for (; p + PGSIZE <= (char *)vend; p += PGSIZE)
         kfree(p);
 }
@@ -64,8 +63,6 @@ void freerange(void *vstart, void *vend)
 /** @brief Free the page of physical memory */
 void kfree(char *v)
 {
-    struct run *r;
-
     if ((uint)v % PGSIZE || v < end || V2P(v) >= PHYSTOP)
         panic("kfree");
 
@@ -74,7 +71,7 @@ void kfree(char *v)
 
     if (kmem.use_lock)
         acquire(&kmem.lock);
-    r = (struct run *)v;
+    struct run* r = (struct run*)v;
     r->next = kmem.freelist;
     kmem.freelist = r;
     if (kmem.use_lock)
@@ -88,11 +85,9 @@ void kfree(char *v)
 char *
 kalloc(void)
 {
-    struct run *r;
-
     if (kmem.use_lock)
         acquire(&kmem.lock);
-    r = kmem.freelist;
+    struct run* r = kmem.freelist;
     if (r)
         kmem.freelist = r->next;
     if (kmem.use_lock)

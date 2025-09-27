@@ -10,7 +10,7 @@ char *argv[] = { "sh", 0 };
 int
 main(void)
 {
-  int pid, wpid;
+  int wpid;
 
   if(open("console", O_RDWR) < 0){
     mknod("console", 1, 1);
@@ -21,7 +21,7 @@ main(void)
 
   for(;;){
     printf(1, "init: starting sh\n");
-    pid = fork();
+    int pid = fork();
     if(pid < 0){
       printf(1, "init: fork failed\n");
       exit();

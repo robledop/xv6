@@ -7,9 +7,7 @@
 char*
 strcpy(char *s, const char *t)
 {
-  char *os;
-
-  os = s;
+  char* os = s;
   while((*s++ = *t++) != 0)
     ;
   return os;
@@ -52,11 +50,11 @@ strchr(const char *s, char c)
 char*
 gets(char *buf, int max)
 {
-  int i, cc;
+  int i;
   char c;
 
   for(i=0; i+1 < max; ){
-    cc = read(0, &c, 1);
+    int cc = read(0, &c, 1);
     if(cc < 1)
       break;
     buf[i++] = c;
@@ -70,13 +68,10 @@ gets(char *buf, int max)
 int
 stat(const char *n, struct stat *st)
 {
-  int fd;
-  int r;
-
-  fd = open(n, O_RDONLY);
+  int fd = open(n, O_RDONLY);
   if(fd < 0)
     return -1;
-  r = fstat(fd, st);
+  int r = fstat(fd, st);
   close(fd);
   return r;
 }
@@ -84,9 +79,7 @@ stat(const char *n, struct stat *st)
 int
 atoi(const char *s)
 {
-  int n;
-
-  n = 0;
+  int n = 0;
   while('0' <= *s && *s <= '9')
     n = n*10 + *s++ - '0';
   return n;
@@ -95,11 +88,8 @@ atoi(const char *s)
 void*
 memmove(void *vdst, const void *vsrc, int n)
 {
-  char *dst;
-  const char *src;
-
-  dst = vdst;
-  src = vsrc;
+  char* dst = vdst;
+  const char* src = vsrc;
   while(n-- > 0)
     *dst++ = *src++;
   return vdst;

@@ -42,11 +42,9 @@ iputtest(void)
 void
 exitiputtest(void)
 {
-  int pid;
-
   printf(stdout, "exitiput test\n");
 
-  pid = fork();
+  int pid = fork();
   if(pid < 0){
     printf(stdout, "fork failed\n");
     exit();
@@ -84,14 +82,12 @@ exitiputtest(void)
 void
 openiputtest(void)
 {
-  int pid;
-
   printf(stdout, "openiput test\n");
   if(mkdir("oidir") < 0){
     printf(stdout, "mkdir oidir failed\n");
     exit();
   }
-  pid = fork();
+  int pid = fork();
   if(pid < 0){
     printf(stdout, "fork failed\n");
     exit();
@@ -118,10 +114,8 @@ openiputtest(void)
 void
 opentest(void)
 {
-  int fd;
-
   printf(stdout, "open test\n");
-  fd = open("echo", 0);
+  int fd = open("echo", 0);
   if(fd < 0){
     printf(stdout, "open echo failed!\n");
     exit();
@@ -138,11 +132,10 @@ opentest(void)
 void
 writetest(void)
 {
-  int fd;
   int i;
 
   printf(stdout, "small file test\n");
-  fd = open("small", O_CREATE|O_RDWR);
+  int fd = open("small", O_CREATE | O_RDWR);
   if(fd >= 0){
     printf(stdout, "creat small succeeded; ok\n");
   } else {
@@ -187,11 +180,11 @@ writetest(void)
 void
 writetest1(void)
 {
-  int i, fd, n;
+  int i;
 
   printf(stdout, "big files test\n");
 
-  fd = open("big", O_CREATE|O_RDWR);
+  int fd = open("big", O_CREATE | O_RDWR);
   if(fd < 0){
     printf(stdout, "error: creat big failed!\n");
     exit();
@@ -213,7 +206,7 @@ writetest1(void)
     exit();
   }
 
-  n = 0;
+  int n = 0;
   for(;;){
     i = read(fd, buf, 512);
     if(i == 0){
@@ -244,7 +237,7 @@ writetest1(void)
 void
 createtest(void)
 {
-  int i, fd;
+  int i;
 
   printf(stdout, "many creates, followed by unlink test\n");
 
@@ -252,7 +245,7 @@ createtest(void)
   name[2] = '\0';
   for(i = 0; i < 52; i++){
     name[1] = '0' + i;
-    fd = open(name, O_CREATE|O_RDWR);
+    int fd = open(name, O_CREATE | O_RDWR);
     close(fd);
   }
   name[0] = 'a';
@@ -305,15 +298,15 @@ exectest(void)
 void
 pipe1(void)
 {
-  int fds[2], pid;
-  int seq, i, n, cc, total;
+  int fds[2];
+  int i, n;
 
   if(pipe(fds) != 0){
     printf(1, "pipe() failed\n");
     exit();
   }
-  pid = fork();
-  seq = 0;
+  int pid = fork();
+  int seq = 0;
   if(pid == 0){
     close(fds[0]);
     for(n = 0; n < 5; n++){
@@ -327,8 +320,8 @@ pipe1(void)
     exit();
   } else if(pid > 0){
     close(fds[1]);
-    total = 0;
-    cc = 1;
+    int total = 0;
+    int cc = 1;
     while((n = read(fds[0], buf, cc)) > 0){
       for(i = 0; i < n; i++){
         if((buf[i] & 0xff) != (seq++ & 0xff)){
@@ -358,22 +351,21 @@ pipe1(void)
 void
 preempt(void)
 {
-  int pid1, pid2, pid3;
   int pfds[2];
 
   printf(1, "preempt: ");
-  pid1 = fork();
+  int pid1 = fork();
   if(pid1 == 0)
     for(;;)
       ;
 
-  pid2 = fork();
+  int pid2 = fork();
   if(pid2 == 0)
     for(;;)
       ;
 
   pipe(pfds);
-  pid3 = fork();
+  int pid3 = fork();
   if(pid3 == 0){
     close(pfds[0]);
     if(write(pfds[1], "x", 1) != 1)
@@ -404,10 +396,8 @@ preempt(void)
 void
 exitwait(void)
 {
-  int i, pid;
-
-  for(i = 0; i < 100; i++){
-    pid = fork();
+  for(int i = 0; i < 100; i++){
+    int pid = fork();
     if(pid < 0){
       printf(1, "fork failed\n");
       return;
@@ -427,13 +417,13 @@ exitwait(void)
 void
 mem(void)
 {
-  void *m1, *m2;
-  int pid, ppid;
+  void*m2;
+  int pid;
 
   printf(1, "mem test\n");
-  ppid = getpid();
+  int ppid = getpid();
   if((pid = fork()) == 0){
-    m1 = 0;
+    void* m1 = 0;
     while((m2 = malloc(10001)) != 0){
       *(char**)m2 = m1;
       m1 = m2;
@@ -464,18 +454,18 @@ mem(void)
 void
 sharedfd(void)
 {
-  int fd, pid, i, n, nc, np;
+  int i, n, np;
   char buf[10];
 
   printf(1, "sharedfd test\n");
 
   unlink("sharedfd");
-  fd = open("sharedfd", O_CREATE|O_RDWR);
+  int fd = open("sharedfd", O_CREATE | O_RDWR);
   if(fd < 0){
     printf(1, "fstests: cannot open sharedfd for writing");
     return;
   }
-  pid = fork();
+  int pid = fork();
   memset(buf, pid==0?'c':'p', sizeof(buf));
   for(i = 0; i < 1000; i++){
     if(write(fd, buf, sizeof(buf)) != sizeof(buf)){
@@ -493,7 +483,7 @@ sharedfd(void)
     printf(1, "fstests: cannot open sharedfd for reading\n");
     return;
   }
-  nc = np = 0;
+  int nc = np = 0;
   while((n = read(fd, buf, sizeof(buf))) > 0){
     for(i = 0; i < sizeof(buf); i++){
       if(buf[i] == 'c')
@@ -517,7 +507,7 @@ sharedfd(void)
 void
 fourfiles(void)
 {
-  int fd, pid, i, j, n, total, pi;
+  int fd, i, n, pi;
   char *names[] = { "f0", "f1", "f2", "f3" };
   char *fname;
 
@@ -527,7 +517,7 @@ fourfiles(void)
     fname = names[pi];
     unlink(fname);
 
-    pid = fork();
+    int pid = fork();
     if(pid < 0){
       printf(1, "fork failed\n");
       exit();
@@ -558,9 +548,9 @@ fourfiles(void)
   for(i = 0; i < 2; i++){
     fname = names[i];
     fd = open(fname, 0);
-    total = 0;
+    int total = 0;
     while((n = read(fd, buf, sizeof(buf))) > 0){
-      for(j = 0; j < n; j++){
+      for(int j = 0; j < n; j++){
         if(buf[j] != '0'+i){
           printf(1, "wrong char\n");
           exit();
@@ -584,13 +574,13 @@ void
 createdelete(void)
 {
   enum { N = 20 };
-  int pid, i, fd, pi;
+  int i, fd, pi;
   char name[32];
 
   printf(1, "createdelete test\n");
 
   for(pi = 0; pi < 4; pi++){
-    pid = fork();
+    int pid = fork();
     if(pid < 0){
       printf(1, "fork failed\n");
       exit();
@@ -656,10 +646,8 @@ createdelete(void)
 void
 unlinkread(void)
 {
-  int fd, fd1;
-
   printf(1, "unlinkread test\n");
-  fd = open("unlinkread", O_CREATE | O_RDWR);
+  int fd = open("unlinkread", O_CREATE | O_RDWR);
   if(fd < 0){
     printf(1, "create unlinkread failed\n");
     exit();
@@ -677,7 +665,7 @@ unlinkread(void)
     exit();
   }
 
-  fd1 = open("unlinkread", O_CREATE | O_RDWR);
+  int fd1 = open("unlinkread", O_CREATE | O_RDWR);
   write(fd1, "yyy", 3);
   close(fd1);
 
@@ -701,14 +689,12 @@ unlinkread(void)
 void
 linktest(void)
 {
-  int fd;
-
   printf(1, "linktest\n");
 
   unlink("lf1");
   unlink("lf2");
 
-  fd = open("lf1", O_CREATE|O_RDWR);
+  int fd = open("lf1", O_CREATE | O_RDWR);
   if(fd < 0){
     printf(1, "create lf1 failed\n");
     exit();
@@ -765,7 +751,7 @@ void
 concreate(void)
 {
   char file[3];
-  int i, pid, n, fd;
+  int i, pid, fd;
   char fa[40];
   struct {
     ushort inum;
@@ -799,7 +785,7 @@ concreate(void)
 
   memset(fa, 0, sizeof(fa));
   fd = open(".", 0);
-  n = 0;
+  int n = 0;
   while(read(fd, &de, sizeof(de)) > 0){
     if(de.inum == 0)
       continue;
@@ -857,19 +843,17 @@ concreate(void)
 void
 linkunlink()
 {
-  int pid, i;
-
   printf(1, "linkunlink test\n");
 
   unlink("x");
-  pid = fork();
+  int pid = fork();
   if(pid < 0){
     printf(1, "fork failed\n");
     exit();
   }
 
   unsigned int x = (pid ? 1 : 97);
-  for(i = 0; i < 100; i++){
+  for(int i = 0; i < 100; i++){
     x = x * 1103515245 + 12345;
     if((x % 3) == 0){
       close(open("x", O_RDWR | O_CREATE));
@@ -892,13 +876,13 @@ linkunlink()
 void
 bigdir(void)
 {
-  int i, fd;
+  int i;
   char name[10];
 
   printf(1, "bigdir test\n");
   unlink("bd");
 
-  fd = open("bd", O_CREATE);
+  int fd = open("bd", O_CREATE);
   if(fd < 0){
     printf(1, "bigdir create failed\n");
     exit();
@@ -934,8 +918,6 @@ bigdir(void)
 void
 subdir(void)
 {
-  int fd, cc;
-
   printf(1, "subdir test\n");
 
   unlink("ff");
@@ -944,7 +926,7 @@ subdir(void)
     exit();
   }
 
-  fd = open("dd/ff", O_CREATE | O_RDWR);
+  int fd = open("dd/ff", O_CREATE | O_RDWR);
   if(fd < 0){
     printf(1, "create dd/ff failed\n");
     exit();
@@ -975,7 +957,7 @@ subdir(void)
     printf(1, "open dd/dd/../ff failed\n");
     exit();
   }
-  cc = read(fd, buf, sizeof(buf));
+  int cc = read(fd, buf, sizeof(buf));
   if(cc != 2 || buf[0] != 'f'){
     printf(1, "dd/dd/../ff wrong content\n");
     exit();
@@ -1118,19 +1100,16 @@ subdir(void)
 void
 bigwrite(void)
 {
-  int fd, sz;
-
   printf(1, "bigwrite test\n");
 
   unlink("bigwrite");
-  for(sz = 499; sz < 12*512; sz += 471){
-    fd = open("bigwrite", O_CREATE | O_RDWR);
+  for(int sz = 499; sz < 12*512; sz += 471){
+    int fd = open("bigwrite", O_CREATE | O_RDWR);
     if(fd < 0){
       printf(1, "cannot create bigwrite\n");
       exit();
     }
-    int i;
-    for(i = 0; i < 2; i++){
+    for(int i = 0; i < 2; i++){
       int cc = write(fd, buf, sz);
       if(cc != sz){
         printf(1, "write(%d) ret %d\n", sz, cc);
@@ -1147,12 +1126,12 @@ bigwrite(void)
 void
 bigfile(void)
 {
-  int fd, i, total, cc;
+  int i;
 
   printf(1, "bigfile test\n");
 
   unlink("bigfile");
-  fd = open("bigfile", O_CREATE | O_RDWR);
+  int fd = open("bigfile", O_CREATE | O_RDWR);
   if(fd < 0){
     printf(1, "cannot create bigfile");
     exit();
@@ -1171,9 +1150,9 @@ bigfile(void)
     printf(1, "cannot open bigfile\n");
     exit();
   }
-  total = 0;
+  int total = 0;
   for(i = 0; ; i++){
-    cc = read(fd, buf, 300);
+    int cc = read(fd, buf, 300);
     if(cc < 0){
       printf(1, "read bigfile failed\n");
       exit();
@@ -1203,8 +1182,6 @@ bigfile(void)
 void
 fourteen(void)
 {
-  int fd;
-
   // DIRSIZ is 14.
   printf(1, "fourteen test\n");
 
@@ -1216,7 +1193,7 @@ fourteen(void)
     printf(1, "mkdir 12345678901234/123456789012345 failed\n");
     exit();
   }
-  fd = open("123456789012345/123456789012345/123456789012345", O_CREATE);
+  int fd = open("123456789012345/123456789012345/123456789012345", O_CREATE);
   if(fd < 0){
     printf(1, "create 123456789012345/123456789012345/123456789012345 failed\n");
     exit();
@@ -1283,11 +1260,9 @@ rmdot(void)
 void
 dirfile(void)
 {
-  int fd;
-
   printf(1, "dir vs file\n");
 
-  fd = open("dirfile", O_CREATE);
+  int fd = open("dirfile", O_CREATE);
   if(fd < 0){
     printf(1, "create dirfile failed\n");
     exit();
@@ -1343,12 +1318,10 @@ dirfile(void)
 void
 iref(void)
 {
-  int i, fd;
-
   printf(1, "empty file name\n");
 
   // the 50 is NINODE
-  for(i = 0; i < 50 + 1; i++){
+  for(int i = 0; i < 50 + 1; i++){
     if(mkdir("irefd") != 0){
       printf(1, "mkdir irefd failed\n");
       exit();
@@ -1360,7 +1333,7 @@ iref(void)
 
     mkdir("");
     link("README", "");
-    fd = open("", O_CREATE);
+    int fd = open("", O_CREATE);
     if(fd >= 0)
       close(fd);
     fd = open("xx", O_CREATE);
@@ -1379,12 +1352,12 @@ iref(void)
 void
 forktest(void)
 {
-  int n, pid;
+  int n;
 
   printf(1, "fork test\n");
 
   for(n=0; n<1000; n++){
-    pid = fork();
+    int pid = fork();
     if(pid < 0)
       break;
     if(pid == 0)
@@ -1414,18 +1387,17 @@ forktest(void)
 void
 sbrktest(void)
 {
-  int fds[2], pid, pids[10], ppid;
-  char *a, *b, *c, *lastaddr, *oldbrk, *p, scratch;
-  uint amt;
+  int fds[2], pids[10];
+  char scratch;
 
   printf(stdout, "sbrk test\n");
-  oldbrk = sbrk(0);
+  char* oldbrk = sbrk(0);
 
   // can one sbrk() less than a page?
-  a = sbrk(0);
+  char* a = sbrk(0);
   int i;
   for(i = 0; i < 5000; i++){
-    b = sbrk(1);
+    char* b = sbrk(1);
     if(b != a){
       printf(stdout, "sbrk test failed %d %x %x\n", i, a, b);
       exit();
@@ -1433,12 +1405,12 @@ sbrktest(void)
     *b = 1;
     a = b + 1;
   }
-  pid = fork();
+  int pid = fork();
   if(pid < 0){
     printf(stdout, "sbrk test fork failed\n");
     exit();
   }
-  c = sbrk(1);
+  char* c = sbrk(1);
   c = sbrk(1);
   if(c != a + 1){
     printf(stdout, "sbrk test failed post-fork\n");
@@ -1451,13 +1423,13 @@ sbrktest(void)
   // can one grow address space to something big?
 #define BIG (100*1024*1024)
   a = sbrk(0);
-  amt = (BIG) - (uint)a;
-  p = sbrk(amt);
+  uint amt = (BIG) - (uint)a;
+  char* p = sbrk(amt);
   if (p != a) {
     printf(stdout, "sbrk test failed to grow big address space; enough phys mem?\n");
     exit();
   }
-  lastaddr = (char*) (BIG-1);
+  char* lastaddr = (char*)(BIG - 1);
   *lastaddr = 99;
 
   // can one de-allocate?
@@ -1495,7 +1467,7 @@ sbrktest(void)
 
   // can we read the kernel's memory?
   for(a = (char*)(KERNBASE); a < (char*) (KERNBASE+2000000); a += 50000){
-    ppid = getpid();
+    int ppid = getpid();
     pid = fork();
     if(pid < 0){
       printf(stdout, "fork failed\n");
@@ -1562,13 +1534,12 @@ validateint(int *p)
 void
 validatetest(void)
 {
-  int hi, pid;
-  uint p;
+  int pid;
 
   printf(stdout, "validate test\n");
-  hi = 1100*1024;
+  int hi = 1100 * 1024;
 
-  for(p = 0; p <= (uint)hi; p += 4096){
+  for(uint p = 0; p <= (uint)hi; p += 4096){
     if((pid = fork()) == 0){
       // try to crash the kernel by passing in a badly placed integer
       validateint((int*)p);
@@ -1594,10 +1565,8 @@ char uninit[10000];
 void
 bsstest(void)
 {
-  int i;
-
   printf(stdout, "bss test\n");
-  for(i = 0; i < sizeof(uninit); i++){
+  for(int i = 0; i < sizeof(uninit); i++){
     if(uninit[i] != '\0'){
       printf(stdout, "bss test failed\n");
       exit();
@@ -1612,14 +1581,13 @@ bsstest(void)
 void
 bigargtest(void)
 {
-  int pid, fd;
+  int fd;
 
   unlink("bigarg-ok");
-  pid = fork();
+  int pid = fork();
   if(pid == 0){
     static char *args[MAXARG];
-    int i;
-    for(i = 0; i < MAXARG-1; i++)
+    for(int i = 0; i < MAXARG-1; i++)
       args[i] = "bigargs test: failed\n                                                                                                                                                                                                       ";
     args[MAXARG-1] = 0;
     printf(stdout, "bigarg test\n");
@@ -1726,8 +1694,7 @@ uio()
 
 void argptest()
 {
-  int fd;
-  fd = open("init", O_RDONLY);
+  int fd = open("init", O_RDONLY);
   if (fd < 0) {
     printf(2, "open failed\n");
     exit();

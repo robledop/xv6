@@ -33,10 +33,8 @@ void fileinit(void)
 struct file *
 filealloc(void)
 {
-    struct file *f;
-
     acquire(&ftable.lock);
-    for (f = ftable.file; f < ftable.file + NFILE; f++)
+    for (struct file* f = ftable.file; f < ftable.file + NFILE; f++)
     {
         if (f->ref == 0)
         {
@@ -73,8 +71,6 @@ filedup(struct file *f)
  */
 void fileclose(struct file *f)
 {
-    struct file ff;
-
     acquire(&ftable.lock);
     if (f->ref < 1)
         panic("fileclose");
@@ -83,7 +79,7 @@ void fileclose(struct file *f)
         release(&ftable.lock);
         return;
     }
-    ff = *f;
+    struct file ff = *f;
     f->ref = 0;
     f->type = FD_NONE;
     release(&ftable.lock);

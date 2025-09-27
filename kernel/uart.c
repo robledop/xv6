@@ -22,8 +22,6 @@ static int uart;
 void
 uartinit(void)
 {
-  char *p;
-
   // Turn off the FIFO
   outb(COM1+2, 0);
 
@@ -47,7 +45,7 @@ uartinit(void)
   ioapicenable(IRQ_COM1, 0);
 
   // Announce that we're here.
-  for(p="xv6...\n"; *p; p++)
+  for(char* p = "xv6...\n"; *p; p++)
     uartputc(*p);
 }
 
@@ -59,11 +57,9 @@ uartinit(void)
 void
 uartputc(int c)
 {
-  int i;
-
   if(!uart)
     return;
-  for(i = 0; i < 128 && !(inb(COM1+5) & 0x20); i++)
+  for(int i = 0; i < 128 && !(inb(COM1+5) & 0x20); i++)
     microdelay(10);
   outb(COM1+0, c);
 }

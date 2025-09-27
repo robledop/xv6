@@ -18,10 +18,8 @@ memset(void *dst, int c, uint n)
 /** @brief Compare n bytes of memory */
 int memcmp(const void *v1, const void *v2, uint n)
 {
-    const uchar *s1, *s2;
-
-    s1 = v1;
-    s2 = v2;
+    const uchar* s1 = v1;
+    const uchar* s2 = v2;
     while (n-- > 0)
     {
         if (*s1 != *s2)
@@ -36,11 +34,8 @@ int memcmp(const void *v1, const void *v2, uint n)
 void *
 memmove(void *dst, const void *src, uint n)
 {
-    const char *s;
-    char *d;
-
-    s = src;
-    d = dst;
+    const char* s = src;
+    char* d = dst;
     if (s < d && s + n > d)
     {
         s += n;
@@ -77,9 +72,7 @@ int strncmp(const char *p, const char *q, uint n)
 char *
 strncpy(char *s, const char *t, int n)
 {
-    char *os;
-
-    os = s;
+    char* os = s;
     while (n-- > 0 && (*s++ = *t++) != 0)
         ;
     while (n-- > 0)
@@ -92,9 +85,7 @@ strncpy(char *s, const char *t, int n)
 char *
 safestrcpy(char *s, const char *t, int n)
 {
-    char *os;
-
-    os = s;
+    char* os = s;
     if (n <= 0)
         return os;
     while (--n > 0 && (*s++ = *t++) != 0)

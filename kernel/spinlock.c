@@ -86,10 +86,9 @@ release(struct spinlock *lk)
 void
 getcallerpcs(void *v, uint pcs[])
 {
-  uint *ebp;
   int i;
 
-  ebp = (uint*)v - 2;
+  uint* ebp = (uint*)v - 2;
   for(i = 0; i < 10; i++){
     if(ebp == 0 || ebp < (uint*)KERNBASE || ebp == (uint*)0xffffffff)
       break;
@@ -108,9 +107,8 @@ getcallerpcs(void *v, uint pcs[])
 int
 holding(struct spinlock *lock)
 {
-  int r;
   pushcli();
-  r = lock->locked && lock->cpu == mycpu();
+  int r = lock->locked && lock->cpu == mycpu();
   popcli();
   return r;
 }
@@ -122,9 +120,7 @@ holding(struct spinlock *lock)
 void
 pushcli(void)
 {
-  int eflags;
-
-  eflags = read_eflags();
+  int eflags = read_eflags();
   cli();
   if(mycpu()->ncli == 0)
     mycpu()->interrupts_enabled = eflags & FL_IF;

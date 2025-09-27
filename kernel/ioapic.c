@@ -63,17 +63,15 @@ ioapicwrite(int reg, uint data)
 /** @brief Initialize the I/O APIC and mask all interrupts. */
 void ioapicinit(void)
 {
-    int i, id, maxintr;
-
     ioapic = (volatile struct ioapic *)IOAPIC;
-    maxintr = (ioapicread(REG_VER) >> 16) & 0xFF;
-    id = ioapicread(REG_ID) >> 24;
+    int maxintr = (ioapicread(REG_VER) >> 16) & 0xFF;
+    int id = ioapicread(REG_ID) >> 24;
     if (id != ioapicid)
         cprintf("ioapicinit: id isn't equal to ioapicid; not a MP\n");
 
     // Mark all interrupts edge-triggered, active high, disabled,
     // and not routed to any CPUs.
-    for (i = 0; i <= maxintr; i++)
+    for (int i = 0; i <= maxintr; i++)
     {
         ioapicwrite(REG_TABLE + 2 * i, INT_DISABLED | (T_IRQ0 + i));
         ioapicwrite(REG_TABLE + 2 * i + 1, 0);

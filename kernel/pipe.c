@@ -36,9 +36,7 @@ struct pipe {
 int
 pipealloc(struct file **f0, struct file **f1)
 {
-  struct pipe *p;
-
-  p = 0;
+  struct pipe* p = 0;
   *f0 = *f1 = 0;
   if((*f0 = filealloc()) == 0 || (*f1 = filealloc()) == 0)
     goto bad;
@@ -103,10 +101,8 @@ pipeclose(struct pipe *p, int writable)
 int
 pipewrite(struct pipe *p, char *addr, int n)
 {
-  int i;
-
   acquire(&p->lock);
-  for(i = 0; i < n; i++){
+  for(int i = 0; i < n; i++){
     while(p->nwrite == p->nread + PIPESIZE){  //DOC: pipewrite-full
       if(p->readopen == 0 || myproc()->killed){
         release(&p->lock);

@@ -32,48 +32,30 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="badc6783-4aa1-42d3-aec1-fa09c6e3af57" name="Changes" comment="Improve code consistency and readability by renaming variables and structures, removing unnecessary comments, and updating formatting across multiple files.">
-      <change afterPath="$PROJECT_DIR$/.clangd" afterDir="false" />
+    <list default="true" id="badc6783-4aa1-42d3-aec1-fa09c6e3af57" name="Changes" comment="Add #pragma once to header files and improve code documentation with detailed comments">
       <change afterPath="$PROJECT_DIR$/.idea/copilot.data.migration.agent.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/.idea/copilot.data.migration.ask.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/.idea/copilot.data.migration.ask2agent.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/.idea/copilot.data.migration.edit.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations/clean.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations/qemu_gdb.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/kernel/vectors.S" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mkfs/fs.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mkfs/param.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mkfs/stat.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mkfs/types.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/qemu.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/qemu.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/editor.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/editor.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/xv6.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/asm.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/asm.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/buf.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/buf.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/fs.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/fs.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/mp.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/mp.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/sleeplock.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/sleeplock.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/spinlock.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/spinlock.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/types.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/types.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/compile_commands.json" beforeDir="false" afterPath="$PROJECT_DIR$/compile_commands.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fs.img" beforeDir="false" afterPath="$PROJECT_DIR$/fs.img" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kernel/bio.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/bio.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kernel/bootasm.S" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/bootasm.S" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kernel/bootmain.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/bootmain.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kernel/console.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/console.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kernel/exec.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/exec.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kernel/file.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/file.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kernel/fs.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/fs.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kernel/ide.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/ide.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kernel/ioapic.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/ioapic.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kernel/kalloc.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/kalloc.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/kbd.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/kbd.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kernel/lapic.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/lapic.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kernel/log.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/log.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kernel/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/main.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kernel/memide.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/memide.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kernel/picirq.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/picirq.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/mp.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/mp.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kernel/pipe.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/pipe.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kernel/proc.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/proc.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kernel/sleeplock.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/sleeplock.c" afterDir="false" />
@@ -81,12 +63,28 @@
       <change beforePath="$PROJECT_DIR$/kernel/string.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/string.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kernel/syscall.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/syscall.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kernel/sysfile.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/sysfile.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kernel/sysfilexit.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/sysfilexit.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kernel/sysproc.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/sysproc.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kernel/trap.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/trap.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kernel/uart.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/uart.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kernel/vm.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/vm.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mkfs/mkfs.c" beforeDir="false" afterPath="$PROJECT_DIR$/mkfs/mkfs.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/cat.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/cat.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/echo.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/echo.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/forktest.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/forktest.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/grep.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/grep.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/init.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/init.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/kill.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/kill.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/ls.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/ls.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/mkdir.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/mkdir.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/printf.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/printf.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/rm.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/rm.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/sh.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/sh.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/stressfs.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/stressfs.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/ulib.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/ulib.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/umalloc.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/umalloc.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/usertests.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/usertests.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/wc.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/wc.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/xv6.img" beforeDir="false" afterPath="$PROJECT_DIR$/xv6.img" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -147,6 +145,7 @@
     <setting file="file://$PROJECT_DIR$/include/asm.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/include/buf.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/include/fs.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/mp.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/include/sleeplock.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/include/spinlock.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/include/types.h" root0="FORCE_HIGHLIGHTING" />
@@ -334,7 +333,7 @@
       <workItem from="1758842985060" duration="137000" />
       <workItem from="1759006600262" duration="2780000" />
       <workItem from="1759009399906" duration="528000" />
-      <workItem from="1759009944647" duration="344000" />
+      <workItem from="1759009944647" duration="801000" />
     </task>
     <task id="LOCAL-00001" summary="Improve code consistency and readability by renaming variables and structures, removing unnecessary comments, and updating formatting across multiple files.">
       <option name="closed" value="true" />
@@ -344,7 +343,15 @@
       <option name="project" value="LOCAL" />
       <updated>1758753792298</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Add #pragma once to header files and improve code documentation with detailed comments">
+      <option name="closed" value="true" />
+      <created>1759010324061</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1759010324061</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -352,14 +359,15 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Improve code consistency and readability by renaming variables and structures, removing unnecessary comments, and updating formatting across multiple files." />
-    <option name="LAST_COMMIT_MESSAGE" value="Improve code consistency and readability by renaming variables and structures, removing unnecessary comments, and updating formatting across multiple files." />
+    <MESSAGE value="Add #pragma once to header files and improve code documentation with detailed comments" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add #pragma once to header files and improve code documentation with detailed comments" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/kernel/proc.c</url>
-          <line>332</line>
+          <line>321</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
       </breakpoints>

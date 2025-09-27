@@ -13,10 +13,9 @@ printint(int fd, int xx, int base, int sgn)
 {
   static char digits[] = "0123456789ABCDEF";
   char buf[16];
-  int i, neg;
   uint x;
 
-  neg = 0;
+  int neg = 0;
   if(sgn && xx < 0){
     neg = 1;
     x = -xx;
@@ -24,7 +23,7 @@ printint(int fd, int xx, int base, int sgn)
     x = xx;
   }
 
-  i = 0;
+  int i = 0;
   do{
     buf[i++] = digits[x % base];
   }while((x /= base) != 0);
@@ -39,14 +38,10 @@ printint(int fd, int xx, int base, int sgn)
 void
 printf(int fd, const char *fmt, ...)
 {
-  char *s;
-  int c, i, state;
-  uint *ap;
-
-  state = 0;
-  ap = (uint*)(void*)&fmt + 1;
-  for(i = 0; fmt[i]; i++){
-    c = fmt[i] & 0xff;
+  int state = 0;
+  uint* ap = (uint*)(void*)&fmt + 1;
+  for(int i = 0; fmt[i]; i++){
+    int c = fmt[i] & 0xff;
     if(state == 0){
       if(c == '%'){
         state = '%';
@@ -61,7 +56,7 @@ printf(int fd, const char *fmt, ...)
         printint(fd, *ap, 16, 0);
         ap++;
       } else if(c == 's'){
-        s = (char*)*ap;
+        char* s = (char*)*ap;
         ap++;
         if(s == 0)
           s = "(null)";

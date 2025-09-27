@@ -41,14 +41,13 @@ fetchint(uint addr, int* ip)
 int
 fetchstr(uint addr, char** pp)
 {
-    char *s, *ep;
     struct proc* curproc = myproc();
 
     if (addr >= curproc->size)
         return -1;
     *pp = (char*)addr;
-    ep = (char*)curproc->size;
-    for (s = *pp; s < ep; s++)
+    char* ep = (char*)curproc->size;
+    for (char* s = *pp; s < ep; s++)
     {
         if (*s == 0)
             return s - *pp;
@@ -160,10 +159,9 @@ static int (*syscalls[])(void) = {
 void
 syscall(void)
 {
-    int num;
     struct proc* curproc = myproc();
 
-    num = curproc->trap_frame->eax;
+    int num = curproc->trap_frame->eax;
     if (num > 0 && num < NELEM(syscalls) && syscalls[num])
     {
         curproc->trap_frame->eax = syscalls[num]();

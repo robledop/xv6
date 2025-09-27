@@ -11,4 +11,4 @@ kernelmemfs
 build/
 user/build
 mkfs/mkfs
-copilot
+.cache

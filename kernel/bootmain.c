@@ -20,12 +20,7 @@ void readseg(uchar *, uint, uint);
  */
 void bootmain(void)
 {
-    struct elfhdr *elf;
-    struct proghdr *ph, *eph;
-    void (*entry)(void);
-    uchar *pa;
-
-    elf = (struct elfhdr *)0x10000; // scratch space
+    struct elfhdr* elf = (struct elfhdr*)0x10000; // scratch space
 
     // Read 1st page off disk
     readseg((uchar *)elf, 4096, 0);
@@ -35,11 +30,11 @@ void bootmain(void)
         return; // let bootasm.S handle error
 
     // Load each program segment (ignores ph flags).
-    ph = (struct proghdr *)((uchar *)elf + elf->phoff);
-    eph = ph + elf->phnum;
+    struct proghdr* ph = (struct proghdr*)((uchar*)elf + elf->phoff);
+    struct proghdr* eph = ph + elf->phnum;
     for (; ph < eph; ph++)
     {
-        pa = (uchar *)ph->paddr;
+        uchar* pa = (uchar*)ph->paddr;
         readseg(pa, ph->filesz, ph->off);
         if (ph->memsz > ph->filesz)
             stosb(pa + ph->filesz, 0, ph->memsz - ph->filesz);
@@ -47,7 +42,7 @@ void bootmain(void)
 
     // Call the entry point from the ELF header.
     // Does not return!
-    entry = (void (*)(void))(elf->entry);
+    void (*entry)(void) = (void (*)(void))(elf->entry);
     entry();
 }
 
@@ -86,9 +81,7 @@ void readsect(void *dst, uint offset)
  */
 void readseg(uchar *pa, uint count, uint offset)
 {
-    uchar *epa;
-
-    epa = pa + count;
+    uchar* epa = pa + count;
 
     // Round down to sector boundary.
     pa -= offset % SECTSIZE;

@@ -32,7 +32,6 @@ static void printint(int xx, int base, int sign)
 {
     static char digits[] = "0123456789abcdef";
     char buf[16];
-    int i;
     uint x;
 
     if (sign && (sign = xx < 0))
@@ -40,7 +39,7 @@ static void printint(int xx, int base, int sign)
     else
         x = xx;
 
-    i = 0;
+    int i = 0;
     do
     {
         buf[i++] = digits[x % base];
@@ -110,7 +109,6 @@ void cprintf(char *fmt, ...)
 /** @brief Panic and print the message */
 void panic(char *s)
 {
-    int i;
     uint pcs[10];
 
     cli();
@@ -120,7 +118,7 @@ void panic(char *s)
     cprintf(s);
     cprintf("\n");
     getcallerpcs(&s, pcs);
-    for (i = 0; i < 10; i++)
+    for (int i = 0; i < 10; i++)
         cprintf(" %p", pcs[i]);
     panicked = 1; // freeze other CPU
     for (;;)
@@ -135,11 +133,9 @@ static ushort *crt = (ushort *)P2V(0xb8000); // CGA memory
 /** @brief Put a character on the CGA screen */
 static void cgaputc(int c)
 {
-    int pos;
-
     // Cursor position: col + 80*row.
     outb(CRTPORT, 14);
-    pos = inb(CRTPORT + 1) << 8;
+    int pos = inb(CRTPORT + 1) << 8;
     outb(CRTPORT, 15);
     pos |= inb(CRTPORT + 1);
 
@@ -260,11 +256,8 @@ void consoleintr(int (*getc)(void))
 /** @brief Read from console */
 int consoleread(struct inode *ip, char *dst, int n)
 {
-    uint target;
-    int c;
-
     iunlock(ip);
-    target = n;
+    uint target = n;
     acquire(&cons.lock);
     while (n > 0)
     {
@@ -278,7 +271,7 @@ int consoleread(struct inode *ip, char *dst, int n)
             }
             sleep(&input.r, &cons.lock);
         }
-        c = input.buf[input.r++ % INPUT_BUF];
+        int c = input.buf[input.r++ % INPUT_BUF];
         if (c == C('D'))
         {
             // EOF
@@ -304,11 +297,9 @@ int consoleread(struct inode *ip, char *dst, int n)
 /** @brief Write to console */
 int consolewrite(struct inode *ip, char *buf, int n)
 {
-    int i;
-
     iunlock(ip);
     acquire(&cons.lock);
-    for (i = 0; i < n; i++)
+    for (int i = 0; i < n; i++)
         consputc(buf[i] & 0xff);
     release(&cons.lock);
     ilock(ip);

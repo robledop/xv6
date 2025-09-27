@@ -144,15 +144,12 @@ void microdelay(int us)
  */
 void lapicstartap(uchar apicid, uint addr)
 {
-    int i;
-    ushort *wrv;
-
     // "The BSP must initialize CMOS shutdown code to 0AH
     // and the warm reset vector (DWORD based at 40:67) to point at
     // the AP startup code prior to the [universal startup algorithm]."
     outb(CMOS_PORT, 0xF); // offset 0xF is shutdown code
     outb(CMOS_PORT + 1, 0x0A);
-    wrv = (ushort *)P2V((0x40 << 4 | 0x67)); // Warm reset vector
+    ushort* wrv = (ushort*)P2V((0x40 << 4 | 0x67)); // Warm reset vector
     wrv[0] = 0;
     wrv[1] = addr >> 4;
 
@@ -169,7 +166,7 @@ void lapicstartap(uchar apicid, uint addr)
     // when it is in the halted state due to an INIT.  So the second
     // should be ignored, but it is part of the official Intel algorithm.
     // Bochs complains about the second one.  Too bad for Bochs.
-    for (i = 0; i < 2; i++)
+    for (int i = 0; i < 2; i++)
     {
         lapicw(ICRHI, apicid << 24);
         lapicw(ICRLO, STARTUP | (addr >> 12));
@@ -229,11 +226,10 @@ fill_rtcdate(struct rtcdate *r)
 void cmostime(struct rtcdate *r)
 {
     struct rtcdate t1, t2;
-    int sb, bcd;
 
-    sb = cmos_read(CMOS_STATB);
+    int sb = cmos_read(CMOS_STATB);
 
-    bcd = (sb & (1 << 2)) == 0;
+    int bcd = (sb & (1 << 2)) == 0;
 
     // make sure CMOS doesn't modify time while we read it
     for (;;)

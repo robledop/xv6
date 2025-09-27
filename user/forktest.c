@@ -14,13 +14,13 @@ void printf(int fd, const char *s, ...)
 
 void forktest(void)
 {
-    int n, pid;
+    int n;
 
     printf(1, "fork test\n");
 
     for (n = 0; n < N; n++)
     {
-        pid = fork();
+        int pid = fork();
         if (pid < 0)
             break;
         if (pid == 0)

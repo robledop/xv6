@@ -153,12 +153,12 @@
       "-I./include",
       "-c",
       "-o",
-      "user/build/umalloc.o",
-      "user/umalloc.c"
+      "user/build/grep.o",
+      "user/grep.c"
     ],
     "directory": "/home/robledo/source/osdev/xv6",
-    "file": "/home/robledo/source/osdev/xv6/user/umalloc.c",
-    "output": "/home/robledo/source/osdev/xv6/user/build/umalloc.o"
+    "file": "/home/robledo/source/osdev/xv6/user/grep.c",
+    "output": "/home/robledo/source/osdev/xv6/user/build/grep.o"
   },
   {
     "arguments": [
@@ -174,12 +174,12 @@
       "-I./include",
       "-c",
       "-o",
-      "user/build/grep.o",
-      "user/grep.c"
+      "user/build/umalloc.o",
+      "user/umalloc.c"
     ],
     "directory": "/home/robledo/source/osdev/xv6",
-    "file": "/home/robledo/source/osdev/xv6/user/grep.c",
-    "output": "/home/robledo/source/osdev/xv6/user/build/grep.o"
+    "file": "/home/robledo/source/osdev/xv6/user/umalloc.c",
+    "output": "/home/robledo/source/osdev/xv6/user/build/umalloc.o"
   },
   {
     "arguments": [
@@ -533,14 +533,17 @@
       "-m32",
       "-fno-omit-frame-pointer",
       "-I./include",
+      "-fno-pic",
+      "-nostdinc",
+      "-I.",
       "-c",
       "-o",
-      "build/fs.o",
-      "kernel/fs.c"
+      "build/bootasm.o",
+      "kernel/bootasm.S"
     ],
     "directory": "/home/robledo/source/osdev/xv6",
-    "file": "/home/robledo/source/osdev/xv6/kernel/fs.c",
-    "output": "/home/robledo/source/osdev/xv6/build/fs.o"
+    "file": "/home/robledo/source/osdev/xv6/kernel/bootasm.S",
+    "output": "/home/robledo/source/osdev/xv6/build/bootasm.o"
   },
   {
     "arguments": [
@@ -554,17 +557,14 @@
       "-m32",
       "-fno-omit-frame-pointer",
       "-I./include",
-      "-fno-pic",
-      "-nostdinc",
-      "-I.",
       "-c",
       "-o",
-      "build/bootasm.o",
-      "kernel/bootasm.S"
+      "build/fs.o",
+      "kernel/fs.c"
     ],
     "directory": "/home/robledo/source/osdev/xv6",
-    "file": "/home/robledo/source/osdev/xv6/kernel/bootasm.S",
-    "output": "/home/robledo/source/osdev/xv6/build/bootasm.o"
+    "file": "/home/robledo/source/osdev/xv6/kernel/fs.c",
+    "output": "/home/robledo/source/osdev/xv6/build/fs.o"
   },
   {
     "arguments": [

@@ -18,10 +18,8 @@ uchar ioapicid;
 static uchar
 sum(uchar *addr, int len)
 {
-  int i, sum;
-
-  sum = 0;
-  for(i=0; i<len; i++)
+  int sum = 0;
+  for(int i = 0; i<len; i++)
     sum += addr[i];
   return sum;
 }
@@ -30,11 +28,9 @@ sum(uchar *addr, int len)
 static struct mp*
 mpsearch1(uint a, int len)
 {
-  uchar *e, *p, *addr;
-
-  addr = P2V(a);
-  e = addr+len;
-  for(p = addr; p < e; p += sizeof(struct mp))
+  uchar* addr = P2V(a);
+  uchar* e = addr + len;
+  for(uchar* p = addr; p < e; p += sizeof(struct mp))
     if(memcmp(p, "_MP_", 4) == 0 && sum(p, sizeof(struct mp)) == 0)
       return (struct mp*)p;
   return 0;
@@ -48,11 +44,10 @@ mpsearch1(uint a, int len)
 static struct mp*
 mpsearch(void)
 {
-  uchar *bda;
   uint p;
   struct mp *mp;
 
-  bda = (uchar *) P2V(0x400);
+  uchar* bda = (uchar*)P2V(0x400);
   if((p = ((bda[0x0F]<<8)| bda[0x0E]) << 4)){
     if((mp = mpsearch1(p, 1024)))
       return mp;
@@ -72,12 +67,11 @@ mpsearch(void)
 static struct mpconf*
 mpconfig(struct mp **pmp)
 {
-  struct mpconf *conf;
   struct mp *mp;
 
   if((mp = mpsearch()) == 0 || mp->physaddr == 0)
     return 0;
-  conf = (struct mpconf*) P2V((uint) mp->physaddr);
+  struct mpconf* conf = (struct mpconf*)P2V((uint) mp->physaddr);
   if(memcmp(conf, "PCMP", 4) != 0)
     return 0;
   if(conf->version != 1 && conf->version != 4)
@@ -92,7 +86,6 @@ void
 mpinit(void)
 {
   uchar *p, *e;
-  int ismp;
   struct mp *mp;
   struct mpconf *conf;
   struct mpproc *proc;
@@ -100,7 +93,7 @@ mpinit(void)
 
   if((conf = mpconfig(&mp)) == 0)
     panic("Expect to run on an SMP");
-  ismp = 1;
+  int ismp = 1;
   lapic = (uint*)conf->lapicaddr;
   for(p=(uchar*)(conf+1), e=(uchar*)conf+conf->length; p<e; ){
     switch(*p){
