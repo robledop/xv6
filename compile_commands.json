@@ -153,12 +153,12 @@
       "-I./include",
       "-c",
       "-o",
-      "user/build/grep.o",
-      "user/grep.c"
+      "user/build/umalloc.o",
+      "user/umalloc.c"
     ],
     "directory": "/home/robledo/source/osdev/xv6",
-    "file": "/home/robledo/source/osdev/xv6/user/grep.c",
-    "output": "/home/robledo/source/osdev/xv6/user/build/grep.o"
+    "file": "/home/robledo/source/osdev/xv6/user/umalloc.c",
+    "output": "/home/robledo/source/osdev/xv6/user/build/umalloc.o"
   },
   {
     "arguments": [
@@ -174,12 +174,12 @@
       "-I./include",
       "-c",
       "-o",
-      "user/build/umalloc.o",
-      "user/umalloc.c"
+      "user/build/grep.o",
+      "user/grep.c"
     ],
     "directory": "/home/robledo/source/osdev/xv6",
-    "file": "/home/robledo/source/osdev/xv6/user/umalloc.c",
-    "output": "/home/robledo/source/osdev/xv6/user/build/umalloc.o"
+    "file": "/home/robledo/source/osdev/xv6/user/grep.c",
+    "output": "/home/robledo/source/osdev/xv6/user/build/grep.o"
   },
   {
     "arguments": [

@@ -32,10 +32,12 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="badc6783-4aa1-42d3-aec1-fa09c6e3af57" name="Changes" comment="Add .gitignore file and improve variable declarations for consistency">
+    <list default="true" id="badc6783-4aa1-42d3-aec1-fa09c6e3af57" name="Changes" comment="Improve code consistency and readability by standardizing function declarations and formatting across multiple files">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/compile_commands.json" beforeDir="false" afterPath="$PROJECT_DIR$/compile_commands.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kernel/lapic.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/lapic.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fs.img" beforeDir="false" afterPath="$PROJECT_DIR$/fs.img" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/memlayout.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/memlayout.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/sh.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/sh.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/xv6.img" beforeDir="false" afterPath="$PROJECT_DIR$/xv6.img" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -285,7 +287,7 @@
       <workItem from="1758842985060" duration="137000" />
       <workItem from="1759006600262" duration="2780000" />
       <workItem from="1759009399906" duration="528000" />
-      <workItem from="1759009944647" duration="1062000" />
+      <workItem from="1759009944647" duration="1377000" />
     </task>
     <task id="LOCAL-00001" summary="Improve code consistency and readability by renaming variables and structures, removing unnecessary comments, and updating formatting across multiple files.">
       <option name="closed" value="true" />
@@ -311,7 +313,15 @@
       <option name="project" value="LOCAL" />
       <updated>1759010928044</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Improve code consistency and readability by standardizing function declarations and formatting across multiple files">
+      <option name="closed" value="true" />
+      <created>1759011032931</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1759011032931</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -321,7 +331,8 @@
     <MESSAGE value="Improve code consistency and readability by renaming variables and structures, removing unnecessary comments, and updating formatting across multiple files." />
     <MESSAGE value="Add #pragma once to header files and improve code documentation with detailed comments" />
     <MESSAGE value="Add .gitignore file and improve variable declarations for consistency" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add .gitignore file and improve variable declarations for consistency" />
+    <MESSAGE value="Improve code consistency and readability by standardizing function declarations and formatting across multiple files" />
+    <option name="LAST_COMMIT_MESSAGE" value="Improve code consistency and readability by standardizing function declarations and formatting across multiple files" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
