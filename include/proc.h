@@ -1,3 +1,8 @@
+#pragma once
+#include "types.h"
+#include "mmu.h"
+#include "param.h"
+
 // Per-CPU state
 struct cpu
 {
@@ -17,7 +22,7 @@ extern struct cpu cpus[NCPU];
 extern int ncpu;
 
 // Saved registers for kernel context switches.
-// Don't need to save all the segment registers (%cs, etc),
+// Don't need to save all the segment registers (%cs, etc.),
 // because they are constant across kernel contexts.
 // Don't need to save %eax, %ecx, %edx, because the
 // x86 convention is that the caller has saved them.
@@ -42,7 +47,7 @@ struct proc
 {
     uint size; // Size of process memory (bytes)
     pde_t* page_directory; // Page table
-    char* kstack; // Bottom of kernel stack for this process
+    char* kstack; // Bottom of the kernel stack for this process
     enum procstate state; // Process state
     int pid; // Process ID
     struct proc* parent; // Parent process

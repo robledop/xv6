@@ -129,8 +129,7 @@ opentest(void)
   printf(stdout, "open test ok\n");
 }
 
-void
-writetest(void)
+void writetest(void)
 {
   int i;
 
@@ -177,8 +176,7 @@ writetest(void)
   printf(stdout, "small file test ok\n");
 }
 
-void
-writetest1(void)
+void writetest1(void)
 {
   int i;
 

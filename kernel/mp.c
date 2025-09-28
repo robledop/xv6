@@ -16,7 +16,7 @@ int ncpu;
 uchar ioapicid;
 
 static int mpinit_legacy(void);
-static int acpiinit(void);
+static int acpi_init(void);
 
 struct acpi_rsdp
 {
@@ -189,19 +189,19 @@ static int mpinit_legacy(void)
         switch (*p)
         {
         case MPPROC:
-        {
-            struct mpproc* proc = (struct mpproc*)p;
-            record_cpu_apicid(proc->apicid); // apicid may differ from ncpu
-            p += sizeof(struct mpproc);
-            continue;
-        }
+            {
+                struct mpproc* proc = (struct mpproc*)p;
+                record_cpu_apicid(proc->apicid); // apicid may differ from ncpu
+                p += sizeof(struct mpproc);
+                continue;
+            }
         case MPIOAPIC:
-        {
-            struct mpioapic* ioapic = (struct mpioapic*)p;
-            ioapicid = ioapic->apicno;
-            p += sizeof(struct mpioapic);
-            continue;
-        }
+            {
+                struct mpioapic* ioapic = (struct mpioapic*)p;
+                ioapicid = ioapic->apicno;
+                p += sizeof(struct mpioapic);
+                continue;
+            }
         case MPBUS:
         case MPIOINTR:
         case MPLINTR:
@@ -288,31 +288,31 @@ static int acpi_parse_madt(struct acpi_madt* madt)
         switch (entry->type)
         {
         case 0: // Processor Local APIC
-        {
-            struct acpi_madt_lapic* lapic_entry = (struct acpi_madt_lapic*)p;
-            if (lapic_entry->flags & 0x01)
-                record_cpu_apicid(lapic_entry->apic_id);
-            break;
-        }
+            {
+                struct acpi_madt_lapic* lapic_entry = (struct acpi_madt_lapic*)p;
+                if (lapic_entry->flags & 0x01)
+                    record_cpu_apicid(lapic_entry->apic_id);
+                break;
+            }
         case 1: // I/O APIC
-        {
-            struct acpi_madt_ioapic* ioapic_entry = (struct acpi_madt_ioapic*)p;
-            ioapicid = ioapic_entry->ioapic_id;
-            break;
-        }
+            {
+                struct acpi_madt_ioapic* ioapic_entry = (struct acpi_madt_ioapic*)p;
+                ioapicid = ioapic_entry->ioapic_id;
+                break;
+            }
         case 5: // Local APIC address override
-        {
-            struct acpi_madt_lapic_override* override_entry = (struct acpi_madt_lapic_override*)p;
-            lapic = (uint*)(uint)override_entry->lapic_addr;
-            break;
-        }
+            {
+                struct acpi_madt_lapic_override* override_entry = (struct acpi_madt_lapic_override*)p;
+                lapic = (uint*)(uint)override_entry->lapic_addr;
+                break;
+            }
         case 9: // Processor Local x2APIC
-        {
-            struct acpi_madt_x2apic* x2apic_entry = (struct acpi_madt_x2apic*)p;
-            if (x2apic_entry->flags & 0x01)
-                record_cpu_apicid(x2apic_entry->x2apic_id);
-            break;
-        }
+            {
+                struct acpi_madt_x2apic* x2apic_entry = (struct acpi_madt_x2apic*)p;
+                if (x2apic_entry->flags & 0x01)
+                    record_cpu_apicid(x2apic_entry->x2apic_id);
+                break;
+            }
         default:
             break;
         }
@@ -335,8 +335,9 @@ static int acpi_visit_sdt(struct acpi_sdt_header* table, int entry_size)
 
     for (int i = 0; i < count; i++)
     {
-        unsigned long long addr = entry_size == 8 ? ((unsigned long long*)entries)[i]
-                                                  : ((uint*)entries)[i];
+        unsigned long long addr = entry_size == 8
+                                      ? ((unsigned long long*)entries)[i]
+                                      : ((uint*)entries)[i];
         if (addr == 0)
             continue;
         if (entry_size == 8 && (addr >> 32) != 0)
@@ -357,7 +358,7 @@ static int acpi_visit_sdt(struct acpi_sdt_header* table, int entry_size)
     return 0;
 }
 
-static int acpiinit(void)
+static int acpi_init(void)
 {
     struct acpi_rsdp* rsdp = acpi_find_rsdp();
     if (!rsdp)
@@ -397,7 +398,7 @@ void mpinit(void)
     ioapicid = 0;
 
     int legacy = mpinit_legacy();
-    int acpi = acpiinit();
+    int acpi = acpi_init();
 
     if (!legacy && !acpi)
         panic("Expect to run on an SMP");

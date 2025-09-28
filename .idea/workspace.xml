@@ -32,15 +32,18 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="badc6783-4aa1-42d3-aec1-fa09c6e3af57" name="Changes" comment="Enhance ACPI and MP initialization by adding support for ACPI RSDP and MADT parsing, improving CPU APIC ID recording, and refining legacy MP initialization logic for better reliability.">
-      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/qemu.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/qemu.xml" afterDir="false" />
+    <list default="true" id="badc6783-4aa1-42d3-aec1-fa09c6e3af57" name="Changes" comment="Improve code consistency and readability by updating compile_commands.json, adding #pragma once to header files, and enhancing function declarations across multiple files.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/compile_commands.json" beforeDir="false" afterPath="$PROJECT_DIR$/compile_commands.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/defs.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/defs.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/memlayout.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/memlayout.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/param.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/param.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kernel/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/main.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fs.img" beforeDir="false" afterPath="$PROJECT_DIR$/fs.img" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/mmu.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/mmu.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/proc.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/proc.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/types.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/types.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/mp.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/mp.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mkfs/types.h" beforeDir="false" afterPath="$PROJECT_DIR$/mkfs/types.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/stressfs.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/stressfs.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/usertests.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/usertests.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/xv6.img" beforeDir="false" afterPath="$PROJECT_DIR$/xv6.img" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -106,8 +109,9 @@
     <setting file="file://$PROJECT_DIR$/include/defs.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/include/fs.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/include/memlayout.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/mmu.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/include/mp.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/include/param.h" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/param.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/include/sleeplock.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/include/spinlock.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/include/types.h" root0="FORCE_HIGHLIGHTING" />
@@ -116,6 +120,8 @@
     <setting file="mock:///home/robledo/source/osdev/xv6/kernel/fs.c" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock:///home/robledo/source/osdev/xv6/kernel/fs.c" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/kernel/lapic.c" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock:///home/robledo/source/osdev/xv6/kernel/main.c" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///home/robledo/source/osdev/xv6/kernel/main.c" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/kernel/memide.c" root0="FORCE_HIGHLIGHTING" />
     <setting file="mock:///home/robledo/source/osdev/xv6/kernel/mp.c" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/kernel/pipe.c" root0="FORCE_HIGHLIGHTING" />
@@ -311,7 +317,7 @@
       <workItem from="1759063642941" duration="1021000" />
       <workItem from="1759064668346" duration="143000" />
       <workItem from="1759064817377" duration="4506000" />
-      <workItem from="1759069416974" duration="1364000" />
+      <workItem from="1759069416974" duration="2091000" />
     </task>
     <task id="LOCAL-00001" summary="Improve code consistency and readability by renaming variables and structures, removing unnecessary comments, and updating formatting across multiple files.">
       <option name="closed" value="true" />
@@ -377,7 +383,15 @@
       <option name="project" value="LOCAL" />
       <updated>1759071386249</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Improve code consistency and readability by updating compile_commands.json, adding #pragma once to header files, and enhancing function declarations across multiple files.">
+      <option name="closed" value="true" />
+      <created>1759071481786</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1759071481786</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -392,7 +406,8 @@
     <MESSAGE value="Improve code consistency and readability by updating file references in compile_commands.json, adding #pragma once to header files, and enhancing function attributes in exec.c" />
     <MESSAGE value="." />
     <MESSAGE value="Enhance ACPI and MP initialization by adding support for ACPI RSDP and MADT parsing, improving CPU APIC ID recording, and refining legacy MP initialization logic for better reliability." />
-    <option name="LAST_COMMIT_MESSAGE" value="Enhance ACPI and MP initialization by adding support for ACPI RSDP and MADT parsing, improving CPU APIC ID recording, and refining legacy MP initialization logic for better reliability." />
+    <MESSAGE value="Improve code consistency and readability by updating compile_commands.json, adding #pragma once to header files, and enhancing function declarations across multiple files." />
+    <option name="LAST_COMMIT_MESSAGE" value="Improve code consistency and readability by updating compile_commands.json, adding #pragma once to header files, and enhancing function declarations across multiple files." />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
