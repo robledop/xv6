@@ -25,6 +25,7 @@
 
 #ifndef __ASSEMBLER__
 #include "types.h"
+
 // Segment Descriptor
 struct segdesc
 {
@@ -91,16 +92,16 @@ struct segdesc
 #define PTXSHIFT        12      // offset of PTX in a linear address
 #define PDXSHIFT        22      // offset of PDX in a linear address
 
-#define PGROUNDUP(sz)  (((sz)+PGSIZE-1) & ~(PGSIZE-1))
-#define PGROUNDDOWN(a) (((a)) & ~(PGSIZE-1))
+#define PGROUNDUP(sz)  (((sz)+PGSIZE-1) & ~(PGSIZE-1)) // round up to the next page boundary
+#define PGROUNDDOWN(a) (((a)) & ~(PGSIZE-1)) // round down to the page boundary
 
 // Page table/directory entry flags.
 #define PTE_P           0x001   // Present
 #define PTE_W           0x002   // Writeable
 #define PTE_U           0x004   // User
-#define PTE_PS          0x080   // Page Size
+#define PTE_PS          0x080   // Page Size (4MB pages)
 
-// Address in page table or page directory entry
+// Address in the page table or page directory entry
 #define PTE_ADDR(pte)   ((uint)(pte) & ~0xFFF)
 #define PTE_FLAGS(pte)  ((uint)(pte) &  0xFFF)
 
@@ -121,7 +122,7 @@ struct task_state
     ushort ss2;
     ushort padding3;
     void* cr3; // Page directory base
-    uint* eip; // Saved state from last task switch
+    uint* eip; // Saved state from the last task switch
     uint eflags;
     uint eax; // More saved state (registers)
     uint ecx;

@@ -46,7 +46,7 @@ int cpuid()
 }
 
 /**
- * @brief Return a pointer to the ::cpu structure for the running CPU.
+ * @brief Return a pointer to the cpu structure for the running CPU.
  *
  * Interrupts must be disabled to prevent migration during lookup.
  */
@@ -83,7 +83,7 @@ struct proc *myproc(void)
 /**
  * @brief Allocate and partially initialize a process structure.
  *
- * @return Pointer to the new process or ::0 if none are available.
+ * @return Pointer to the new process or 0 if none are available.
  */
 static struct proc *alloc_proc(void)
 {
@@ -112,7 +112,7 @@ found:
     }
     char *stack_pointer = p->kstack + KSTACKSIZE;
 
-    // Leave room for trap frame.
+    // Leave room for the trap frame.
     stack_pointer -= sizeof *p->trap_frame;
     p->trap_frame = (struct trapframe *)stack_pointer;
 
@@ -130,7 +130,7 @@ found:
 }
 
 /**
- * @brief Create the initial user process containing ::initcode.
+ * @brief Create the initial user process containing initcode.
  */
 void user_init(void)
 {

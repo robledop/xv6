@@ -22,20 +22,6 @@
   },
   {
     "arguments": [
-      "/usr/bin/gcc",
-      "-c",
-      "-Werror",
-      "-Wall",
-      "-o",
-      "mkfs/mkfs",
-      "mkfs/mkfs.c"
-    ],
-    "directory": "/home/robledo/source/osdev/xv6",
-    "file": "/home/robledo/source/osdev/xv6/mkfs/mkfs.c",
-    "output": "/home/robledo/source/osdev/xv6/mkfs/mkfs"
-  },
-  {
-    "arguments": [
       "/home/robledo/opt/cross/bin/i686-elf-gcc",
       "-fno-pic",
       "-fno-builtin",
@@ -54,6 +40,20 @@
     "directory": "/home/robledo/source/osdev/xv6",
     "file": "/home/robledo/source/osdev/xv6/user/usys.S",
     "output": "/home/robledo/source/osdev/xv6/user/build/usys.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-Werror",
+      "-Wall",
+      "-o",
+      "mkfs/mkfs",
+      "mkfs/mkfs.c"
+    ],
+    "directory": "/home/robledo/source/osdev/xv6",
+    "file": "/home/robledo/source/osdev/xv6/mkfs/mkfs.c",
+    "output": "/home/robledo/source/osdev/xv6/mkfs/mkfs"
   },
   {
     "arguments": [
@@ -90,12 +90,12 @@
       "-I./include",
       "-c",
       "-o",
-      "user/build/cat.o",
-      "user/cat.c"
+      "user/build/umalloc.o",
+      "user/umalloc.c"
     ],
     "directory": "/home/robledo/source/osdev/xv6",
-    "file": "/home/robledo/source/osdev/xv6/user/cat.c",
-    "output": "/home/robledo/source/osdev/xv6/user/build/cat.o"
+    "file": "/home/robledo/source/osdev/xv6/user/umalloc.c",
+    "output": "/home/robledo/source/osdev/xv6/user/build/umalloc.o"
   },
   {
     "arguments": [
@@ -111,12 +111,12 @@
       "-I./include",
       "-c",
       "-o",
-      "user/build/umalloc.o",
-      "user/umalloc.c"
+      "user/build/cat.o",
+      "user/cat.c"
     ],
     "directory": "/home/robledo/source/osdev/xv6",
-    "file": "/home/robledo/source/osdev/xv6/user/umalloc.c",
-    "output": "/home/robledo/source/osdev/xv6/user/build/umalloc.o"
+    "file": "/home/robledo/source/osdev/xv6/user/cat.c",
+    "output": "/home/robledo/source/osdev/xv6/user/build/cat.o"
   },
   {
     "arguments": [
