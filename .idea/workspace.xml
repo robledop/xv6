@@ -32,8 +32,15 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="badc6783-4aa1-42d3-aec1-fa09c6e3af57" name="Changes" comment="Improve code consistency and readability by updating file references in compile_commands.json, adding #pragma once to header files, and enhancing function attributes in exec.c">
+    <list default="true" id="badc6783-4aa1-42d3-aec1-fa09c6e3af57" name="Changes" comment="Enhance ACPI and MP initialization by adding support for ACPI RSDP and MADT parsing, improving CPU APIC ID recording, and refining legacy MP initialization logic for better reliability.">
+      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/qemu.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/qemu.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/compile_commands.json" beforeDir="false" afterPath="$PROJECT_DIR$/compile_commands.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/defs.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/defs.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/memlayout.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/memlayout.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/param.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/param.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/main.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -91,21 +98,32 @@
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/include/asm.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/include/buf.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock:///home/robledo/source/osdev/xv6/include/defs.h" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/defs.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/include/fs.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/memlayout.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/include/mp.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/param.h" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/include/sleeplock.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/include/spinlock.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/include/types.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/kernel/bio.c" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock:///home/robledo/source/osdev/xv6/kernel/bootmain.c" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/kernel/file.c" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock:///home/robledo/source/osdev/xv6/kernel/fs.c" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///home/robledo/source/osdev/xv6/kernel/fs.c" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/kernel/lapic.c" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/kernel/memide.c" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock:///home/robledo/source/osdev/xv6/kernel/mp.c" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/kernel/pipe.c" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock:///home/robledo/source/osdev/xv6/kernel/proc.c" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///home/robledo/source/osdev/xv6/kernel/proc.c" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/kernel/sysfile.c" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/kernel/vm.c" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock:///home/robledo/source/osdev/xv6/user/init.c" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MakefileLocalSettings">
     <option name="toolchainName" value="Cross gcc" />
@@ -291,7 +309,9 @@
       <workItem from="1759009399906" duration="528000" />
       <workItem from="1759009944647" duration="3337000" />
       <workItem from="1759063642941" duration="1021000" />
-      <workItem from="1759064668346" duration="139000" />
+      <workItem from="1759064668346" duration="143000" />
+      <workItem from="1759064817377" duration="4506000" />
+      <workItem from="1759069416974" duration="1364000" />
     </task>
     <task id="LOCAL-00001" summary="Improve code consistency and readability by renaming variables and structures, removing unnecessary comments, and updating formatting across multiple files.">
       <option name="closed" value="true" />
@@ -341,7 +361,23 @@
       <option name="project" value="LOCAL" />
       <updated>1759013267096</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary=".">
+      <option name="closed" value="true" />
+      <created>1759064808375</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1759064808375</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Enhance ACPI and MP initialization by adding support for ACPI RSDP and MADT parsing, improving CPU APIC ID recording, and refining legacy MP initialization logic for better reliability.">
+      <option name="closed" value="true" />
+      <created>1759071386249</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1759071386249</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -354,18 +390,9 @@
     <MESSAGE value="Improve code consistency and readability by standardizing function declarations and formatting across multiple files" />
     <MESSAGE value="Improve code consistency and readability by updating file references in compile_commands.json and enhancing function attributes in sh.c" />
     <MESSAGE value="Improve code consistency and readability by updating file references in compile_commands.json, adding #pragma once to header files, and enhancing function attributes in exec.c" />
-    <option name="LAST_COMMIT_MESSAGE" value="Improve code consistency and readability by updating file references in compile_commands.json, adding #pragma once to header files, and enhancing function attributes in exec.c" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/kernel/proc.c</url>
-          <line>321</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+    <MESSAGE value="." />
+    <MESSAGE value="Enhance ACPI and MP initialization by adding support for ACPI RSDP and MADT parsing, improving CPU APIC ID recording, and refining legacy MP initialization logic for better reliability." />
+    <option name="LAST_COMMIT_MESSAGE" value="Enhance ACPI and MP initialization by adding support for ACPI RSDP and MADT parsing, improving CPU APIC ID recording, and refining legacy MP initialization logic for better reliability." />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="qemu" type="CLion_Remote" version="1" remoteCommand="" symbolFile="" sysroot="">
+  <configuration default="false" name="qemu" type="CLion_Remote" version="1" remoteCommand="localhost:1234" symbolFile="$ContentRoot$/build/kernel" sysroot="$ContentRoot$">
     <debugger toolchainName="Default" />
     <pathMapping remote=":" local="" />
     <method v="2">

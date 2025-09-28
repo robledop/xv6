@@ -92,10 +92,13 @@ static void startothers(void)
     uchar* code = P2V(0x7000);
     memmove(code, _binary_build_entryother_start, (uint)_binary_build_entryother_size);
 
+    cprintf("%d cpu%s\n", ncpu, ncpu == 1 ? "" : "s");
+
     for (struct cpu* c = cpus; c < cpus + ncpu; c++)
     {
         if (c == mycpu()) // We've started already.
             continue;
+
 
         // Tell entryother.S what stack to use, where to enter, and what
         // pgdir to use. We cannot use kpgdir yet, because the AP processor
