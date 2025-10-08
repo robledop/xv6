@@ -15,7 +15,7 @@
  * @param lk Spinlock to initialize.
  * @param name Identifier for diagnostics and panic messages.
  */
-void initlock(struct spinlock *lk, char *name)
+void initlock(struct spinlock* lk, char* name)
 {
     lk->name = name;
     lk->locked = 0;
@@ -28,15 +28,14 @@ void initlock(struct spinlock *lk, char *name)
  * Disables interrupts on the current CPU to prevent deadlocks and records
  * the owning CPU and caller PCs for debugging.
  */
-void acquire(struct spinlock *lk)
+void acquire(struct spinlock* lk)
 {
     pushcli(); // disable interrupts to avoid deadlock.
     if (holding(lk))
         panic("acquire");
 
     // The xchg is atomic.
-    while (xchg(&lk->locked, 1) != 0)
-        ;
+    while (xchg(&lk->locked, 1) != 0);
 
     // Tell the C compiler and the processor to not move loads or stores
     // past this point, to ensure that the critical section's memory
@@ -51,7 +50,7 @@ void acquire(struct spinlock *lk)
 /**
  * @brief Release a spinlock and restore interrupts if appropriate.
  */
-void release(struct spinlock *lk)
+void release(struct spinlock* lk)
 {
     if (!holding(lk))
         panic("release");
@@ -80,17 +79,17 @@ void release(struct spinlock *lk)
  * @param v Starting frame pointer (obtained from the caller).
  * @param pcs Output array of return addresses; unfilled entries set to zero.
  */
-void getcallerpcs(void *v, uint pcs[])
+void getcallerpcs(void* v, uint pcs[])
 {
     int i;
 
-    uint *ebp = (uint *)v - 2;
+    uint* ebp = (uint*)v - 2;
     for (i = 0; i < 10; i++)
     {
-        if (ebp == 0 || ebp < (uint *)KERNBASE || ebp == (uint *)0xffffffff)
+        if (ebp == 0 || ebp < (uint*)KERNBASE || ebp == (uint*)0xffffffff)
             break;
-        pcs[i] = ebp[1];      // saved %eip
-        ebp = (uint *)ebp[0]; // saved %ebp
+        pcs[i] = ebp[1]; // saved %eip
+        ebp = (uint*)ebp[0]; // saved %ebp
     }
     for (; i < 10; i++)
         pcs[i] = 0;
@@ -101,7 +100,7 @@ void getcallerpcs(void *v, uint pcs[])
  *
  * @return Non-zero if held by this CPU, zero otherwise.
  */
-int holding(struct spinlock *lock)
+int holding(struct spinlock* lock)
 {
     pushcli();
     int r = lock->locked && lock->cpu == mycpu();

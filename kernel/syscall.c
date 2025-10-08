@@ -18,15 +18,15 @@
  *
  * @param addr User virtual address to read.
  * @param ip Destination pointer in kernel space.
- * @return ::0 on success, ::-1 if the address is invalid.
+ * @return 0 on success, -1 if the address is invalid.
  */
-int fetchint(uint addr, int *ip)
+int fetchint(uint addr, int* ip)
 {
-    struct proc *curproc = myproc();
+    struct proc* curproc = myproc();
 
     if (addr >= curproc->size || addr + 4 > curproc->size)
         return -1;
-    *ip = *(int *)(addr);
+    *ip = *(int*)(addr);
     return 0;
 }
 
@@ -35,17 +35,17 @@ int fetchint(uint addr, int *ip)
  *
  * @param addr User address of the string.
  * @param pp Receives the user pointer.
- * @return Length excluding terminator, or ::-1 if invalid.
+ * @return Length excluding terminator, or -1 if invalid.
  */
-int fetchstr(uint addr, char **pp)
+int fetchstr(uint addr, char** pp)
 {
-    struct proc *curproc = myproc();
+    struct proc* curproc = myproc();
 
     if (addr >= curproc->size)
         return -1;
-    *pp = (char *)addr;
-    char *ep = (char *)curproc->size;
-    for (char *s = *pp; s < ep; s++)
+    *pp = (char*)addr;
+    char* ep = (char*)curproc->size;
+    for (char* s = *pp; s < ep; s++)
     {
         if (*s == 0)
             return s - *pp;
@@ -58,9 +58,9 @@ int fetchstr(uint addr, char **pp)
  *
  * @param n Argument index.
  * @param ip Destination pointer.
- * @return ::0 on success, ::-1 on failure.
+ * @return 0 on success, -1 on failure.
  */
-int argint(int n, int *ip)
+int argint(int n, int* ip)
 {
     return fetchint((myproc()->trap_frame->esp) + 4 + 4 * n, ip);
 }
@@ -71,18 +71,18 @@ int argint(int n, int *ip)
  * @param n Argument index.
  * @param pp Receives the user pointer.
  * @param size Size in bytes that must fit within process memory.
- * @return ::0 on success, ::-1 on failure.
+ * @return 0 on success, -1 on failure.
  */
-int argptr(int n, char **pp, int size)
+int argptr(int n, char** pp, int size)
 {
     int i;
-    struct proc *curproc = myproc();
+    struct proc* curproc = myproc();
 
     if (argint(n, &i) < 0)
         return -1;
     if (size < 0 || (uint)i >= curproc->size || (uint)i + size > curproc->size)
         return -1;
-    *pp = (char *)i;
+    *pp = (char*)i;
     return 0;
 }
 
@@ -91,9 +91,9 @@ int argptr(int n, char **pp, int size)
  *
  * @param n Argument index.
  * @param pp Receives the user string pointer.
- * @return ::0 on success, ::-1 on failure.
+ * @return 0 on success, -1 on failure.
  */
-int argstr(int n, char **pp)
+int argstr(int n, char** pp)
 {
     int addr;
     if (argint(n, &addr) < 0)
@@ -125,27 +125,27 @@ extern int sys_uptime(void);
 
 /** @brief Dispatch table mapping syscall numbers to handlers. */
 static int (*syscalls[])(void) = {
-    [SYS_fork] sys_fork,
-    [SYS_exit] sys_exit,
-    [SYS_wait] sys_wait,
-    [SYS_pipe] sys_pipe,
-    [SYS_read] sys_read,
-    [SYS_kill] sys_kill,
-    [SYS_exec] sys_exec,
-    [SYS_fstat] sys_fstat,
-    [SYS_chdir] sys_chdir,
-    [SYS_dup] sys_dup,
-    [SYS_getpid] sys_getpid,
-    [SYS_sbrk] sys_sbrk,
-    [SYS_sleep] sys_sleep,
-    [SYS_uptime] sys_uptime,
-    [SYS_open] sys_open,
-    [SYS_write] sys_write,
-    [SYS_mknod] sys_mknod,
-    [SYS_unlink] sys_unlink,
-    [SYS_link] sys_link,
-    [SYS_mkdir] sys_mkdir,
-    [SYS_close] sys_close,
+    [SYS_fork] = sys_fork,
+    [SYS_exit] = sys_exit,
+    [SYS_wait] = sys_wait,
+    [SYS_pipe] = sys_pipe,
+    [SYS_read] = sys_read,
+    [SYS_kill] = sys_kill,
+    [SYS_exec] = sys_exec,
+    [SYS_fstat] = sys_fstat,
+    [SYS_chdir] = sys_chdir,
+    [SYS_dup] = sys_dup,
+    [SYS_getpid] = sys_getpid,
+    [SYS_sbrk] = sys_sbrk,
+    [SYS_sleep] = sys_sleep,
+    [SYS_uptime] = sys_uptime,
+    [SYS_open] = sys_open,
+    [SYS_write] = sys_write,
+    [SYS_mknod] = sys_mknod,
+    [SYS_unlink] = sys_unlink,
+    [SYS_link] = sys_link,
+    [SYS_mkdir] = sys_mkdir,
+    [SYS_close] = sys_close,
 };
 
 /**
@@ -153,7 +153,7 @@ static int (*syscalls[])(void) = {
  */
 void syscall(void)
 {
-    struct proc *curproc = myproc();
+    struct proc* curproc = myproc();
 
     int num = curproc->trap_frame->eax;
     if (num > 0 && num < NELEM(syscalls) && syscalls[num])

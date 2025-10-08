@@ -9,7 +9,8 @@
 /** @brief Start the non-boot (AP) processors. */
 static void startothers(void);
 /** @brief Common CPU setup code. */
-static void mpmain(void) __attribute__((noreturn));
+static void mpmain(void) __attribute__
+((noreturn));
 /** @brief Kernel page directory */
 extern pde_t* kpgdir;
 /** @brief First address after kernel loaded from ELF file */
@@ -121,7 +122,10 @@ static void startothers(void)
  * alignment attribute. The large-page bit (PTE_PS) allows identity mapping of
  * the first 4 MiB of physical memory.
  */
-__attribute__((__aligned__(PGSIZE)))
+__attribute__ ((__aligned__
+(PGSIZE)
+)
+)
 pde_t entrypgdir[NPDENTRIES] = {
     // Map VA's [0, 4MB) to PA's [0, 4MB)
     [0] = (0) | PTE_P | PTE_W | PTE_PS,

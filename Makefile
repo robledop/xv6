@@ -42,28 +42,19 @@ TOOLPREFIX = i686-elf-
 QEMU = qemu-system-i386
 
 CC = $(TOOLPREFIX)gcc
-#AS = $(TOOLPREFIX)gas
 AS = nasm
 LD = $(TOOLPREFIX)ld
 INCLUDE = -I./include
 OBJCOPY = $(TOOLPREFIX)objcopy
 OBJDUMP = $(TOOLPREFIX)objdump
-CFLAGS = -fno-pic -static -fno-builtin -fno-strict-aliasing -O0 -Wall -MD -ggdb -m32 -fno-omit-frame-pointer
+CFLAGS = -fno-pic -static -fno-builtin -fno-strict-aliasing -O3 -Wall -MD -ggdb -m32 -fno-omit-frame-pointer
 CFLAGS += $(shell $(CC) -fno-stack-protector -E -x c /dev/null >/dev/null 2>&1 && echo -fno-stack-protector)
 CFLAGS += $(INCLUDE)
 #ASFLAGS = -m32 -gdwarf-2 -Wa,-divide
 ASFLAGS += $(INCLUDE)
-#LDFLAGS += -m $(shell $(LD) -V | grep elf_i386 2>/dev/null | head -n 1)
-#LDFLAGS += $(INCLUDE)
 LDFLAGS += -m elf_i386
-
-# Disable PIE when possible (for Ubuntu 16.10 toolchain)
-ifneq ($(shell $(CC) -dumpspecs 2>/dev/null | grep -e '[^f]no-pie'),)
 CFLAGS += -fno-pie -no-pie
-endif
-ifneq ($(shell $(CC) -dumpspecs 2>/dev/null | grep -e '[^f]nopie'),)
-CFLAGS += -fno-pie -nopie
-endif
+
 
 asm_headers:
 	./scripts/c_to_nasm.sh ./include syscall.asm traps.asm memlayout.asm mmu.asm asm.asm param.asm
@@ -80,35 +71,28 @@ xv6memfs.img: build/bootblock build/kernelmemfs
 
 build/bootblock: $K/bootasm.asm $K/bootmain.c asm_headers
 	$(CC) $(CFLAGS) -fno-pic -O -nostdinc -I. -c $K/bootmain.c -o build/bootmain.o
-	#$(CC) $(CFLAGS) -fno-pic -nostdinc -I. -c $K/bootasm.S -o build/bootasm.o
 	$(AS) $(ASFLAGS) -f elf $K/bootasm.asm -o build/bootasm.o
 	$(LD) $(LDFLAGS) -N -e start -Ttext 0x7C00 -o build/bootblock.o build/bootasm.o build/bootmain.o
 	$(OBJCOPY) -S -O binary -j .text build/bootblock.o build/bootblock
 	./scripts/sign.pl ./build/bootblock
 
 build/entryother: $K/entryother.asm asm_headers
-	#$(CC) $(CFLAGS) -fno-pic -nostdinc -I. -c $K/entryother.S -o build/entryother.o
 	$(AS) $(ASFLAGS) -f elf $K/entryother.asm -o build/entryother.o
 	$(LD) $(LDFLAGS) -N -e start -Ttext 0x7000 -o build/bootblockother.o build/entryother.o
 	$(OBJCOPY) -S -O binary -j .text build/bootblockother.o build/entryother
 
 $U/build/initcode: $U/initcode.asm asm_headers
-	#$(CC) $(CFLAGS) -nostdinc -I. -c $U/initcode.asm -o $U/build/initcode.o
 	$(AS) $(ASFLAGS) -f elf $U/initcode.asm -o $U/build/initcode.o
 	$(LD) $(LDFLAGS) -N -e start -Ttext 0 -o $U/build/initcode.out $U/build/initcode.o
 	$(OBJCOPY) -S -O binary $U/build/initcode.out $U/build/initcode
 
-build/kernel: $(OBJS) build/entry.o build/entryother $U/build/initcode
+build/kernel: $(OBJS) build/entry.o build/entryother $U/build/initcode asm_headers
 	$(LD) $(LDFLAGS) -T $K/kernel.ld -o build/kernel build/entry.o $(OBJS) -b binary $U/build/initcode build/entryother
 
 build/%.o: $K/%.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-#build/%.o: $K/%.S
-#	$(CC) $(CFLAGS) -c -o $@ $<
-
-build/%.o: $K/%.asm
-	#$(CC) $(CFLAGS) -c -o $@ $<
+build/%.o: $K/%.asm asm_headers
 	$(AS) $(ASFLAGS) -f elf $< -o $@
 
 # kernelmemfs is a copy of kernel that maintains the
@@ -121,14 +105,11 @@ MEMFSOBJS = $(filter-out build/ide.o,$(OBJS)) build/memide.o
 build/kernelmemfs: $(MEMFSOBJS) build/entry.o build/entryother $U/build/initcode fs.img
 	$(LD) $(LDFLAGS) -T $K/kernel.ld -o build/kernelmemfs build/entry.o  $(MEMFSOBJS) -b binary $U/build/initcode build/entryother fs.img
 
-#$K/vectors.S: scripts/vectors.pl
-#	./scripts/vectors.pl > $K/vectors.S
 
 ULIB = $U/build/ulib.o $U/build/usys.o $U/build/printf.o $U/build/umalloc.o
 
 $(ULIB): 
 	$(CC) $(CFLAGS) -c -o $U/build/ulib.o $U/ulib.c
-	#$(CC) $(CFLAGS) -c -o $U/build/usys.o $U/usys.S
 	$(AS) $(ASFLAGS) -f elf $U/usys.asm -o $U/build/usys.o
 	$(CC) $(CFLAGS) -c -o $U/build/printf.o $U/printf.c
 	$(CC) $(CFLAGS) -c -o $U/build/umalloc.o $U/umalloc.c

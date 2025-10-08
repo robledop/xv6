@@ -162,7 +162,7 @@ static struct mpconf* mpconfig(struct mp** pmp)
 
     if ((mp = mpsearch()) == 0 || mp->physaddr == 0)
         return 0;
-    struct mpconf* conf = (struct mpconf*)P2V((uint) mp->physaddr);
+    struct mpconf* conf = (struct mpconf*)P2V((uint)mp->physaddr);
     if (memcmp(conf, "PCMP", 4) != 0)
         return 0;
     if (conf->version != 1 && conf->version != 4)

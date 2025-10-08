@@ -36,11 +36,11 @@
 /** @brief Protects access to the IDE request queue. */
 static struct spinlock idelock;
 /** @brief Linked list of pending IDE requests. */
-static struct buf *idequeue;
+static struct buf* idequeue;
 
 /** @brief Tracks whether a second disk device responded. */
 static int havedisk1;
-static void idestart(struct buf *);
+static void idestart(struct buf*);
 
 /**
  * @brief Busy-wait for the IDE device to become ready.
@@ -53,8 +53,7 @@ idewait(int checkerr)
 {
     int r;
 
-    while (((r = inb(0x1f7)) & (IDE_BSY | IDE_DRDY)) != IDE_DRDY)
-        ;
+    while (((r = inb(0x1f7)) & (IDE_BSY | IDE_DRDY)) != IDE_DRDY);
     if (checkerr && (r & (IDE_DF | IDE_ERR)) != 0)
         return -1;
     return 0;
@@ -88,7 +87,7 @@ void ideinit(void)
  * Caller must hold ::idelock.
  */
 static void
-idestart(struct buf *b)
+idestart(struct buf* b)
 {
     if (b == 0)
         panic("idestart");
@@ -103,7 +102,7 @@ idestart(struct buf *b)
         panic("idestart");
 
     idewait(0);
-    outb(0x3f6, 0);                // generate interrupt
+    outb(0x3f6, 0); // generate interrupt
     outb(0x1f2, sector_per_block); // number of sectors
     outb(0x1f3, sector & 0xff);
     outb(0x1f4, (sector >> 8) & 0xff);
@@ -123,7 +122,7 @@ idestart(struct buf *b)
 /** @brief Interrupt handler that completes the active IDE request. */
 void ideintr(void)
 {
-    struct buf *b;
+    struct buf* b;
 
     // First queued buffer is the active request.
     acquire(&idelock);
@@ -156,9 +155,9 @@ void ideintr(void)
  *
  * @param b Buffer to schedule; must be locked by the caller.
  */
-void iderw(struct buf *b)
+void iderw(struct buf* b)
 {
-    struct buf **pp;
+    struct buf** pp;
 
     if (!holdingsleep(&b->lock))
         panic("iderw: buf not locked");

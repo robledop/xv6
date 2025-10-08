@@ -2,7 +2,7 @@
 #include "x86.h"
 
 /** @brief Set n bytes of memory to c */
-void * memset(void *dst, int c, uint n)
+void* memset(void* dst, int c, uint n)
 {
     if ((int)dst % 4 == 0 && n % 4 == 0)
     {
@@ -15,7 +15,7 @@ void * memset(void *dst, int c, uint n)
 }
 
 /** @brief Compare n bytes of memory */
-int memcmp(const void *v1, const void *v2, uint n)
+int memcmp(const void* v1, const void* v2, uint n)
 {
     const uchar* s1 = v1;
     const uchar* s2 = v2;
@@ -30,8 +30,8 @@ int memcmp(const void *v1, const void *v2, uint n)
 }
 
 /** @brief Move n bytes of memory */
-void *
-memmove(void *dst, const void *src, uint n)
+void*
+memmove(void* dst, const void* src, uint n)
 {
     const char* s = src;
     char* d = dst;
@@ -51,29 +51,28 @@ memmove(void *dst, const void *src, uint n)
 
 // memcpy exists to placate GCC.  Use memmove.
 /** @brief Copy n bytes of memory (use memmove) */
-void *
-memcpy(void *dst, const void *src, uint n)
+void*
+memcpy(void* dst, const void* src, uint n)
 {
     return memmove(dst, src, n);
 }
 
 /** @brief Compare n characters of strings */
-int strncmp(const char *p, const char *q, uint n)
+int strncmp(const char* p, const char* q, uint n)
 {
     while (n > 0 && *p && *p == *q)
         n--, p++, q++;
     if (n == 0)
         return 0;
-    return (uchar)*p - (uchar)*q;
+    return (uchar) * p - (uchar) * q;
 }
 
 /** @brief Copy n characters of string */
-char *
-strncpy(char *s, const char *t, int n)
+char*
+strncpy(char* s, const char* t, int n)
 {
     char* os = s;
-    while (n-- > 0 && (*s++ = *t++) != 0)
-        ;
+    while (n-- > 0 && (*s++ = *t++) != 0);
     while (n-- > 0)
         *s++ = 0;
     return os;
@@ -81,24 +80,22 @@ strncpy(char *s, const char *t, int n)
 
 // Like strncpy but guaranteed to NUL-terminate.
 /** @brief Copy string safely with NUL-termination */
-char *
-safestrcpy(char *s, const char *t, int n)
+char*
+safestrcpy(char* s, const char* t, int n)
 {
     char* os = s;
     if (n <= 0)
         return os;
-    while (--n > 0 && (*s++ = *t++) != 0)
-        ;
+    while (--n > 0 && (*s++ = *t++) != 0);
     *s = 0;
     return os;
 }
 
 /** @brief Get length of string */
-int strlen(const char *s)
+int strlen(const char* s)
 {
     int n;
 
-    for (n = 0; s[n]; n++)
-        ;
+    for (n = 0; s[n]; n++);
     return n;
 }

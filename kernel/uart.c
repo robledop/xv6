@@ -44,7 +44,7 @@ void uartinit(void)
     ioapicenable(IRQ_COM1, 0);
 
     // Announce that we're here.
-    for (char *p = "xv6...\n"; *p; p++)
+    for (char* p = "xv6...\n"; *p; p++)
         uartputc(*p);
 }
 
@@ -65,10 +65,9 @@ void uartputc(int c)
 /**
  * @brief Non-blocking read of the next received byte.
  *
- * @return Byte value or ::-1 if no data is available.
+ * @return Byte value or -1 if no data is available.
  */
-static int
-uartgetc(void)
+static int uartgetc(void)
 {
     if (!uart)
         return -1;

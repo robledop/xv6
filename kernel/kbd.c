@@ -29,7 +29,7 @@ int kbdgetc(void)
     }
     else if (shift & E0ESC)
     {
-        // Last character was an E0 escape; or with 0x80
+        // The last character was an E0 escape; or with 0x80
         data |= 0x80;
         shift &= ~E0ESC;
     }

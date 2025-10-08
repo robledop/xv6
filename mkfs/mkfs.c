@@ -29,7 +29,7 @@
 int nbitmap = FSSIZE / (BSIZE * 8) + 1;
 int ninodeblocks = NINODES / IPB + 1;
 int nlog = LOGSIZE;
-int nmeta;   // Number of meta blocks (boot, sb, nlog, inode, bitmap)
+int nmeta; // Number of meta blocks (boot, sb, nlog, inode, bitmap)
 int nblocks; // Number of data blocks
 
 int fsfd;
@@ -39,18 +39,18 @@ uint freeinode = 1;
 uint freeblock;
 
 void balloc(int);
-void wsect(uint, void *);
-void winode(uint, struct dinode *);
-void rinode(uint inum, struct dinode *ip);
-void rsect(uint sec, void *buf);
+void wsect(uint, void*);
+void winode(uint, struct dinode*);
+void rinode(uint inum, struct dinode* ip);
+void rsect(uint sec, void* buf);
 uint ialloc(ushort type);
-void iappend(uint inum, void *p, int n);
+void iappend(uint inum, void* p, int n);
 
 // convert to intel byte order
 ushort xshort(ushort x)
 {
     ushort y;
-    uchar *a = (uchar *)&y;
+    uchar* a = (uchar*)&y;
     a[0] = x;
     a[1] = x >> 8;
     return y;
@@ -59,7 +59,7 @@ ushort xshort(ushort x)
 uint xint(uint x)
 {
     uint y;
-    uchar *a = (uchar *)&y;
+    uchar* a = (uchar*)&y;
     a[0] = x;
     a[1] = x >> 8;
     a[2] = x >> 16;
@@ -67,7 +67,7 @@ uint xint(uint x)
     return y;
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     int i, cc, fd;
     struct dirent de;
@@ -174,7 +174,7 @@ int main(int argc, char *argv[])
     exit(0);
 }
 
-void wsect(uint sec, void *buf)
+void wsect(uint sec, void* buf)
 {
     if (lseek(fsfd, sec * BSIZE, 0) != sec * BSIZE)
     {
@@ -188,7 +188,7 @@ void wsect(uint sec, void *buf)
     }
 }
 
-void winode(uint inum, struct dinode *ip)
+void winode(uint inum, struct dinode* ip)
 {
     char buf[BSIZE];
 
@@ -199,7 +199,7 @@ void winode(uint inum, struct dinode *ip)
     wsect(bn, buf);
 }
 
-void rinode(uint inum, struct dinode *ip)
+void rinode(uint inum, struct dinode* ip)
 {
     char buf[BSIZE];
 
@@ -209,7 +209,7 @@ void rinode(uint inum, struct dinode *ip)
     *ip = *dip;
 }
 
-void rsect(uint sec, void *buf)
+void rsect(uint sec, void* buf)
 {
     if (lseek(fsfd, sec * BSIZE, 0) != sec * BSIZE)
     {
@@ -253,9 +253,9 @@ void balloc(int used)
 
 #define min(a, b) ((a) < (b) ? (a) : (b))
 
-void iappend(uint inum, void *xp, int n)
+void iappend(uint inum, void* xp, int n)
 {
-    char *p = (char *)xp;
+    char* p = (char*)xp;
     struct dinode din;
     char buf[BSIZE];
     uint indirect[NINDIRECT];
@@ -282,11 +282,11 @@ void iappend(uint inum, void *xp, int n)
             {
                 din.addrs[NDIRECT] = xint(freeblock++);
             }
-            rsect(xint(din.addrs[NDIRECT]), (char *)indirect);
+            rsect(xint(din.addrs[NDIRECT]), (char*)indirect);
             if (indirect[fbn - NDIRECT] == 0)
             {
                 indirect[fbn - NDIRECT] = xint(freeblock++);
-                wsect(xint(din.addrs[NDIRECT]), (char *)indirect);
+                wsect(xint(din.addrs[NDIRECT]), (char*)indirect);
             }
             x = xint(indirect[fbn - NDIRECT]);
         }

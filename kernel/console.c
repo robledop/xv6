@@ -43,7 +43,8 @@ static void printint(int xx, int base, int sign)
     do
     {
         buf[i++] = digits[x % base];
-    } while ((x /= base) != 0);
+    }
+    while ((x /= base) != 0);
 
     if (sign)
         buf[i++] = '-';
@@ -53,10 +54,10 @@ static void printint(int xx, int base, int sign)
 }
 
 /** @brief Print to the console. only understands %d, %x, %p, %s. */
-void cprintf(char *fmt, ...)
+void cprintf(char* fmt, ...)
 {
     int c;
-    char *s;
+    char* s;
 
     const int locking = cons.locking;
     if (locking)
@@ -65,7 +66,7 @@ void cprintf(char *fmt, ...)
     if (fmt == 0)
         panic("null fmt");
 
-    const uint *argp = (uint *)(void *)(&fmt + 1);
+    const uint* argp = (uint*)(void*)(&fmt + 1);
     for (int i = 0; (c = fmt[i] & 0xff) != 0; i++)
     {
         if (c != '%')
@@ -86,7 +87,7 @@ void cprintf(char *fmt, ...)
             printint(*argp++, 16, 0);
             break;
         case 's':
-            if ((s = (char *)*argp++) == 0)
+            if ((s = (char*)*argp++) == 0)
                 s = "(null)";
             for (; *s; s++)
                 consputc(*s);
@@ -107,7 +108,7 @@ void cprintf(char *fmt, ...)
 }
 
 /** @brief Panic and print the message */
-void panic(char *s)
+void panic(char* s)
 {
     uint pcs[10];
 
@@ -121,14 +122,13 @@ void panic(char *s)
     for (int i = 0; i < 10; i++)
         cprintf(" %p", pcs[i]);
     panicked = 1; // freeze other CPU
-    for (;;)
-        ;
+    for (;;);
 }
 
 #define BACKSPACE 0x100
 #define CRTPORT 0x3d4
 /** @brief CGA memory */
-static ushort *crt = (ushort *)P2V(0xb8000); // CGA memory
+static ushort* crt = (ushort*)P2V(0xb8000); // CGA memory
 
 /** @brief Put a character on the CGA screen */
 static void cgaputc(int c)
@@ -173,8 +173,7 @@ void consputc(int c)
     if (panicked)
     {
         cli();
-        for (;;)
-            ;
+        for (;;);
     }
 
     if (c == BACKSPACE)
@@ -217,7 +216,7 @@ void consoleintr(int (*getc)(void))
             break;
         case C('U'): // Kill line.
             while (input.e != input.w &&
-                   input.buf[(input.e - 1) % INPUT_BUF] != '\n')
+                input.buf[(input.e - 1) % INPUT_BUF] != '\n')
             {
                 input.e--;
                 consputc(BACKSPACE);
@@ -254,7 +253,7 @@ void consoleintr(int (*getc)(void))
 }
 
 /** @brief Read from console */
-int consoleread(struct inode *ip, char *dst, int n)
+int consoleread(struct inode* ip, char* dst, int n)
 {
     iunlock(ip);
     uint target = n;
@@ -295,7 +294,7 @@ int consoleread(struct inode *ip, char *dst, int n)
 }
 
 /** @brief Write to console */
-int consolewrite(struct inode *ip, char *buf, int n)
+int consolewrite(struct inode* ip, char* buf, int n)
 {
     iunlock(ip);
     acquire(&cons.lock);

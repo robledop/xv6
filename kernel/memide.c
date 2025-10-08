@@ -18,7 +18,7 @@ extern uchar _binary_fs_img_start[], _binary_fs_img_size[];
 /** @brief Number of disk blocks exposed by the in-memory disk. */
 static int disksize;
 /** @brief Pointer to the start of the in-memory disk image. */
-static uchar *memdisk;
+static uchar* memdisk;
 
 /** @brief Initialize the memory-backed disk using the embedded fs image. */
 void ideinit(void)
@@ -38,9 +38,9 @@ void ideintr(void)
  *
  * @param b Buffer to read or write; must be locked on entry.
  */
-void iderw(struct buf *b)
+void iderw(struct buf* b)
 {
-    uchar *p;
+    uchar* p;
 
     if (!holdingsleep(&b->lock))
         panic("iderw: buf not locked");

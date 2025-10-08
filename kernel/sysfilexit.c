@@ -25,10 +25,10 @@
  * @return ::0 on success, ::-1 if invalid.
  */
 static int
-argfd(int n, int *pfd, struct file **pf)
+argfd(int n, int* pfd, struct file** pf)
 {
     int fd;
-    struct file *f;
+    struct file* f;
 
     if (argint(n, &fd) < 0)
         return -1;
@@ -50,10 +50,10 @@ argfd(int n, int *pfd, struct file **pf)
  * @return Descriptor number or ::-1 if table is full.
  */
 static int
-fdalloc(struct file *f)
+fdalloc(struct file* f)
 {
     int fd;
-    struct proc *curproc = myproc();
+    struct proc* curproc = myproc();
 
     for (fd = 0; fd < NOFILE; fd++)
     {
@@ -69,7 +69,7 @@ fdalloc(struct file *f)
 /** @brief Duplicate a file descriptor (exit variant handler). */
 int sys_dup(void)
 {
-    struct file *f;
+    struct file* f;
     int fd;
 
     if (argfd(0, 0, &f) < 0)
@@ -83,9 +83,9 @@ int sys_dup(void)
 /** @brief Read bytes from a file descriptor. */
 int sys_read(void)
 {
-    struct file *f;
+    struct file* f;
     int n;
-    char *p;
+    char* p;
 
     if (argfd(0, 0, &f) < 0 || argint(2, &n) < 0 || argptr(1, &p, n) < 0)
         return -1;
@@ -95,9 +95,9 @@ int sys_read(void)
 /** @brief Write bytes to a file descriptor. */
 int sys_write(void)
 {
-    struct file *f;
+    struct file* f;
     int n;
-    char *p;
+    char* p;
 
     if (argfd(0, 0, &f) < 0 || argint(2, &n) < 0 || argptr(1, &p, n) < 0)
         return -1;
@@ -108,7 +108,7 @@ int sys_write(void)
 int sys_close(void)
 {
     int fd;
-    struct file *f;
+    struct file* f;
 
     if (argfd(0, &fd, &f) < 0)
         return -1;
@@ -120,10 +120,10 @@ int sys_close(void)
 /** @brief Return file statistics for a descriptor. */
 int sys_fstat(void)
 {
-    struct file *f;
-    struct stat *st;
+    struct file* f;
+    struct stat* st;
 
-    if (argfd(0, 0, &f) < 0 || argptr(1, (void *)&st, sizeof(*st)) < 0)
+    if (argfd(0, 0, &f) < 0 || argptr(1, (void*)&st, sizeof(*st)) < 0)
         return -1;
     return filestat(f, st);
 }
@@ -135,7 +135,8 @@ int sys_fstat(void)
  */
 int sys_link(void)
 {
-    char name[DIRSIZ], *new, *old;
+    char name[DIRSIZ], *
+    new, *old;
     struct inode *dp, *ip;
 
     if (argstr(0, &old) < 0 || argstr(1, &new) < 0)
@@ -186,14 +187,14 @@ bad:
 
 /** @brief Check whether a directory contains entries other than "." and "..". */
 static int
-isdirempty(struct inode *dp)
+isdirempty(struct inode* dp)
 {
     int off;
     struct dirent de;
 
     for (off = 2 * sizeof(de); off < dp->size; off += sizeof(de))
     {
-        if (readi(dp, (char *)&de, off, sizeof(de)) != sizeof(de))
+        if (readi(dp, (char*)&de, off, sizeof(de)) != sizeof(de))
             panic("isdirempty: readi");
         if (de.inum != 0)
             return 0;
@@ -238,7 +239,7 @@ int sys_unlink(void)
     }
 
     memset(&de, 0, sizeof(de));
-    if (writei(dp, (char *)&de, off, sizeof(de)) != sizeof(de))
+    if (writei(dp, (char*)&de, off, sizeof(de)) != sizeof(de))
         panic("unlink: writei");
     if (ip->type == T_DIR)
     {
@@ -270,8 +271,8 @@ bad:
  * @param minor Minor device number for devices.
  * @return Pointer to the created inode or ::0 on error.
  */
-static struct inode *
-create(char *path, short type, short major, short minor)
+static struct inode*
+create(char* path, short type, short major, short minor)
 {
     struct inode *ip, *dp;
     char name[DIRSIZ];
@@ -300,7 +301,8 @@ create(char *path, short type, short major, short minor)
     iupdate(ip);
 
     if (type == T_DIR)
-    {                // Create . and .. entries.
+    {
+        // Create . and .. entries.
         dp->nlink++; // for ".."
         iupdate(dp);
         // No ip->nlink++ for ".": avoid cyclic ref count.
@@ -319,10 +321,10 @@ create(char *path, short type, short major, short minor)
 /** @brief Open a file path with the requested mode. */
 int sys_open(void)
 {
-    char *path;
+    char* path;
     int fd, omode;
-    struct file *f;
-    struct inode *ip;
+    struct file* f;
+    struct inode* ip;
 
     if (argstr(0, &path) < 0 || argint(1, &omode) < 0)
         return -1;
@@ -376,8 +378,8 @@ int sys_open(void)
 /** @brief Create a new directory. */
 int sys_mkdir(void)
 {
-    char *path;
-    struct inode *ip;
+    char* path;
+    struct inode* ip;
 
     begin_op();
     if (argstr(0, &path) < 0 || (ip = create(path, T_DIR, 0, 0)) == 0)
@@ -393,8 +395,8 @@ int sys_mkdir(void)
 /** @brief Create a device inode. */
 int sys_mknod(void)
 {
-    struct inode *ip;
-    char *path;
+    struct inode* ip;
+    char* path;
     int major, minor;
 
     begin_op();
@@ -414,9 +416,9 @@ int sys_mknod(void)
 /** @brief Change the current working directory. */
 int sys_chdir(void)
 {
-    char *path;
-    struct inode *ip;
-    struct proc *curproc = myproc();
+    char* path;
+    struct inode* ip;
+    struct proc* curproc = myproc();
 
     begin_op();
     if (argstr(0, &path) < 0 || (ip = namei(path)) == 0)
@@ -445,7 +447,7 @@ int sys_exec(void)
     int i;
     uint uargv, uarg;
 
-    if (argstr(0, &path) < 0 || argint(1, (int *)&uargv) < 0)
+    if (argstr(0, &path) < 0 || argint(1, (int*)&uargv) < 0)
     {
         return -1;
     }
@@ -454,7 +456,7 @@ int sys_exec(void)
     {
         if (i >= NELEM(argv))
             return -1;
-        if (fetchint(uargv + 4 * i, (int *)&uarg) < 0)
+        if (fetchint(uargv + 4 * i, (int*)&uarg) < 0)
             return -1;
         if (uarg == 0)
         {
@@ -470,11 +472,11 @@ int sys_exec(void)
 /** @brief Create a unidirectional pipe and return its file descriptors. */
 int sys_pipe(void)
 {
-    int *fd;
+    int* fd;
     struct file *rf, *wf;
     int fd0, fd1;
 
-    if (argptr(0, (void *)&fd, 2 * sizeof(fd[0])) < 0)
+    if (argptr(0, (void*)&fd, 2 * sizeof(fd[0])) < 0)
         return -1;
     if (pipealloc(&rf, &wf) < 0)
         return -1;

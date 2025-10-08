@@ -1,4 +1,5 @@
 #pragma once
+#include "x86.h"
 // x86 trap and interrupt constants.
 
 // Processor-defined:
@@ -37,3 +38,6 @@
 #define IRQ_ERROR       19
 #define IRQ_SPURIOUS    31
 
+#define TOTAL_INTERRUPTS 256
+
+typedef void (*INTERRUPT_CALLBACK_FUNCTION)(struct trapframe* frame);

@@ -15,7 +15,7 @@ struct
 } ptable;
 
 /** @brief Pointer to the very first user process. */
-static struct proc *initproc;
+static struct proc* initproc;
 
 /** @brief Next PID to assign during process creation. */
 int nextpid = 1;
@@ -27,7 +27,7 @@ extern void trapret(void);
  *
  * @param chan Sleep channel to target.
  */
-static void wakeup1(void *chan);
+static void wakeup1(void* chan);
 
 /** @brief Initialize the process table lock. */
 void pinit(void)
@@ -50,7 +50,7 @@ int cpuid()
  *
  * Interrupts must be disabled to prevent migration during lookup.
  */
-struct cpu *mycpu(void)
+struct cpu* mycpu(void)
 {
     if (read_eflags() & FL_IF)
         panic("mycpu called with interrupts enabled\n");
@@ -71,7 +71,7 @@ struct cpu *mycpu(void)
  *
  * Interrupts are temporarily disabled to avoid rescheduling during the read.
  */
-struct proc *myproc(void)
+struct proc* myproc(void)
 {
     pushcli();
     struct cpu* c = mycpu();
@@ -85,9 +85,9 @@ struct proc *myproc(void)
  *
  * @return Pointer to the new process or 0 if none are available.
  */
-static struct proc *alloc_proc(void)
+static struct proc* alloc_proc(void)
 {
-    struct proc *p;
+    struct proc* p;
 
     acquire(&ptable.lock);
 
@@ -110,19 +110,19 @@ found:
         p->state = UNUSED;
         return 0;
     }
-    char *stack_pointer = p->kstack + KSTACKSIZE;
+    char* stack_pointer = p->kstack + KSTACKSIZE;
 
     // Leave room for the trap frame.
     stack_pointer -= sizeof *p->trap_frame;
-    p->trap_frame = (struct trapframe *)stack_pointer;
+    p->trap_frame = (struct trapframe*)stack_pointer;
 
     // Set up new context to start executing at forkret,
     // which returns to trapret.
     stack_pointer -= 4;
-    *(uint *)stack_pointer = (uint)trapret;
+    *(uint*)stack_pointer = (uint)trapret;
 
     stack_pointer -= sizeof *p->context;
-    p->context = (struct context *)stack_pointer;
+    p->context = (struct context*)stack_pointer;
     memset(p->context, 0, sizeof *p->context);
     p->context->eip = (uint)forkret;
 
@@ -185,7 +185,7 @@ void user_init(void)
  */
 int growproc(int n)
 {
-    struct proc *curproc = myproc();
+    struct proc* curproc = myproc();
 
     uint sz = curproc->size;
     if (n > 0)
@@ -212,8 +212,8 @@ int growproc(int n)
  */
 int fork(void)
 {
-    struct proc *np;
-    struct proc *curproc = myproc();
+    struct proc* np;
+    struct proc* curproc = myproc();
 
     // Allocate process.
     if ((np = alloc_proc()) == 0)
@@ -258,11 +258,11 @@ int fork(void)
  * @brief Terminate the current process and release associated resources.
  *
  * Transitions the process to ZOMBIE until the parent collects the status with
- * ::wait.
+ * wait.
  */
 void exit(void)
 {
-    struct proc *curproc = myproc();
+    struct proc* curproc = myproc();
 
     if (curproc == initproc)
         panic("init exiting");
@@ -311,7 +311,7 @@ void exit(void)
  */
 int wait(void)
 {
-    struct proc *curproc = myproc();
+    struct proc* curproc = myproc();
 
     acquire(&ptable.lock);
     for (;;)
@@ -359,7 +359,7 @@ int wait(void)
  */
 void scheduler(void)
 {
-    struct cpu *current_cpu = mycpu();
+    struct cpu* current_cpu = mycpu();
     current_cpu->proc = 0;
 
     for (;;)
@@ -400,7 +400,7 @@ void scheduler(void)
  */
 void sched(void)
 {
-    struct proc *p = myproc();
+    struct proc* p = myproc();
 
     if (!holding(&ptable.lock))
         panic("sched ptable.lock");
@@ -456,9 +456,9 @@ void forkret(void)
  * @param chan Sleep channel identifier.
  * @param lk Lock currently held by the caller.
  */
-void sleep(void *chan, struct spinlock *lk)
+void sleep(void* chan, struct spinlock* lk)
 {
-    struct proc *p = myproc();
+    struct proc* p = myproc();
 
     if (p == 0)
         panic("sleep");
@@ -502,7 +502,7 @@ void sleep(void *chan, struct spinlock *lk)
  * Requires ::ptable.lock to be held.
  */
 static void
-wakeup1(void *chan)
+wakeup1(void* chan)
 {
     for (struct proc* p = ptable.proc; p < &ptable.proc[NPROC]; p++)
         if (p->state == SLEEPING && p->chan == chan)
@@ -514,7 +514,7 @@ wakeup1(void *chan)
  *
  * Acquires and releases ::ptable.lock internally.
  */
-void wakeup(void *chan)
+void wakeup(void* chan)
 {
     acquire(&ptable.lock);
     wakeup1(chan);
@@ -557,14 +557,15 @@ int kill(int pid)
  */
 void procdump(void)
 {
-    static char *states[] = {
+    static char* states[] = {
         [UNUSED] = "unused",
         [EMBRYO] = "embryo",
         [SLEEPING] = "sleep ",
         [RUNNABLE] = "runble",
         [RUNNING] = "run   ",
-        [ZOMBIE] = "zombie"};
-    char *state;
+        [ZOMBIE] = "zombie"
+    };
+    char* state;
     uint pc[10];
 
     for (struct proc* p = ptable.proc; p < &ptable.proc[NPROC]; p++)
@@ -578,7 +579,7 @@ void procdump(void)
         cprintf("%d %s %s", p->pid, state, p->name);
         if (p->state == SLEEPING)
         {
-            getcallerpcs((uint *)p->context->ebp + 2, pc);
+            getcallerpcs((uint*)p->context->ebp + 2, pc);
             for (int i = 0; i < 10 && pc[i] != 0; i++)
                 cprintf(" %p", pc[i]);
         }

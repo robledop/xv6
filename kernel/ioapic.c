@@ -23,7 +23,7 @@
 #define INT_LOGICAL 0x00000800   // Destination is CPU id (vs APIC ID)
 
 /** @brief Memory-mapped base pointer to the I/O APIC. */
-volatile struct ioapic *ioapic;
+volatile struct ioapic* ioapic;
 
 // IO APIC MMIO structure: write reg, then read or write data.
 /** @brief Memory-mapped register layout of the I/O APIC. */
@@ -63,7 +63,7 @@ ioapicwrite(int reg, uint data)
 /** @brief Initialize the I/O APIC and mask all interrupts. */
 void ioapicinit(void)
 {
-    ioapic = (volatile struct ioapic *)IOAPIC;
+    ioapic = (volatile struct ioapic*)IOAPIC;
     int maxintr = (ioapicread(REG_VER) >> 16) & 0xFF;
     int id = ioapicread(REG_ID) >> 24;
     if (id != ioapicid)

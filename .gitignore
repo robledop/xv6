@@ -12,3 +12,4 @@ build/
 user/build
 mkfs/mkfs
 .cache
+compile_commands.json

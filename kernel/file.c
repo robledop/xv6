@@ -12,6 +12,7 @@
 
 /** @brief Device switch table mapping major numbers to drivers. */
 struct devsw devsw[NDEV];
+
 /** @brief Global file table protected by a spinlock. */
 struct
 {
@@ -30,7 +31,7 @@ void fileinit(void)
  *
  * @return Pointer to the allocated file or ::0 if none are free.
  */
-struct file *
+struct file*
 filealloc(void)
 {
     acquire(&ftable.lock);
@@ -53,8 +54,8 @@ filealloc(void)
  * @param f File to duplicate.
  * @return The same file pointer with incremented reference count.
  */
-struct file *
-filedup(struct file *f)
+struct file*
+filedup(struct file* f)
 {
     acquire(&ftable.lock);
     if (f->ref < 1)
@@ -69,7 +70,7 @@ filedup(struct file *f)
  *
  * @param f File to close.
  */
-void fileclose(struct file *f)
+void fileclose(struct file* f)
 {
     acquire(&ftable.lock);
     if (f->ref < 1)
@@ -101,7 +102,7 @@ void fileclose(struct file *f)
  * @param st Destination buffer for statistics.
  * @return ::0 on success, ::-1 if unsupported for the file type.
  */
-int filestat(struct file *f, struct stat *st)
+int filestat(struct file* f, struct stat* st)
 {
     if (f->type == FD_INODE)
     {
@@ -121,7 +122,7 @@ int filestat(struct file *f, struct stat *st)
  * @param n Maximum number of bytes to read.
  * @return Bytes read or ::-1 on error.
  */
-int fileread(struct file *f, char *addr, int n)
+int fileread(struct file* f, char* addr, int n)
 {
     int r;
 
@@ -148,7 +149,7 @@ int fileread(struct file *f, char *addr, int n)
  * @param n Number of bytes to write.
  * @return Bytes written or ::-1 on error.
  */
-int filewrite(struct file *f, char *addr, int n)
+int filewrite(struct file* f, char* addr, int n)
 {
     int r;
 
