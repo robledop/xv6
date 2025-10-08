@@ -48,8 +48,7 @@ void readsb(int dev, struct superblock *sb)
  * @param dev Device containing the block.
  * @param bno Block number to clear.
  */
-static void
-bzero(int dev, int bno)
+static void bzero(int dev, int bno)
 {
     struct buf *bp = bread(dev, bno);
     memset(bp->data, 0, BSIZE);
@@ -266,8 +265,7 @@ void iupdate(struct inode *ip)
  * @param inum Inode number on disk.
  * @return In-core inode pointer.
  */
-static struct inode *
-iget(uint dev, uint inum)
+static struct inode * iget(uint dev, uint inum)
 {
     struct inode *ip;
 
@@ -307,8 +305,7 @@ iget(uint dev, uint inum)
  * @param ip Inode to retain.
  * @return The same inode pointer.
  */
-struct inode *
-idup(struct inode *ip)
+struct inode * idup(struct inode *ip)
 {
     acquire(&icache.lock);
     ip->ref++;
@@ -412,8 +409,7 @@ void iunlockput(struct inode *ip)
  * @param bn Block number within the file.
  * @return Physical block number on disk.
  */
-static uint
-bmap(struct inode *ip, uint bn)
+static uint bmap(struct inode *ip, uint bn)
 {
     uint addr;
 
@@ -508,7 +504,7 @@ void stati(struct inode *ip, struct stat *st)
  * @param dst Destination buffer.
  * @param off Byte offset within the file.
  * @param n Number of bytes to read.
- * @return Bytes read or ::-1 on error.
+ * @return Bytes read or -1 on error.
  */
 int readi(struct inode *ip, char *dst, uint off, uint n)
 {

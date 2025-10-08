@@ -181,7 +181,7 @@ void user_init(void)
  * @brief Grow or shrink the current process's address space.
  *
  * @param n Positive delta to grow, negative to shrink.
- * @return ::0 on success, ::-1 on failure.
+ * @return 0 on success, -1 on failure.
  */
 int growproc(int n)
 {

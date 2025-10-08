@@ -30,8 +30,7 @@ outw(ushort port, ushort data)
     asm volatile("out %0,%1" : : "a" (data), "d" (port));
 }
 
-static inline void
-outsl(int port, const void* addr, int cnt)
+static inline void outsl(int port, const void* addr, int cnt)
 {
     asm volatile("cld; rep outsl" :
         "=S" (addr), "=c" (cnt) :
@@ -39,8 +38,7 @@ outsl(int port, const void* addr, int cnt)
         "cc");
 }
 
-static inline void
-stosb(void* addr, int data, int cnt)
+static inline void stosb(void* addr, int data, int cnt)
 {
     asm volatile("cld; rep stosb" :
         "=D" (addr), "=c" (cnt) :
@@ -48,8 +46,7 @@ stosb(void* addr, int data, int cnt)
         "memory", "cc");
 }
 
-static inline void
-stosl(void* addr, int data, int cnt)
+static inline void stosl(void* addr, int data, int cnt)
 {
     asm volatile("cld; rep stosl" :
         "=D" (addr), "=c" (cnt) :
@@ -59,8 +56,7 @@ stosl(void* addr, int data, int cnt)
 
 struct segdesc;
 
-static inline void
-lgdt(struct segdesc* p, int size)
+static inline void lgdt(struct segdesc* p, int size)
 {
     volatile ushort pd[3];
 

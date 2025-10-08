@@ -23,7 +23,6 @@
 // cpu->gdt[NSEGS] holds the above segments.
 #define NSEGS     6
 
-#ifndef __ASSEMBLER__
 #include "types.h"
 
 // Segment Descriptor
@@ -53,7 +52,6 @@ struct segdesc
 { (lim) & 0xffff, (uint)(base) & 0xffff,              \
   ((uint)(base) >> 16) & 0xff, type, 1, dpl, 1,       \
   (uint)(lim) >> 16, 0, 0, 1, 0, (uint)(base) >> 24 }
-#endif
 
 #define DPL_USER    0x3     // User DPL
 
@@ -105,7 +103,7 @@ struct segdesc
 #define PTE_ADDR(pte)   ((uint)(pte) & ~0xFFF)
 #define PTE_FLAGS(pte)  ((uint)(pte) &  0xFFF)
 
-#ifndef __ASSEMBLER__
+// #ifndef __ASSEMBLER__
 typedef uint pte_t;
 
 // Task state segment format
@@ -185,4 +183,4 @@ struct gate_desc
   (gate).off_31_16 = (uint)(off) >> 16;                  \
 }
 
-#endif
+// #endif

@@ -2,8 +2,7 @@
 #include "x86.h"
 
 /** @brief Set n bytes of memory to c */
-void *
-memset(void *dst, int c, uint n)
+void * memset(void *dst, int c, uint n)
 {
     if ((int)dst % 4 == 0 && n % 4 == 0)
     {

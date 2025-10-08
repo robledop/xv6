@@ -49,7 +49,7 @@ void binit(void)
     // Create linked list of buffers
     bcache.head.prev = &bcache.head;
     bcache.head.next = &bcache.head;
-    for (struct buf *b = bcache.buf; b < bcache.buf + NBUF; b++)
+    for (struct buf* b = bcache.buf; b < bcache.buf + NBUF; b++)
     {
         b->next = bcache.head.next;
         b->prev = &bcache.head;
@@ -64,10 +64,9 @@ void binit(void)
  *
  * Returns a locked buffer with refcount incremented.
  */
-static struct buf *
-bget(uint dev, uint blockno)
+static struct buf* bget(uint dev, uint blockno)
 {
-    struct buf *b;
+    struct buf* b;
 
     acquire(&bcache.lock);
 
@@ -103,10 +102,9 @@ bget(uint dev, uint blockno)
 }
 
 /** @brief Return a locked buffer filled with the requested block. */
-struct buf *
-bread(uint dev, uint blockno)
+struct buf* bread(uint dev, uint blockno)
 {
-    struct buf *b = bget(dev, blockno);
+    struct buf* b = bget(dev, blockno);
     if ((b->flags & B_VALID) == 0)
     {
         iderw(b);
@@ -115,7 +113,7 @@ bread(uint dev, uint blockno)
 }
 
 /** @brief Write a locked buffer's contents to disk via the IDE layer. */
-void bwrite(struct buf *b)
+void bwrite(struct buf* b)
 {
     if (!holdingsleep(&b->lock))
         panic("bwrite");
@@ -126,7 +124,7 @@ void bwrite(struct buf *b)
 /**
  * @brief Release a locked buffer and move it to the MRU position.
  */
-void brelse(struct buf *b)
+void brelse(struct buf* b)
 {
     if (!holdingsleep(&b->lock))
         panic("brelse");

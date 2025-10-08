@@ -132,7 +132,7 @@ static struct kmap
 /**
  * @brief Build the kernel portion of a new page directory.
  *
- * @return Pointer to the initialized page directory or ::0 on failure.
+ * @return Pointer to the initialized page directory or 0 on failure.
  */
 pde_t* setupkvm(void)
 {
@@ -181,8 +181,7 @@ void switch_uvm(struct proc* p)
         panic("switchuvm: no pgdir");
 
     pushcli();
-    mycpu()->gdt[SEG_TSS] = SEG16(STS_T32A, &mycpu()->task_state,
-                                  sizeof(mycpu()->task_state) - 1, 0);
+    mycpu()->gdt[SEG_TSS] = SEG16(STS_T32A, &mycpu()->task_state, sizeof(mycpu()->task_state) - 1, 0);
     mycpu()->gdt[SEG_TSS].s = 0;
     mycpu()->task_state.ss0 = SEG_KDATA << 3;
     mycpu()->task_state.esp0 = (uint)p->kstack + KSTACKSIZE;

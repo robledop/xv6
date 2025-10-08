@@ -22,27 +22,6 @@
   },
   {
     "arguments": [
-      "/home/robledo/opt/cross/bin/i686-elf-gcc",
-      "-fno-pic",
-      "-fno-builtin",
-      "-fno-strict-aliasing",
-      "-O0",
-      "-Wall",
-      "-ggdb",
-      "-m32",
-      "-fno-omit-frame-pointer",
-      "-I./include",
-      "-c",
-      "-o",
-      "user/build/usys.o",
-      "user/usys.S"
-    ],
-    "directory": "/home/robledo/source/osdev/xv6",
-    "file": "/home/robledo/source/osdev/xv6/user/usys.S",
-    "output": "/home/robledo/source/osdev/xv6/user/build/usys.o"
-  },
-  {
-    "arguments": [
       "/usr/bin/gcc",
       "-c",
       "-Werror",
@@ -424,31 +403,6 @@
       "-m32",
       "-fno-omit-frame-pointer",
       "-I./include",
-      "-fno-pic",
-      "-O",
-      "-nostdinc",
-      "-I.",
-      "-c",
-      "-o",
-      "build/bootmain.o",
-      "kernel/bootmain.c"
-    ],
-    "directory": "/home/robledo/source/osdev/xv6",
-    "file": "/home/robledo/source/osdev/xv6/kernel/bootmain.c",
-    "output": "/home/robledo/source/osdev/xv6/build/bootmain.o"
-  },
-  {
-    "arguments": [
-      "/home/robledo/opt/cross/bin/i686-elf-gcc",
-      "-fno-pic",
-      "-fno-builtin",
-      "-fno-strict-aliasing",
-      "-O0",
-      "-Wall",
-      "-ggdb",
-      "-m32",
-      "-fno-omit-frame-pointer",
-      "-I./include",
       "-c",
       "-o",
       "build/bio.o",
@@ -541,30 +495,6 @@
     "directory": "/home/robledo/source/osdev/xv6",
     "file": "/home/robledo/source/osdev/xv6/kernel/fs.c",
     "output": "/home/robledo/source/osdev/xv6/build/fs.o"
-  },
-  {
-    "arguments": [
-      "/home/robledo/opt/cross/bin/i686-elf-gcc",
-      "-fno-pic",
-      "-fno-builtin",
-      "-fno-strict-aliasing",
-      "-O0",
-      "-Wall",
-      "-ggdb",
-      "-m32",
-      "-fno-omit-frame-pointer",
-      "-I./include",
-      "-fno-pic",
-      "-nostdinc",
-      "-I.",
-      "-c",
-      "-o",
-      "build/bootasm.o",
-      "kernel/bootasm.S"
-    ],
-    "directory": "/home/robledo/source/osdev/xv6",
-    "file": "/home/robledo/source/osdev/xv6/kernel/bootasm.S",
-    "output": "/home/robledo/source/osdev/xv6/build/bootasm.o"
   },
   {
     "arguments": [
@@ -874,27 +804,6 @@
       "-I./include",
       "-c",
       "-o",
-      "build/swtch.o",
-      "kernel/swtch.S"
-    ],
-    "directory": "/home/robledo/source/osdev/xv6",
-    "file": "/home/robledo/source/osdev/xv6/kernel/swtch.S",
-    "output": "/home/robledo/source/osdev/xv6/build/swtch.o"
-  },
-  {
-    "arguments": [
-      "/home/robledo/opt/cross/bin/i686-elf-gcc",
-      "-fno-pic",
-      "-fno-builtin",
-      "-fno-strict-aliasing",
-      "-O0",
-      "-Wall",
-      "-ggdb",
-      "-m32",
-      "-fno-omit-frame-pointer",
-      "-I./include",
-      "-c",
-      "-o",
       "build/syscall.o",
       "kernel/syscall.c"
     ],
@@ -958,27 +867,6 @@
       "-I./include",
       "-c",
       "-o",
-      "build/trapasm.o",
-      "kernel/trapasm.S"
-    ],
-    "directory": "/home/robledo/source/osdev/xv6",
-    "file": "/home/robledo/source/osdev/xv6/kernel/trapasm.S",
-    "output": "/home/robledo/source/osdev/xv6/build/trapasm.o"
-  },
-  {
-    "arguments": [
-      "/home/robledo/opt/cross/bin/i686-elf-gcc",
-      "-fno-pic",
-      "-fno-builtin",
-      "-fno-strict-aliasing",
-      "-O0",
-      "-Wall",
-      "-ggdb",
-      "-m32",
-      "-fno-omit-frame-pointer",
-      "-I./include",
-      "-c",
-      "-o",
       "build/trap.o",
       "kernel/trap.c"
     ],
@@ -1021,27 +909,6 @@
       "-I./include",
       "-c",
       "-o",
-      "build/vectors.o",
-      "kernel/vectors.S"
-    ],
-    "directory": "/home/robledo/source/osdev/xv6",
-    "file": "/home/robledo/source/osdev/xv6/kernel/vectors.S",
-    "output": "/home/robledo/source/osdev/xv6/build/vectors.o"
-  },
-  {
-    "arguments": [
-      "/home/robledo/opt/cross/bin/i686-elf-gcc",
-      "-fno-pic",
-      "-fno-builtin",
-      "-fno-strict-aliasing",
-      "-O0",
-      "-Wall",
-      "-ggdb",
-      "-m32",
-      "-fno-omit-frame-pointer",
-      "-I./include",
-      "-c",
-      "-o",
       "build/vm.o",
       "kernel/vm.c"
     ],
@@ -1061,60 +928,17 @@
       "-m32",
       "-fno-omit-frame-pointer",
       "-I./include",
-      "-c",
-      "-o",
-      "build/entry.o",
-      "kernel/entry.S"
-    ],
-    "directory": "/home/robledo/source/osdev/xv6",
-    "file": "/home/robledo/source/osdev/xv6/kernel/entry.S",
-    "output": "/home/robledo/source/osdev/xv6/build/entry.o"
-  },
-  {
-    "arguments": [
-      "/home/robledo/opt/cross/bin/i686-elf-gcc",
       "-fno-pic",
-      "-fno-builtin",
-      "-fno-strict-aliasing",
-      "-O0",
-      "-Wall",
-      "-ggdb",
-      "-m32",
-      "-fno-omit-frame-pointer",
-      "-I./include",
-      "-fno-pic",
+      "-O",
       "-nostdinc",
       "-I.",
       "-c",
       "-o",
-      "build/entryother.o",
-      "kernel/entryother.S"
+      "build/bootmain.o",
+      "kernel/bootmain.c"
     ],
     "directory": "/home/robledo/source/osdev/xv6",
-    "file": "/home/robledo/source/osdev/xv6/kernel/entryother.S",
-    "output": "/home/robledo/source/osdev/xv6/build/entryother.o"
-  },
-  {
-    "arguments": [
-      "/home/robledo/opt/cross/bin/i686-elf-gcc",
-      "-fno-pic",
-      "-fno-builtin",
-      "-fno-strict-aliasing",
-      "-O0",
-      "-Wall",
-      "-ggdb",
-      "-m32",
-      "-fno-omit-frame-pointer",
-      "-I./include",
-      "-nostdinc",
-      "-I.",
-      "-c",
-      "-o",
-      "user/build/initcode.o",
-      "user/initcode.S"
-    ],
-    "directory": "/home/robledo/source/osdev/xv6",
-    "file": "/home/robledo/source/osdev/xv6/user/initcode.S",
-    "output": "/home/robledo/source/osdev/xv6/user/build/initcode.o"
+    "file": "/home/robledo/source/osdev/xv6/kernel/bootmain.c",
+    "output": "/home/robledo/source/osdev/xv6/build/bootmain.o"
   }
 ]
