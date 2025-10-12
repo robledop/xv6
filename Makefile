@@ -125,7 +125,7 @@ $U/build/_forktest: $U/build/forktest.o $(ULIB)
 	# in order to be able to max out the proc table.
 	$(LD) $(LDFLAGS) -N -e main -Ttext 0 -o $U/build/_forktest $U/build/forktest.o $U/build/ulib.o $U/build/usys.o
 
-mkfs/mkfs: mkfs/mkfs.c 
+mkfs/mkfs: mkfs/mkfs.c
 	rm -f mkfs/*.h
 	cp ./include/fs.h ./mkfs/fs.h
 	cp ./include/types.h ./mkfs/types.h
@@ -156,6 +156,18 @@ UPROGS=\
 	$U/build/_wc\
 	$U/build/_zombie\
 
+grub: build/kernel $(UPROGS)
+	cp build/kernel ./rootfs/boot/kernel
+	# Copy all the user programs to the root filesystem and rename them to remove the leading underscore.
+	if [ -n "$(UPROGS)" ]; then \
+	  for f in $(UPROGS); do \
+	    name=$$(basename $$f); \
+	    name=$${name#_}; \
+	    cp "$$f" ./rootfs/"$$name"; \
+	  done; \
+	fi
+	./scripts/create-grub-image.sh
+
 fs.img: mkfs/mkfs $(UPROGS)
 	./mkfs/mkfs fs.img $(UPROGS)
 
@@ -166,16 +178,18 @@ bochs : fs.img xv6.img
 	if [ ! -e .bochsrc ]; then ln -s dot-bochsrc .bochsrc; fi
 	bochs -q
 
-CPUS := 1
+CPUS := 2
+MEMORY := 512
 QEMUEXTRA := -display gtk,zoom-to-fit=on,gl=off,window-close=on,grab-on-hover=off
 QEMUGDB = -S -gdb tcp::1234
-QEMUOPTS = -drive file=fs.img,index=1,media=disk,format=raw -drive file=xv6.img,index=0,media=disk,format=raw -smp $(CPUS) -m 512
+#QEMUOPTS = -drive file=fs.img,index=1,media=disk,format=raw -drive file=xv6.img,index=0,media=disk,format=raw -smp $(CPUS) -m $(MEMORY)
+QEMUOPTS = -drive file=disk.img,index=0,media=disk,format=raw -smp $(CPUS) -m $(MEMORY)
 
 qemu: fs.img xv6.img
 	$(QEMU) -serial mon:stdio $(QEMUOPTS) $(QEMUEXTRA)
 
 qemu-memfs: xv6memfs.img
-	$(QEMU) -drive file=xv6memfs.img,index=0,media=disk,format=raw -smp $(CPUS) -m 512
+	$(QEMU) -drive file=xv6memfs.img,index=0,media=disk,format=raw -smp $(CPUS) -m $(MEMORY)
 
 qemu-nox: fs.img xv6.img
 	$(QEMU) -nographic $(QEMUOPTS)
@@ -185,6 +199,9 @@ qemu-nox: fs.img xv6.img
 
 qemu-gdb: fs.img xv6.img .gdbinit
 	@echo "*** Now run 'gdb'." 1>&2
+	$(QEMU) -daemonize $(QEMUOPTS) $(QEMUGDB) $(QEMUEXTRA)
+
+qemu-grub-gdb: grub .gdbinit
 	$(QEMU) -daemonize $(QEMUOPTS) $(QEMUGDB) $(QEMUEXTRA)
 
 qemu-nox-gdb: fs.img xv6.img .gdbinit

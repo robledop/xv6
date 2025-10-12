@@ -46,10 +46,9 @@ static void idestart(struct buf*);
  * @brief Busy-wait for the IDE device to become ready.
  *
  * @param checkerr When non-zero, validate that no fault/error flags are set.
- * @return ::0 when ready, ::-1 if an error was detected.
+ * @return 0 when ready, -1 if an error was detected.
  */
-static int
-idewait(int checkerr)
+static int idewait(int checkerr)
 {
     int r;
 
@@ -84,10 +83,9 @@ void ideinit(void)
 /**
  * @brief Issue a command to service the given buffer.
  *
- * Caller must hold ::idelock.
+ * Caller must hold idelock.
  */
-static void
-idestart(struct buf* b)
+static void idestart(struct buf* b)
 {
     if (b == 0)
         panic("idestart");

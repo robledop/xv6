@@ -38,11 +38,11 @@ multiboot_header:
 ; Since we haven't set up virtual memory yet, our entry point is
 ; the physical address of 'entry'.
 global _start
-_start equ V2P_WO(entry)
+;_start equ V2P_WO(entry)
 
 ; Entering xv6 on boot processor, with paging off.
-global entry
-entry:
+;global entry
+_start:
   ; Turn on page size extension for 4Mbyte pages
   mov     eax, cr4
   or      eax, CR4_PSE

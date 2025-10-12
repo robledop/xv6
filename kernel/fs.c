@@ -214,8 +214,7 @@ static struct inode* iget(uint dev, uint inum);
  * @param type Inode type to assign.
  * @return Referenced but unlocked inode structure.
  */
-struct inode*
-ialloc(uint dev, short type)
+struct inode* ialloc(uint dev, short type)
 {
     for (int inum = 1; inum < super_block.ninodes; inum++)
     {
@@ -716,7 +715,7 @@ static char* skipelem(char* path, char* name)
  * @param path Path string to traverse.
  * @param nameiparent Non-zero to return parent directory inode.
  * @param name Buffer receiving the final path element.
- * @return Referenced inode on success, ::0 if the path cannot be resolved.
+ * @return Referenced inode on success, 0 if the path cannot be resolved.
  */
 static struct inode* namex(char* path, int nameiparent, char* name)
 {
@@ -761,7 +760,7 @@ static struct inode* namex(char* path, int nameiparent, char* name)
  * @brief Resolve a path to its final inode.
  *
  * @param path Path string.
- * @return Referenced inode or ::0 if resolution fails.
+ * @return Referenced inode or 0 if resolution fails.
  */
 struct inode* namei(char* path)
 {

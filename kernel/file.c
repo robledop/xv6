@@ -31,8 +31,7 @@ void fileinit(void)
  *
  * @return Pointer to the allocated file or ::0 if none are free.
  */
-struct file*
-filealloc(void)
+struct file* filealloc(void)
 {
     acquire(&ftable.lock);
     for (struct file* f = ftable.file; f < ftable.file + NFILE; f++)
@@ -54,8 +53,7 @@ filealloc(void)
  * @param f File to duplicate.
  * @return The same file pointer with incremented reference count.
  */
-struct file*
-filedup(struct file* f)
+struct file* filedup(struct file* f)
 {
     acquire(&ftable.lock);
     if (f->ref < 1)
@@ -100,7 +98,7 @@ void fileclose(struct file* f)
  *
  * @param f File to query (must be an inode-backed file).
  * @param st Destination buffer for statistics.
- * @return ::0 on success, ::-1 if unsupported for the file type.
+ * @return 0 on success, -1 if unsupported for the file type.
  */
 int filestat(struct file* f, struct stat* st)
 {
@@ -120,7 +118,7 @@ int filestat(struct file* f, struct stat* st)
  * @param f File to read.
  * @param addr Destination buffer.
  * @param n Maximum number of bytes to read.
- * @return Bytes read or ::-1 on error.
+ * @return Bytes read or -1 on error.
  */
 int fileread(struct file* f, char* addr, int n)
 {
@@ -147,11 +145,10 @@ int fileread(struct file* f, char* addr, int n)
  * @param f File to write.
  * @param addr Source buffer.
  * @param n Number of bytes to write.
- * @return Bytes written or ::-1 on error.
+ * @return Bytes written or -1 on error.
  */
 int filewrite(struct file* f, char* addr, int n)
 {
-    int r;
 
     if (f->writable == 0)
         return -1;
@@ -159,6 +156,7 @@ int filewrite(struct file* f, char* addr, int n)
         return pipewrite(f->pipe, addr, n);
     if (f->type == FD_INODE)
     {
+        int r;
         // write a few blocks at a time to avoid exceeding
         // the maximum log transaction size, including
         // i-node, indirect block, allocation blocks,
