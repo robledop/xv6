@@ -51,15 +51,11 @@ void kinit2(void* vstart, void* vend)
 /** @brief Free a range of memory */
 void freerange(void* vstart, void* vend)
 {
-    int count = 0;
     char* p = (char*)PGROUNDUP((uint)vstart);
     for (; p + PGSIZE <= (char*)vend; p += PGSIZE)
     {
         kfree(p);
-        count++;
     }
-
-    cprintf("freerange: freed %d pages, start: %p, end: %p\n", count, vstart, vend);
 }
 
 /** @brief Free the page of physical memory pointed at by v,

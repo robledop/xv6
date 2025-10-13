@@ -99,3 +99,9 @@ int strlen(const char* s)
     for (n = 0; s[n]; n++);
     return n;
 }
+
+
+bool starts_with(const char pre[static 1], const char str[static 1])
+{
+    return strncmp(pre, str, strlen(pre)) == 0;
+}

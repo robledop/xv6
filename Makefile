@@ -36,6 +36,9 @@ OBJS = \
 	build/uart.o\
 	build/vectors.o\
 	build/vm.o\
+	build/ubsan.o\
+	build/ssp.o \
+	build/debug.o
 
 TOOLPREFIX = i686-elf-
 
@@ -47,14 +50,15 @@ LD = $(TOOLPREFIX)ld
 INCLUDE = -I./include
 OBJCOPY = $(TOOLPREFIX)objcopy
 OBJDUMP = $(TOOLPREFIX)objdump
-CFLAGS = -fno-pic -static -fno-builtin -fno-strict-aliasing -O3 -Wall -MD -ggdb -m32 -fno-omit-frame-pointer
-CFLAGS += $(shell $(CC) -fno-stack-protector -E -x c /dev/null >/dev/null 2>&1 && echo -fno-stack-protector)
+CFLAGS = -nostdlib -ffreestanding -fno-pic -static -fno-builtin -fno-strict-aliasing -O0 -Wall -MD -ggdb -m32 -fno-omit-frame-pointer -std=gnu23
+#CFLAGS += $(shell $(CC) -fstack-protector -E -x c /dev/null >/dev/null 2>&1 && echo -fstack-protector)
 CFLAGS += $(INCLUDE)
 #ASFLAGS = -m32 -gdwarf-2 -Wa,-divide
 ASFLAGS += $(INCLUDE)
 LDFLAGS += -m elf_i386
 CFLAGS += -fno-pie -no-pie
 
+$K/build/%.o: CFLAGS += -fsanitize=undefined -fstack-protector
 
 asm_headers:
 	./scripts/c_to_nasm.sh ./include syscall.asm traps.asm memlayout.asm mmu.asm asm.asm param.asm
@@ -108,7 +112,7 @@ build/kernelmemfs: $(MEMFSOBJS) build/entry.o build/entryother $U/build/initcode
 
 ULIB = $U/build/ulib.o $U/build/usys.o $U/build/printf.o $U/build/umalloc.o
 
-$(ULIB): 
+$(ULIB): asm_headers
 	$(CC) $(CFLAGS) -c -o $U/build/ulib.o $U/ulib.c
 	$(AS) $(ASFLAGS) -f elf $U/usys.asm -o $U/build/usys.o
 	$(CC) $(CFLAGS) -c -o $U/build/printf.o $U/printf.c
@@ -178,7 +182,7 @@ bochs : fs.img xv6.img
 	if [ ! -e .bochsrc ]; then ln -s dot-bochsrc .bochsrc; fi
 	bochs -q
 
-CPUS := 2
+CPUS := 1
 MEMORY := 512
 QEMUEXTRA := -display gtk,zoom-to-fit=on,gl=off,window-close=on,grab-on-hover=off
 QEMUGDB = -S -gdb tcp::1234
@@ -201,7 +205,7 @@ qemu-gdb: fs.img xv6.img .gdbinit
 	@echo "*** Now run 'gdb'." 1>&2
 	$(QEMU) -daemonize $(QEMUOPTS) $(QEMUGDB) $(QEMUEXTRA)
 
-qemu-grub-gdb: grub .gdbinit
+qemu-grub-gdb: grub .gdbinit asm_headers
 	$(QEMU) -daemonize $(QEMUOPTS) $(QEMUGDB) $(QEMUEXTRA)
 
 qemu-nox-gdb: fs.img xv6.img .gdbinit

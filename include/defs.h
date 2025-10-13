@@ -152,6 +152,7 @@ char* safestrcpy(char*, const char*, int);
 int strlen(const char*);
 int strncmp(const char*, const char*, uint);
 char* strncpy(char*, const char*, int);
+bool starts_with(const char pre[static 1], const char str[static 1]);
 
 // syscall.c
 int argint(int, int*);

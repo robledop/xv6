@@ -135,6 +135,11 @@ lcr3(uint val)
     __asm__ volatile("movl %0,%%cr3" : : "r" (val));
 }
 
+static inline void hlt(void)
+{
+    __asm__ volatile("hlt");
+}
+
 // Layout of the trap frame built on the stack by the
 // hardware and by trapasm.S, and passed to trap().
 struct trapframe

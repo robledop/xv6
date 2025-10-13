@@ -43,29 +43,36 @@ global _start
 ; Entering xv6 on boot processor, with paging off.
 ;global entry
 _start:
-  ; Turn on page size extension for 4Mbyte pages
-  mov     eax, cr4
-  or      eax, CR4_PSE
-  mov     cr4, eax
-  ; Set page directory
-  extern entrypgdir
-  mov     eax, V2P_WO(entrypgdir)
-  mov     cr3, eax
-  ; Turn on paging.
-  mov     eax, cr0
-  or      eax, (CR0_PG|CR0_WP)
-  mov     cr0, eax
+    mov esi, eax ; Save the magic number from grub
+    mov edi, ebx ; Save the address of the multiboot info structure from grub
+    ; Turn on page size extension for 4Mbyte pages
+    mov     eax, cr4
+    or      eax, CR4_PSE
+    mov     cr4, eax
+    ; Set page directory
+    extern entrypgdir
+    mov     eax, V2P_WO(entrypgdir)
+    mov     cr3, eax
+    ; Turn on paging.
+    mov     eax, cr0
+    or      eax, (CR0_PG|CR0_WP)
+    mov     cr0, eax
 
-  ; Set up the stack pointer.
-  mov esp, (stack + KSTACKSIZE)
+    ; Set up the stack pointer.
+    mov esp, (stack + KSTACKSIZE)
 
-  ; Jump to main(), and switch to executing at
-  ; high addresses. The indirect call is needed because
-  ; the assembler produces a PC-relative instruction
-  ; for a direct jump.
-  extern main
-  mov eax, main
-  jmp eax
+    ; Manually set up the call frame for kernel_main
+    push esi        ; Second parameter (magic number)
+    push edi        ; First parameter (multiboot info)
+    push 0          ; Fake return address (kernel_main shouldn't return anyway)
+
+    ; Jump to main(), and switch to executing at
+    ; high addresses. The indirect call is needed because
+    ; the assembler produces a PC-relative instruction
+    ; for a direct jump.
+    extern main
+    mov eax, main
+    jmp eax
 
 section .bss
 global stack

@@ -99,14 +99,15 @@ void exception_handler(struct trapframe* tf)
     }
 
     cprintf("CPU %d KERNEL MODE EXCEPTION: %s\n", cpuid(), exception_messages[tf->trapno]);
-    cprintf("EIP: 0x%x\n", tf->eip);
-    cprintf("CS: 0x%x\n", tf->cs);
-    cprintf("EFLAGS: 0x%x\n", tf->eflags);
+    cprintf("EIP: 0x%x ", tf->eip);
+    cprintf("CS: 0x%x ", tf->cs);
+    cprintf("EFLAGS: 0x%x ", tf->eflags);
     if ((tf->cs == (SEG_UCODE << 3)) | DPL_USER)
     {
-        cprintf("ESP: 0x%x\n", tf->esp);
-        cprintf("SS: 0x%x\n", tf->ss);
+        cprintf("ESP: 0x%x ", tf->esp);
+        cprintf("SS: 0x%x ", tf->ss);
     }
+    cprintf("\n");
     panic("exception_handler");
 }
 

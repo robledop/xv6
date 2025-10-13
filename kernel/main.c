@@ -5,6 +5,8 @@
 #include "mmu.h"
 #include "proc.h"
 #include "x86.h"
+#include "multiboot.h"
+#include "debug.h"
 
 /** @brief Start the non-boot (AP) processors. */
 static void startothers(void);
@@ -16,6 +18,10 @@ extern pde_t* kpgdir;
 /** @brief First address after kernel loaded from ELF file */
 extern char end[]; // first address after kernel loaded from ELF file
 
+
+#define STACK_CHK_GUARD 0xe2dee396
+uint __stack_chk_guard = STACK_CHK_GUARD; // NOLINT(*-reserved-identifier)
+
 /**
  * @brief Bootstrap processor entry point.
  *
@@ -24,9 +30,10 @@ extern char end[]; // first address after kernel loaded from ELF file
  *
  * @return This function does not return; it hands control to the scheduler.
  */
-int main(void)
+int main(multiboot_info_t* mbinfo, [[maybe_unused]]unsigned int magic)
 {
-    kinit1(end, P2V(4 * 1024 * 1024)); // phys page allocator for kernel
+    init_symbols(mbinfo);
+    kinit1(debug_reserved_end(), P2V(4 * 1024 * 1024)); // phys page allocator for kernel
     kvmalloc(); // kernel page table
     mpinit(); // detect other processors
     lapicinit(); // interrupt controller
