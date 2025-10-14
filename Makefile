@@ -6,6 +6,17 @@ U=user
 
 $(shell mkdir -p build)
 $(shell mkdir -p $(U)/build)
+$(shell mkdir -p rootfs/bin)
+$(shell mkdir -p rootfs/boot/grub)
+
+# Create the grub.cfg file if it doesn't exist.
+ifeq ("$(wildcard rootfs/boot/grub/grub.cfg)","")
+    $(shell echo 'set timeout=0' > rootfs/boot/grub/grub.cfg && \
+            echo '' >> rootfs/boot/grub/grub.cfg && \
+            echo 'menuentry "xv6" {' >> rootfs/boot/grub/grub.cfg && \
+            echo '	multiboot /boot/kernel' >> rootfs/boot/grub/grub.cfg && \
+            echo '}' >> rootfs/boot/grub/grub.cfg)
+endif
 
 OBJS = \
 	build/bio.o\
@@ -167,7 +178,7 @@ grub: build/kernel $(UPROGS)
 	  for f in $(UPROGS); do \
 	    name=$$(basename $$f); \
 	    name=$${name#_}; \
-	    cp "$$f" ./rootfs/"$$name"; \
+	    cp "$$f" ./rootfs/bin/"$$name"; \
 	  done; \
 	fi
 	./scripts/create-grub-image.sh
@@ -219,5 +230,6 @@ clean:
 	initcode initcode.out kernel/*.o kernel/*.d user/*.o user/*.d xv6.img fs.img kernelmemfs \
 	xv6memfs.img mkfs/mkfs mkfs/*.h .gdbinit \
 	$(UPROGS)
+	rm -rf rootfs
 	rm -rf build
 	rm -rf $(U)/build

@@ -62,7 +62,7 @@ int sys_sbrk(void)
 /**
  * @brief Sleep for a number of clock ticks (syscall handler).
  *
- * @return ::0 on success, ::-1 if interrupted.
+ * @return 0 on success, -1 if interrupted.
  */
 int sys_sleep(void)
 {

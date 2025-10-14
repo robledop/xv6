@@ -44,7 +44,7 @@ void acquire(struct spinlock* lk)
 
     // Record info about lock acquisition for debugging.
     lk->cpu = mycpu();
-    getcallerpcs(&lk, lk->pcs);
+    // getcallerpcs(&lk, lk->pcs);
 }
 
 /**

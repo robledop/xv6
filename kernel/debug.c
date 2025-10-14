@@ -26,12 +26,15 @@ void stack_trace(void)
     int max                    = 10;
     while (stack && stack->eip != 0 && max-- > 0) {
         auto const symbol = debug_function_symbol_lookup(stack->eip);
-        cprintf("    %x [%s + %d]\n",
+        cprintf("    0x%x [%s + 0x%x]\n",
                 stack->eip,
                 (symbol.name == nullptr) ? "[unknown]" : symbol.name,
                 stack->eip - symbol.address);
         stack = stack->ebp;
     }
+
+    cprintf("run \"addr2line -e build/kernel <address>\" to get line numbers\n");
+    cprintf("run \"objdump -d build/kernel | grep <address> -A 40 -B 40\" to see more.\n");
 }
 
 char *debug_reserved_end(void)

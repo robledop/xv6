@@ -13,3 +13,12 @@ user/build
 mkfs/mkfs
 .cache
 compile_commands.json
+bin/
+rootfs/
+disk.img
+asm.asm
+memlayout.asm
+mmu.asm
+param.asm
+syscall.asm
+traps.asm

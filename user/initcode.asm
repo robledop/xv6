@@ -6,7 +6,6 @@
 
 
 ;# exec(init, argv)
-;.globl start
 global start
 start:
   push argv
@@ -21,9 +20,9 @@ exit:
   int T_SYSCALL
   jmp exit
 
-;# char init[] = "/init\0";
+;# char init[] = "/bin/init\0";
 init:
-  db "/init", 0
+  db "/bin/init", 0
 
 ;# char *argv[] = { init, 0 };
 ;.p2align 2
