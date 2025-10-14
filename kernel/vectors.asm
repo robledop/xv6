@@ -7,12 +7,11 @@ vector%1:
     push 0
   %endif
   push %1
+  extern alltraps
   jmp alltraps
 %endmacro
 
 ; Generate all 256 interrupt vectors
-extern alltraps
-
 %assign i 0
 %rep 256
   vector i

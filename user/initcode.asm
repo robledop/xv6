@@ -4,7 +4,6 @@
 %include "syscall.asm"
 %include "traps.asm"
 
-
 ;# exec(init, argv)
 global start
 start:

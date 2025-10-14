@@ -189,10 +189,6 @@ fs.img: mkfs/mkfs $(UPROGS)
 -include build/*.d $U/build/*.d
 
 
-bochs : fs.img xv6.img
-	if [ ! -e .bochsrc ]; then ln -s dot-bochsrc .bochsrc; fi
-	bochs -q
-
 CPUS := 1
 MEMORY := 512
 QEMUEXTRA := -display gtk,zoom-to-fit=on,gl=off,window-close=on,grab-on-hover=off
@@ -209,17 +205,14 @@ qemu-memfs: xv6memfs.img
 qemu-nox: fs.img xv6.img
 	$(QEMU) -nographic $(QEMUOPTS)
 
-.gdbinit: .gdbinit.tmpl
-	sed "s/localhost:1234/localhost:$(GDBPORT)/" < $^ > $@
-
-qemu-gdb: fs.img xv6.img .gdbinit
+qemu-gdb: fs.img xv6.img
 	@echo "*** Now run 'gdb'." 1>&2
 	$(QEMU) -daemonize $(QEMUOPTS) $(QEMUGDB) $(QEMUEXTRA)
 
-qemu-grub-gdb: grub .gdbinit asm_headers
+qemu-grub-gdb: grub asm_headers
 	$(QEMU) -daemonize $(QEMUOPTS) $(QEMUGDB) $(QEMUEXTRA)
 
-qemu-nox-gdb: fs.img xv6.img .gdbinit
+qemu-nox-gdb: fs.img xv6.img
 	@echo "*** Now run 'gdb'." 1>&2
 	$(QEMU) -nographic $(QEMUOPTS) $(QEMUGDB)
 
@@ -228,7 +221,7 @@ clean:
 	rm -f *.tex *.dvi *.idx *.aux *.log *.ind *.ilg \
 	*.o *.d *.asm *.sym vectors.S bootblock entryother \
 	initcode initcode.out kernel/*.o kernel/*.d user/*.o user/*.d xv6.img fs.img kernelmemfs \
-	xv6memfs.img mkfs/mkfs mkfs/*.h .gdbinit \
+	xv6memfs.img mkfs/mkfs mkfs/*.h \
 	$(UPROGS)
 	rm -rf rootfs
 	rm -rf build

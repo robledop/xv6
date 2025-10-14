@@ -33,7 +33,7 @@ uint __stack_chk_guard = STACK_CHK_GUARD; // NOLINT(*-reserved-identifier)
 int main(multiboot_info_t* mbinfo, [[maybe_unused]]unsigned int magic)
 {
     init_symbols(mbinfo);
-    kinit1(debug_reserved_end(), P2V(4 * 1024 * 1024)); // phys page allocator for kernel
+    kinit1(debug_reserved_end(), P2V(8 * 1024 * 1024)); // phys page allocator for kernel
     kvmalloc(); // kernel page table
     mpinit(); // detect other processors
     lapicinit(); // interrupt controller
@@ -48,7 +48,7 @@ int main(multiboot_info_t* mbinfo, [[maybe_unused]]unsigned int magic)
     fileinit(); // file table
     ideinit(); // disk
     startothers(); // start other processors
-    kinit2(P2V(4 * 1024 * 1024), P2V(PHYSTOP)); // must come after startothers()
+    kinit2(P2V(8 * 1024 * 1024), P2V(PHYSTOP)); // must come after startothers()
     user_init(); // first user process
     mpmain(); // finish this processor's setup
 }
@@ -122,20 +122,35 @@ static void startothers(void)
     }
 }
 
-/**
- * @brief Boot page table image used while bringing up processors.
+// /**
+//  * @brief Boot page table image used while bringing up processors.
+//  *
+//  * Page directories (and tables) must start on page boundaries, hence the
+//  * alignment attribute. The large-page bit (PTE_PS) allows identity mapping of
+//  * the first 4 MiB of physical memory.
+//  */
+// __attribute__ ((__aligned__
+// (PGSIZE)
+// )
+// )
+// pde_t entrypgdir[NPDENTRIES] = {
+//     // Map VA's [0, 4MB) to PA's [0, 4MB)
+//     [0] = (0) | PTE_P | PTE_W | PTE_PS,
+//     // Map VA's [KERNBASE, KERNBASE+4MB) to PA's [0, 4MB)
+//     [KERNBASE >> PDXSHIFT] = (0) | PTE_P | PTE_W | PTE_PS,
+// };
+
+
+/** @brief Boot-time page directory referenced from assembly.
+* Boot-time page directory used while paging is being enabled.
  *
- * Page directories (and tables) must start on page boundaries, hence the
- * alignment attribute. The large-page bit (PTE_PS) allows identity mapping of
- * the first 4 MiB of physical memory.
+ * Map the first 8 MiB of physical memory twice: once at VA 0 so we can keep
+ * running the low-level bootstrap code, and once at KERNBASE so the kernel can
+ * execute from its linked virtual addresses (0x80100000 and above).
  */
-__attribute__ ((__aligned__
-(PGSIZE)
-)
-)
-pde_t entrypgdir[NPDENTRIES] = {
-    // Map VA's [0, 4MB) to PA's [0, 4MB)
-    [0] = (0) | PTE_P | PTE_W | PTE_PS,
-    // Map VA's [KERNBASE, KERNBASE+4MB) to PA's [0, 4MB)
-    [KERNBASE >> PDXSHIFT] = (0) | PTE_P | PTE_W | PTE_PS,
+__attribute__((aligned(PGSIZE))) uint entrypgdir[NPDENTRIES] = {
+    [0]                          = PTE_P | PTE_W | PTE_PS,                   // maps 0x0000_0000 → 0x0000_0000
+    [1]                          = (1 << PDXSHIFT) | PTE_P | PTE_W | PTE_PS, // maps 0x0040_0000 → 0x0040_0000
+    [KERNBASE >> PDXSHIFT]       = PTE_P | PTE_W | PTE_PS,                   // maps 0x8000_0000 → phys 0
+    [(KERNBASE >> PDXSHIFT) + 1] = (1 << PDXSHIFT) | PTE_P | PTE_W | PTE_PS,
 };

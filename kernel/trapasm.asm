@@ -1,6 +1,6 @@
 %include "mmu.asm"
 
-  ; vectors.S sends all traps here.
+  ; vectors.asm sends all traps here.
 global alltraps
 alltraps:
   ; Build trap frame.

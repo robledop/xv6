@@ -118,7 +118,7 @@ void panic(char *s)
     debug_stats();
     panicked = 1; // freeze other CPU
     for (;;) {
-        hlt();
+        // hlt();
     }
 }
 

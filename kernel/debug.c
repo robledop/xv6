@@ -69,9 +69,9 @@ struct symbol debug_function_symbol_lookup(const elf32_addr address)
         const struct elf32_sym *sym = &symbols_table[i];
 
         // Ensure we only return function symbols
-        if (ELF32_ST_TYPE(sym->st_info) != STT_FUNC) {
-            continue;
-        }
+        // if (ELF32_ST_TYPE(sym->st_info) != STT_FUNC) {
+        //     continue;
+        // }
 
         // Skip symbols with no name
         if (sym->st_name == 0) {
