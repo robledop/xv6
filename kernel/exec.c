@@ -13,27 +13,34 @@
  * @param argv Argument vector terminated by a null pointer.
  * @return 0 on success, -1 on failure.
  */
-int exec(char* path, char** argv)
+int exec(char *path, char **argv)
 {
     char *s, *last;
     int i, off;
     uint argc, sz, sp, ustack[3 + MAXARG + 1];
     struct elfhdr elf;
-    struct inode* ip;
+    struct inode *ip;
     struct proghdr ph;
-    pde_t* oldpgdir;
-    struct proc* curproc = myproc();
+    pde_t *oldpgdir;
+    struct proc *curproc = myproc();
 
     begin_op();
 
-    if ((ip = namei(path)) == 0)
-    {
-        end_op();
-        cprintf("exec: fail\n");
-        return -1;
+    if ((ip = namei(path)) == nullptr) {
+        char* new_path = "/bin/";
+        strcat(new_path, path);
+
+        if ((ip = namei(new_path)) == nullptr) {
+            end_op();
+            cprintf("exec: fail\n");
+            return -1;
+        }
+        // end_op();
+        // cprintf("exec: fail\n");
+        // return -1;
     }
     ilock(ip);
-    pde_t* pgdir = 0;
+    pde_t *pgdir = 0;
 
     // NOTE: All the ELF loading is done here, but it is done in a simplified way.
     // This only works if the executables are linked with the -N flag (no paging).
@@ -49,7 +56,7 @@ int exec(char* path, char** argv)
     // program with the page-alignment check.
 
     // Check ELF header
-    if (readi(ip, (char*)&elf, 0, sizeof(elf)) != sizeof(elf))
+    if (readi(ip, (char *)&elf, 0, sizeof(elf)) != sizeof(elf))
         goto bad;
     if (elf.magic != ELF_MAGIC)
         goto bad;
@@ -59,9 +66,8 @@ int exec(char* path, char** argv)
 
     // Load program into memory.
     sz = 0;
-    for (i = 0, off = elf.phoff; i < elf.phnum; i++, off += sizeof(ph))
-    {
-        if (readi(ip, (char*)&ph, off, sizeof(ph)) != sizeof(ph))
+    for (i = 0, off = elf.phoff; i < elf.phnum; i++, off += sizeof(ph)) {
+        if (readi(ip, (char *)&ph, off, sizeof(ph)) != sizeof(ph))
             goto bad;
         if (ph.type != ELF_PROG_LOAD)
             continue;
@@ -73,7 +79,7 @@ int exec(char* path, char** argv)
             goto bad;
         if (ph.vaddr % PGSIZE != 0)
             goto bad;
-        if (loaduvm(pgdir, (char*)ph.vaddr, ip, ph.off, ph.filesz) < 0)
+        if (loaduvm(pgdir, (char *)ph.vaddr, ip, ph.off, ph.filesz) < 0)
             goto bad;
     }
     iunlockput(ip);
@@ -85,12 +91,11 @@ int exec(char* path, char** argv)
     sz = PGROUNDUP(sz);
     if ((sz = allocuvm(pgdir, sz, sz + 2 * PGSIZE)) == 0)
         goto bad;
-    clearpteu(pgdir, (char*)(sz - 2 * PGSIZE));
+    clearpteu(pgdir, (char *)(sz - 2 * PGSIZE));
     sp = sz;
 
     // Push argument strings, prepare rest of stack in ustack.
-    for (argc = 0; argv[argc]; argc++)
-    {
+    for (argc = 0; argv[argc]; argc++) {
         if (argc >= MAXARG)
             goto bad;
         sp = (sp - (strlen(argv[argc]) + 1)) & ~3;
@@ -115,9 +120,9 @@ int exec(char* path, char** argv)
     safestrcpy(curproc->name, last, sizeof(curproc->name));
 
     // Commit to the user image.
-    oldpgdir = curproc->page_directory;
-    curproc->page_directory = pgdir;
-    curproc->size = sz;
+    oldpgdir                 = curproc->page_directory;
+    curproc->page_directory  = pgdir;
+    curproc->size            = sz;
     curproc->trap_frame->eip = elf.entry; // main
     curproc->trap_frame->esp = sp;
     switch_uvm(curproc);
@@ -127,8 +132,7 @@ int exec(char* path, char** argv)
 bad:
     if (pgdir)
         freevm(pgdir);
-    if (ip)
-    {
+    if (ip) {
         iunlockput(ip);
         end_op();
     }
