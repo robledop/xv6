@@ -30,6 +30,16 @@ void seginit(void)
     c->gdt[SEG_UCODE] = SEG(STA_X | STA_R, 0, 0xffffffff, DPL_USER);
     c->gdt[SEG_UDATA] = SEG(STA_W, 0, 0xffffffff, DPL_USER);
     lgdt(c->gdt, sizeof(c->gdt));
+
+    // Ensure the CPU uses the kernel data selector for all segments.
+    ushort kdata = SEG_KDATA << 3;
+    asm volatile("movw %0, %%ds\n\t"
+                 "movw %0, %%es\n\t"
+                 "movw %0, %%fs\n\t"
+                 "movw %0, %%gs\n\t"
+                 "movw %0, %%ss\n\t"
+                 :
+                 : "r"(kdata));
 }
 
 /**

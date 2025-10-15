@@ -102,14 +102,12 @@ static inline void cli(void)
     __asm__ volatile("cli");
 }
 
-static inline void
-sti(void)
+static inline void sti(void)
 {
     __asm__ volatile("sti");
 }
 
-static inline uint
-xchg(volatile uint* addr, uint newval)
+static inline uint xchg(volatile uint* addr, uint newval)
 {
     uint result;
 

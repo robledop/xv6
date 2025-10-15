@@ -192,17 +192,17 @@ fs.img: mkfs/mkfs $(UPROGS)
 CPUS := 1
 MEMORY := 512
 QEMUEXTRA := -display gtk,zoom-to-fit=on,gl=off,window-close=on,grab-on-hover=off
-QEMUGDB = -S -gdb tcp::1234
+QEMUGDB = -S -gdb tcp::1234 -d int -D qemu.log
 #QEMUOPTS = -drive file=fs.img,index=1,media=disk,format=raw -drive file=xv6.img,index=0,media=disk,format=raw -smp $(CPUS) -m $(MEMORY)
 QEMUOPTS = -drive file=disk.img,index=0,media=disk,format=raw -smp $(CPUS) -m $(MEMORY)
 
-qemu: fs.img xv6.img
+qemu: grub
 	$(QEMU) -serial mon:stdio $(QEMUOPTS) $(QEMUEXTRA)
 
 qemu-memfs: xv6memfs.img
 	$(QEMU) -drive file=xv6memfs.img,index=0,media=disk,format=raw -smp $(CPUS) -m $(MEMORY)
 
-qemu-nox: fs.img xv6.img
+qemu-nox: grub asm_headers
 	$(QEMU) -nographic $(QEMUOPTS)
 
 qemu-gdb: fs.img xv6.img

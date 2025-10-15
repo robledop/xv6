@@ -348,7 +348,7 @@ void scheduler(void)
 
     for (;;) {
         // Enable interrupts on this processor.
-        // sti();
+        sti();
 
         // Loop over the process table looking for a process to run.
         acquire(&ptable.lock);
