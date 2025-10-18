@@ -30,4 +30,4 @@ trapret:
   pop es
   pop ds
   add esp, 0x8  ; remove trapno and errcode from stack
-  iret
+  iretd

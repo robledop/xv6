@@ -95,7 +95,7 @@ static struct proc *alloc_proc(void)
             goto found;
 
     release(&ptable.lock);
-    return 0;
+    return nullptr;
 
 found:
     p->state = EMBRYO;
@@ -104,9 +104,9 @@ found:
     release(&ptable.lock);
 
     // Allocate kernel stack.
-    if ((p->kstack = kalloc()) == 0) {
+    if ((p->kstack = kalloc()) == nullptr) {
         p->state = UNUSED;
-        return 0;
+        return nullptr;
     }
     char *stack_pointer = p->kstack + KSTACKSIZE;
 
@@ -138,7 +138,7 @@ void user_init(void)
     struct proc *p = alloc_proc();
 
     initproc = p;
-    if ((p->page_directory = setupkvm()) == 0) {
+    if ((p->page_directory = setupkvm()) == nullptr) {
         panic("user_init: out of memory?");
     }
     inituvm(p->page_directory, _binary_user_build_initcode_start, (int)_binary_user_build_initcode_size);
@@ -210,14 +210,14 @@ int fork(void)
     struct proc *curproc = myproc();
 
     // Allocate process.
-    if ((np = alloc_proc()) == 0) {
+    if ((np = alloc_proc()) == nullptr) {
         return -1;
     }
 
     // Copy process state from proc.
-    if ((np->page_directory = copyuvm(curproc->page_directory, curproc->size)) == 0) {
+    if ((np->page_directory = copyuvm(curproc->page_directory, curproc->size)) == nullptr) {
         kfree(np->kstack);
-        np->kstack = 0;
+        np->kstack = nullptr;
         np->state  = UNUSED;
         return -1;
     }
@@ -263,14 +263,14 @@ void exit(void)
     for (int fd = 0; fd < NOFILE; fd++) {
         if (curproc->ofile[fd]) {
             fileclose(curproc->ofile[fd]);
-            curproc->ofile[fd] = 0;
+            curproc->ofile[fd] = nullptr;
         }
     }
 
     begin_op();
     iput(curproc->cwd);
     end_op();
-    curproc->cwd = 0;
+    curproc->cwd = nullptr;
 
     acquire(&ptable.lock);
 
@@ -313,10 +313,10 @@ int wait(void)
                 // Found one.
                 int pid = p->pid;
                 kfree(p->kstack);
-                p->kstack = 0;
+                p->kstack = nullptr;
                 freevm(p->page_directory);
                 p->pid     = 0;
-                p->parent  = 0;
+                p->parent  = nullptr;
                 p->name[0] = 0;
                 p->killed  = 0;
                 p->state   = UNUSED;
@@ -377,7 +377,7 @@ void scheduler(void)
 /**
  * @brief Enter the scheduler after marking the current process non-running.
  *
- * Requires ::ptable.lock to be held and saves/restores interrupt state so the
+ * Requires ptable.lock to be held and saves/restores interrupt state so the
  * process can resume correctly.
  */
 void sched(void)
@@ -441,10 +441,10 @@ void sleep(void *chan, struct spinlock *lk)
 {
     struct proc *p = myproc();
 
-    if (p == 0)
+    if (p == nullptr)
         panic("sleep");
 
-    if (lk == 0)
+    if (lk == nullptr)
         panic("sleep without lk");
 
     // Must acquire ptable.lock in order to
@@ -465,7 +465,7 @@ void sleep(void *chan, struct spinlock *lk)
     sched();
 
     // Tidy up.
-    p->chan = 0;
+    p->chan = nullptr;
 
     // Reacquire original lock.
     if (lk != &ptable.lock) {

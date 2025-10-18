@@ -1,4 +1,5 @@
 #pragma once
+#include "mmu.h"
 #include "types.h"
 // Routines to let C code use special x86 instructions.
 
@@ -10,7 +11,7 @@ static inline uchar inb(ushort port)
     return data;
 }
 
-static inline void insl(int port, void* addr, int cnt)
+static inline void insl(int port, void *addr, int cnt)
 {
     __asm__ volatile("cld; rep insl" :
         "=D" (addr), "=c" (cnt) :
@@ -30,7 +31,7 @@ outw(ushort port, ushort data)
     __asm__ volatile("out %0,%1" : : "a" (data), "d" (port));
 }
 
-static inline void outsl(int port, const void* addr, int cnt)
+static inline void outsl(int port, const void *addr, int cnt)
 {
     __asm__ volatile("cld; rep outsl" :
         "=S" (addr), "=c" (cnt) :
@@ -38,7 +39,7 @@ static inline void outsl(int port, const void* addr, int cnt)
         "cc");
 }
 
-static inline void stosb(void* addr, int data, int cnt)
+static inline void stosb(void *addr, int data, int cnt)
 {
     __asm__ volatile("cld; rep stosb" :
         "=D" (addr), "=c" (cnt) :
@@ -46,7 +47,7 @@ static inline void stosb(void* addr, int data, int cnt)
         "memory", "cc");
 }
 
-static inline void stosl(void* addr, int data, int cnt)
+static inline void stosl(void *addr, int data, int cnt)
 {
     __asm__ volatile("cld; rep stosl" :
         "=D" (addr), "=c" (cnt) :
@@ -56,7 +57,7 @@ static inline void stosl(void* addr, int data, int cnt)
 
 struct segdesc;
 
-static inline void lgdt(struct segdesc* p, int size)
+static inline void lgdt(struct segdesc *p, int size)
 {
     volatile ushort pd[3];
 
@@ -65,11 +66,21 @@ static inline void lgdt(struct segdesc* p, int size)
     pd[2] = (uint)p >> 16;
 
     __asm__ volatile("lgdt (%0)" : : "r" (pd));
+
+    __asm__ volatile(
+        "pushl %0\n\t"
+        "pushl $1f\n\t"
+        "lret\n"
+        "1:\n"
+        :
+        : "i"(SEG_KCODE << 3)
+    );
+
 }
 
 struct gate_desc;
 
-static inline void lidt(struct gate_desc* p, int size)
+static inline void lidt(struct gate_desc *p, int size)
 {
     volatile ushort pd[3];
 
@@ -107,7 +118,7 @@ static inline void sti(void)
     __asm__ volatile("sti");
 }
 
-static inline uint xchg(volatile uint* addr, uint newval)
+static inline uint xchg(volatile uint *addr, uint newval)
 {
     uint result;
 
