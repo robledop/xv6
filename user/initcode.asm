@@ -21,7 +21,7 @@ exit:
 
 ;# char init[] = "/bin/init\0";
 init:
-  db "/bin/init", 0
+  db "/init", 0
 
 ;# char *argv[] = { init, 0 };
 ;.p2align 2

@@ -21,8 +21,8 @@ struct pipe
 {
     struct spinlock lock;
     char data[PIPESIZE];
-    uint nread; /**< Number of bytes read from the buffer. */
-    uint nwrite; /**< Number of bytes written to the buffer. */
+    u32 nread; /**< Number of bytes read from the buffer. */
+    u32 nwrite; /**< Number of bytes written to the buffer. */
     int readopen; /**< Non-zero while the read end remains open. */
     int writeopen; /**< Non-zero while the write end remains open. */
 };

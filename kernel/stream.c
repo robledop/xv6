@@ -15,31 +15,31 @@ struct disk_stream disk_stream_create(const int disk_index)
     return (struct disk_stream){.position = 0, .disk = disk};
 }
 
-int disk_stream_seek(struct disk_stream *stream, const uint32_t position)
+int disk_stream_seek(struct disk_stream *stream, const u32 position)
 {
     stream->position = position;
     return 0;
 }
 
-int disk_stream_read(struct disk_stream *stream, void *out, const uint32_t size)
+int disk_stream_read(struct disk_stream *stream, void *out, const u32 size)
 {
     ASSERT(stream->disk->sector_size > 0, "Invalid sector size");
     if (size == 0) {
         return 0;
     }
 
-    uint32_t remaining = size;
-    uint8_t *out_bytes = (uint8_t *)out;
+    u32 remaining = size;
+    u8 *out_bytes = (u8 *)out;
 
     while (remaining > 0) {
-        const uint32_t sector = stream->position / stream->disk->sector_size;
-        const uint32_t offset = stream->position % stream->disk->sector_size;
-        uint32_t chunk        = stream->disk->sector_size - offset;
+        const u32 sector = stream->position / stream->disk->sector_size;
+        const u32 offset = stream->position % stream->disk->sector_size;
+        u32 chunk        = stream->disk->sector_size - offset;
         if (chunk > remaining) {
             chunk = remaining;
         }
 
-        // uint8_t buffer[stream->disk->sector_size];
+        // u8 buffer[stream->disk->sector_size];
         auto buf = bread(0, sector);
         // const int res = disk_read_sector(sector, buffer);
         // if (res < 0) {
@@ -58,25 +58,25 @@ int disk_stream_read(struct disk_stream *stream, void *out, const uint32_t size)
     return 0;
 }
 
-int disk_stream_write(struct disk_stream *stream, const void *in, const uint32_t size)
+int disk_stream_write(struct disk_stream *stream, const void *in, const u32 size)
 {
     ASSERT(stream->disk->sector_size > 0, "Invalid sector size");
     if (size == 0) {
         return 0;
     }
 
-    uint32_t remaining   = size;
-    const uint8_t *input = (const uint8_t *)in;
+    u32 remaining   = size;
+    const u8 *input = (const u8 *)in;
 
     while (remaining > 0) {
-        const uint32_t sector = stream->position / stream->disk->sector_size;
-        const uint32_t offset = stream->position % stream->disk->sector_size;
-        uint32_t chunk        = stream->disk->sector_size - offset;
+        const u32 sector = stream->position / stream->disk->sector_size;
+        const u32 offset = stream->position % stream->disk->sector_size;
+        u32 chunk        = stream->disk->sector_size - offset;
         if (chunk > remaining) {
             chunk = remaining;
         }
 
-        // uint8_t buffer[stream->disk->sector_size];
+        // u8 buffer[stream->disk->sector_size];
         auto buf = bread(0, sector);
         // int res = disk_read_sector(sector, buffer);
         // if (res < 0) {

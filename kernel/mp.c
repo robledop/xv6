@@ -13,7 +13,7 @@
 
 struct cpu cpus[NCPU];
 int ncpu;
-uchar ioapicid;
+u8 ioapicid;
 
 static int mpinit_legacy(void);
 static int acpi_init(void);
@@ -21,82 +21,82 @@ static int acpi_init(void);
 struct acpi_rsdp
 {
     char signature[8];
-    uchar checksum;
+    u8 checksum;
     char oemid[6];
-    uchar revision;
-    uint rsdt_addr;
+    u8 revision;
+    u32 rsdt_addr;
 } __attribute__((packed));
 
 struct acpi_rsdp_v2
 {
     struct acpi_rsdp v1;
-    uint length;
+    u32 length;
     unsigned long long xsdt_addr;
-    uchar extended_checksum;
-    uchar reserved[3];
+    u8 extended_checksum;
+    u8 reserved[3];
 } __attribute__((packed));
 
 struct acpi_sdt_header
 {
     char signature[4];
-    uint length;
-    uchar revision;
-    uchar checksum;
+    u32 length;
+    u8 revision;
+    u8 checksum;
     char oemid[6];
     char oem_table_id[8];
-    uint oem_revision;
-    uint creator_id;
-    uint creator_revision;
+    u32 oem_revision;
+    u32 creator_id;
+    u32 creator_revision;
 } __attribute__((packed));
 
 struct acpi_madt
 {
     struct acpi_sdt_header header;
-    uint lapic_addr;
-    uint flags;
+    u32 lapic_addr;
+    u32 flags;
 } __attribute__((packed));
 
 struct acpi_madt_entry
 {
-    uchar type;
-    uchar length;
+    u8 type;
+    u8 length;
 } __attribute__((packed));
 
 struct acpi_madt_lapic
 {
     struct acpi_madt_entry header;
-    uchar acpi_processor_id;
-    uchar apic_id;
-    uint flags;
+    u8 acpi_processor_id;
+    u8 apic_id;
+    u32 flags;
 } __attribute__((packed));
 
 struct acpi_madt_ioapic
 {
     struct acpi_madt_entry header;
-    uchar ioapic_id;
-    uchar reserved;
-    uint ioapic_addr;
-    uint gsi_base;
+    u8 ioapic_id;
+    u8 reserved;
+    u32 ioapic_addr;
+    u32 gsi_base;
 } __attribute__((packed));
 
 struct acpi_madt_lapic_override
 {
     struct acpi_madt_entry header;
-    ushort reserved;
+    u16 reserved;
     unsigned long long lapic_addr;
 } __attribute__((packed));
 
 struct acpi_madt_x2apic
 {
     struct acpi_madt_entry header;
-    ushort reserved;
-    uint x2apic_id;
-    uint flags;
-    uint acpi_processor_uid;
+    u16 reserved;
+    u32 x2apic_id;
+    u32 flags;
+    u32 acpi_processor_uid;
 } __attribute__((packed));
 
-static uchar
-sum(uchar* addr, int len)
+static u8
+sum(u8* addr, int len)
 {
     int sum = 0;
     for (int i = 0; i < len; i++)
@@ -106,11 +106,11 @@ sum(uchar* addr, int len)
 
 // Look for an MP structure in the len bytes at addr.
 static struct mp*
-mpsearch1(uint a, int len)
+mpsearch1(u32 a, int len)
 {
-    uchar* addr = P2V(a);
-    uchar* e = addr + len;
-    for (uchar* p = addr; p < e; p += sizeof(struct mp))
+    u8* addr = P2V(a);
+    u8* e = addr + len;
+    for (u8* p = addr; p < e; p += sizeof(struct mp))
         if (memcmp(p, "_MP_", 4) == 0 && sum(p, sizeof(struct mp)) == 0)
             return (struct mp*)p;
     return 0;
@@ -123,10 +123,10 @@ mpsearch1(uint a, int len)
 // 3) in the BIOS ROM between 0xE0000 and 0xFFFFF.
 static struct mp* mpsearch(void)
 {
-    uint p;
+    u32 p;
     struct mp* mp;
 
-    uchar* bda = (uchar*)P2V(0x400);
+    u8* bda = (u8*)P2V(0x400);
     if ((p = ((bda[0x0F] << 8) | bda[0x0E]) << 4))
     {
         if ((mp = mpsearch1(p, 1024)))
@@ -146,7 +146,7 @@ static struct mp* mpsearch(void)
 // Check for the correct signature, calculate the checksum and,
 // if correct, check the version.
 // To do: check extended table checksum.
-static void record_cpu_apicid(uint apicid)
+static void record_cpu_apicid(u32 apicid)
 {
     for (int i = 0; i < ncpu; i++)
         if (cpus[i].apicid == apicid)
@@ -162,12 +162,12 @@ static struct mpconf* mpconfig(struct mp** pmp)
 
     if ((mp = mpsearch()) == 0 || mp->physaddr == 0)
         return 0;
-    struct mpconf* conf = (struct mpconf*)P2V((uint)mp->physaddr);
+    struct mpconf* conf = (struct mpconf*)P2V((u32)mp->physaddr);
     if (memcmp(conf, "PCMP", 4) != 0)
         return 0;
     if (conf->version != 1 && conf->version != 4)
         return 0;
-    if (sum((uchar*)conf, conf->length) != 0)
+    if (sum((u8*)conf, conf->length) != 0)
         return 0;
     *pmp = mp;
     return conf;
@@ -175,7 +175,7 @@ static struct mpconf* mpconfig(struct mp** pmp)
 
 static int mpinit_legacy(void)
 {
-    uchar *p, *e;
+    u8 *p, *e;
     struct mp* mp;
     struct mpconf* conf;
 
@@ -183,8 +183,8 @@ static int mpinit_legacy(void)
         return 0;
 
     int ismp_ = 1;
-    lapic = (uint*)conf->lapicaddr;
-    for (p = (uchar*)(conf + 1), e = (uchar*)conf + conf->length; p < e;)
+    lapic = (u32*)conf->lapicaddr;
+    for (p = (u8*)(conf + 1), e = (u8*)conf + conf->length; p < e;)
     {
         switch (*p)
         {
@@ -227,15 +227,15 @@ static int mpinit_legacy(void)
     return ncpu > 0;
 }
 
-static struct acpi_rsdp* acpi_rsdp_search(uint phys_addr, int len)
+static struct acpi_rsdp* acpi_rsdp_search(u32 phys_addr, int len)
 {
-    uchar* addr = P2V(phys_addr);
-    uchar* end = addr + len;
-    for (uchar* p = addr; p < end; p += 16)
+    u8* addr = P2V(phys_addr);
+    u8* end = addr + len;
+    for (u8* p = addr; p < end; p += 16)
         if (memcmp(p, "RSD PTR ", 8) == 0)
         {
             struct acpi_rsdp* rsdp = (struct acpi_rsdp*)p;
-            uint length = sizeof(struct acpi_rsdp);
+            u32 length = sizeof(struct acpi_rsdp);
             if (rsdp->revision >= 2)
             {
                 struct acpi_rsdp_v2* rsdp2 = (struct acpi_rsdp_v2*)p;
@@ -250,8 +250,8 @@ static struct acpi_rsdp* acpi_rsdp_search(uint phys_addr, int len)
 
 static struct acpi_rsdp* acpi_find_rsdp(void)
 {
-    uchar* bda = (uchar*)P2V(0x400);
-    uint ebda_segment = (bda[0x0F] << 8) | bda[0x0E];
+    u8* bda = (u8*)P2V(0x400);
+    u32 ebda_segment = (bda[0x0F] << 8) | bda[0x0E];
     if (ebda_segment)
     {
         struct acpi_rsdp* rsdp = acpi_rsdp_search(ebda_segment << 4, 1024);
@@ -259,7 +259,7 @@ static struct acpi_rsdp* acpi_find_rsdp(void)
             return rsdp;
     }
 
-    uint base_mem_kb = (bda[0x14] << 8) | bda[0x13];
+    u32 base_mem_kb = (bda[0x14] << 8) | bda[0x13];
     if (base_mem_kb >= 1024)
     {
         struct acpi_rsdp* rsdp = acpi_rsdp_search(base_mem_kb * 1024 - 1024, 1024);
@@ -275,10 +275,10 @@ static int acpi_parse_madt(struct acpi_madt* madt)
     if (!madt || madt->header.length < sizeof(struct acpi_madt))
         return 0;
 
-    lapic = (uint*)madt->lapic_addr;
+    lapic = (u32*)madt->lapic_addr;
 
-    uchar* p = (uchar*)madt + sizeof(struct acpi_madt);
-    uchar* end = (uchar*)madt + madt->header.length;
+    u8* p = (u8*)madt + sizeof(struct acpi_madt);
+    u8* end = (u8*)madt + madt->header.length;
     while (p + sizeof(struct acpi_madt_entry) <= end)
     {
         struct acpi_madt_entry* entry = (struct acpi_madt_entry*)p;
@@ -303,7 +303,7 @@ static int acpi_parse_madt(struct acpi_madt* madt)
         case 5: // Local APIC address override
             {
                 struct acpi_madt_lapic_override* override_entry = (struct acpi_madt_lapic_override*)p;
-                lapic = (uint*)(uint)override_entry->lapic_addr;
+                lapic = (u32*)(u32)override_entry->lapic_addr;
                 break;
             }
         case 9: // Processor Local x2APIC
@@ -327,17 +327,17 @@ static int acpi_visit_sdt(struct acpi_sdt_header* table, int entry_size)
 {
     if (!table || table->length < sizeof(struct acpi_sdt_header))
         return 0;
-    if (sum((uchar*)table, table->length) != 0)
+    if (sum((u8*)table, table->length) != 0)
         return 0;
 
     int count = (table->length - sizeof(struct acpi_sdt_header)) / entry_size;
-    uchar* entries = (uchar*)table + sizeof(struct acpi_sdt_header);
+    u8* entries = (u8*)table + sizeof(struct acpi_sdt_header);
 
     for (int i = 0; i < count; i++)
     {
         unsigned long long addr = entry_size == 8
                                       ? ((unsigned long long*)entries)[i]
-                                      : ((uint*)entries)[i];
+                                      : ((u32*)entries)[i];
         if (addr == 0)
             continue;
         if (entry_size == 8 && (addr >> 32) != 0)
@@ -345,10 +345,10 @@ static int acpi_visit_sdt(struct acpi_sdt_header* table, int entry_size)
         if (addr >= PHYSTOP)
             continue; // Ignore tables beyond mapped physical memory.
 
-        struct acpi_sdt_header* entry = (struct acpi_sdt_header*)P2V((uint)addr);
+        struct acpi_sdt_header* entry = (struct acpi_sdt_header*)P2V((u32)addr);
         if (memcmp(entry->signature, "APIC", 4) == 0)
         {
-            if (sum((uchar*)entry, entry->length) != 0)
+            if (sum((u8*)entry, entry->length) != 0)
                 continue;
             if (acpi_parse_madt((struct acpi_madt*)entry))
                 return 1;
@@ -379,9 +379,9 @@ static int acpi_init(void)
         struct acpi_rsdp_v2* rsdp2 = (struct acpi_rsdp_v2*)rsdp;
         if (rsdp2->xsdt_addr && (rsdp2->xsdt_addr >> 32) == 0)
         {
-            if ((uint)rsdp2->xsdt_addr < PHYSTOP)
+            if ((u32)rsdp2->xsdt_addr < PHYSTOP)
             {
-                struct acpi_sdt_header* xsdt = (struct acpi_sdt_header*)P2V((uint)rsdp2->xsdt_addr);
+                struct acpi_sdt_header* xsdt = (struct acpi_sdt_header*)P2V((u32)rsdp2->xsdt_addr);
                 if (memcmp(xsdt->signature, "XSDT", 4) == 0 && acpi_visit_sdt(xsdt, 8))
                     return lapic != 0 && ncpu > 0;
             }

@@ -11,10 +11,10 @@
 #include <thread.h>
 
 
-int disk_read_block(uint32_t lba, int total, void *buffer);
-int disk_read_sector(uint32_t sector, void *buffer);
-NON_NULL int disk_write_block(uint32_t lba, int total, void *buffer);
-NON_NULL int disk_write_sector(uint32_t sector, uint8_t *buffer);
+int disk_read_block(u32 lba, int total, void *buffer);
+int disk_read_sector(u32 sector, void *buffer);
+NON_NULL int disk_write_block(u32 lba, int total, void *buffer);
+NON_NULL int disk_write_sector(u32 sector, u8 *buffer);
 NON_NULL int disk_write_sector_offset(const void *data, int size, int offset, int sector);
 NON_NULL struct file_system *vfs_resolve(struct disk *disk);
 struct disk disk;
@@ -28,7 +28,7 @@ void disk_init()
     disk.id   = 0;
 
     printf("[DISK] using %s for disk operations\n", ahci_port_ready() ? "AHCI" : "legacy ATA");
-    disk.sector_size = (uint16_t)(ahci_port_ready() ? AHCI_SECTOR_SIZE : (unsigned int)ata_get_sector_size());
+    disk.sector_size = (u16)(ahci_port_ready() ? AHCI_SECTOR_SIZE : (unsigned int)ata_get_sector_size());
 
     disk.fs = vfs_resolve(&disk);
 }
@@ -99,14 +99,14 @@ struct disk *disk_get(const int index)
     return &disk;
 }
 
-int disk_read_block(const uint32_t lba, const int total, void *buffer)
+int disk_read_block(const u32 lba, const int total, void *buffer)
 {
     if (total <= 0) {
         return -EINVARG;
     }
 
     if (ahci_port_ready()) {
-        const int status = ahci_read(lba, (uint32_t)total, buffer);
+        const int status = ahci_read(lba, (u32)total, buffer);
         if (status == ALL_OK) {
             return ALL_OK;
         }
@@ -117,19 +117,19 @@ int disk_read_block(const uint32_t lba, const int total, void *buffer)
     return ata_read_sectors(lba, total, buffer);
 }
 
-int disk_read_sector(const uint32_t sector, void *buffer)
+int disk_read_sector(const u32 sector, void *buffer)
 {
     return disk_read_block(sector, 1, buffer);
 }
 
-int disk_write_block(const uint32_t lba, const int total, void *buffer)
+int disk_write_block(const u32 lba, const int total, void *buffer)
 {
     if (total <= 0) {
         return -EINVARG;
     }
 
     if (ahci_port_ready()) {
-        const int status = ahci_write(lba, (uint32_t)total, buffer);
+        const int status = ahci_write(lba, (u32)total, buffer);
         if (status == ALL_OK) {
             return ALL_OK;
         }
@@ -140,7 +140,7 @@ int disk_write_block(const uint32_t lba, const int total, void *buffer)
     return ata_write_sectors(lba, total, buffer);
 }
 
-int disk_write_sector(const uint32_t sector, uint8_t *buffer)
+int disk_write_sector(const u32 sector, u8 *buffer)
 {
     return disk_write_block(sector, 1, buffer);
 }
@@ -149,7 +149,7 @@ int disk_write_sector_offset(const void *data, const int size, const int offset,
 {
     ASSERT(size <= 512 - offset);
 
-    uint8_t buffer[512];
+    u8 buffer[512];
     disk_read_sector(sector, buffer);
 
     memcpy(&buffer[offset], data, size);

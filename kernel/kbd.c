@@ -5,15 +5,15 @@
 
 int kbdgetc(void)
 {
-    static uint shift;
-    static uchar* charcode[4] = {
+    static u32 shift;
+    static u8* charcode[4] = {
         normalmap, shiftmap, ctlmap, ctlmap
     };
 
-    uint st = inb(KBSTATP);
+    u32 st = inb(KBSTATP);
     if ((st & KBS_DIB) == 0)
         return -1;
-    uint data = inb(KBDATAP);
+    u32 data = inb(KBDATAP);
 
     if (data == 0xE0)
     {
@@ -36,7 +36,7 @@ int kbdgetc(void)
 
     shift |= shiftcode[data];
     shift ^= togglecode[data];
-    uint c = charcode[shift & (CTL | SHIFT)][data];
+    u32 c = charcode[shift & (CTL | SHIFT)][data];
     if (shift & CAPSLOCK)
     {
         if ('a' <= c && c <= 'z')

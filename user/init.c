@@ -5,10 +5,9 @@
 #include "user.h"
 #include "fcntl.h"
 
-char* argv[] = {"/bin/sh", nullptr};
+char* argv[] = {"/sh", nullptr};
 
-int
-main(void)
+int main(void)
 {
     int wpid;
 
@@ -31,7 +30,7 @@ main(void)
         }
         if (pid == 0)
         {
-            exec("/bin/sh", argv);
+            exec("/sh", argv);
             printf(1, "init: exec sh failed\n");
             exit();
         }

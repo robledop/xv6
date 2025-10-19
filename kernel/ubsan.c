@@ -48,17 +48,17 @@ void scram(const int event, const struct undefined_behavior *info)
 
 struct ubsan_source_location {
     const char *filename;
-    uint line;
-    uint column;
+    u32 line;
+    u32 column;
 };
 
 struct ubsan_type_descriptor {
-    ushort type_kind;
-    ushort type_info;
+    u16 type_kind;
+    u16 type_info;
     char type_name[];
 };
 
-typedef uint ubsan_value_handle_t;
+typedef u32 ubsan_value_handle_t;
 
 static const struct ubsan_source_location unknown_location = {
     "<unknown file>",
@@ -91,9 +91,9 @@ static const struct ubsan_source_location unknown_location = {
 #define ABORT_VARIANT_VP_VP(name) ABORT_VARIANT(name, (void *a, void *b), (a, b))
 #define ABORT_VARIANT_VP_IP(name) ABORT_VARIANT(name, (void *a, intptr_t b), (a, b))
 #define ABORT_VARIANT_VP_VP_VP(name) ABORT_VARIANT(name, (void *a, void *b, void *c), (a, b, c))
-#define ABORT_VARIANT_VP_VP_UP(name) ABORT_VARIANT(name, (void *a, void *b, uint c), (a, b, c))
+#define ABORT_VARIANT_VP_VP_UP(name) ABORT_VARIANT(name, (void *a, void *b, u32 c), (a, b, c))
 #define ABORT_VARIANT_VP_VP_VP_VP(name) ABORT_VARIANT(name, (void *a, void *b, void *c, void *d), (a, b, c, d))
-#define ABORT_VARIANT_VP_VP_UP_VP(name) ABORT_VARIANT(name, (void *a, void *b, uint c, void *d), (a, b, c, d))
+#define ABORT_VARIANT_VP_VP_UP_VP(name) ABORT_VARIANT(name, (void *a, void *b, u32 c, void *d), (a, b, c, d))
 
 struct ubsan_type_mismatch_v1_data {
     struct ubsan_source_location location;
@@ -106,7 +106,7 @@ void __ubsan_handle_type_mismatch_v1(void *data_raw, void *pointer_raw)
 {
     struct ubsan_type_mismatch_v1_data *data = (struct ubsan_type_mismatch_v1_data *)data_raw;
     ubsan_value_handle_t pointer             = (ubsan_value_handle_t)pointer_raw;
-    uint alignment                      = (uint)1UL << data->log_alignment;
+    u32 alignment                      = (u32)1UL << data->log_alignment;
     const char *violation                    = "type mismatch";
     if (!pointer) {
         violation = "null pointer access";
@@ -451,7 +451,7 @@ struct ubsan_cfi_check_fail_data {
     struct ubsan_type_descriptor *type;
 };
 
-void __ubsan_handle_cfi_check_fail(void *data_raw, void *function_raw, uint vtable_is_valid)
+void __ubsan_handle_cfi_check_fail(void *data_raw, void *function_raw, u32 vtable_is_valid)
 {
     struct ubsan_cfi_check_fail_data *data = (struct ubsan_cfi_check_fail_data *)data_raw;
     ubsan_value_handle_t function          = (ubsan_value_handle_t)function_raw;
@@ -462,7 +462,7 @@ void __ubsan_handle_cfi_check_fail(void *data_raw, void *function_raw, uint vtab
 
 ABORT_VARIANT_VP_VP_UP(cfi_check_fail)
 
-void __ubsan_handle_cfi_bad_type(void *data_raw, void *function_raw, uint vtable_is_valid,
+void __ubsan_handle_cfi_bad_type(void *data_raw, void *function_raw, u32 vtable_is_valid,
                                  const void *report_options_raw)
 {
     struct ubsan_cfi_check_fail_data *data = (struct ubsan_cfi_check_fail_data *)data_raw;

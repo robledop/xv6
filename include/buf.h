@@ -7,14 +7,14 @@
 struct buf
 {
     int flags;
-    uint dev;
-    uint blockno;
+    u32 dev;
+    u32 blockno;
     struct sleeplock lock;
-    uint refcnt;
+    u32 refcnt;
     struct buf* prev; // LRU cache list
     struct buf* next;
     struct buf* qnext; // disk queue
-    uchar data[BSIZE];
+    u8 data[BSIZE];
 };
 
 #define B_VALID 0x2  // buffer has been read from disk

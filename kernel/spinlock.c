@@ -79,17 +79,17 @@ void release(struct spinlock* lk)
  * @param v Starting frame pointer (obtained from the caller).
  * @param pcs Output array of return addresses; unfilled entries set to zero.
  */
-void getcallerpcs(void* v, uint pcs[])
+void getcallerpcs(void* v, u32 pcs[])
 {
     int i;
 
-    uint* ebp = (uint*)v - 2;
+    u32* ebp = (u32*)v - 2;
     for (i = 0; i < 10; i++)
     {
-        if (ebp == 0 || ebp < (uint*)KERNBASE || ebp == (uint*)0xffffffff)
+        if (ebp == 0 || ebp < (u32*)KERNBASE || ebp == (u32*)0xffffffff)
             break;
         pcs[i] = ebp[1]; // saved %eip
-        ebp = (uint*)ebp[0]; // saved %ebp
+        ebp = (u32*)ebp[0]; // saved %ebp
     }
     for (; i < 10; i++)
         pcs[i] = 0;

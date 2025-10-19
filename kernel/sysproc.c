@@ -71,7 +71,7 @@ int sys_sleep(void)
     if (argint(0, &n) < 0)
         return -1;
     acquire(&tickslock);
-    uint ticks0 = ticks;
+    u32 ticks0 = ticks;
     while (ticks - ticks0 < n)
     {
         if (myproc()->killed)
@@ -91,7 +91,7 @@ int sys_sleep(void)
 int sys_uptime(void)
 {
     acquire(&tickslock);
-    uint xticks = ticks;
+    u32 xticks = ticks;
     release(&tickslock);
     return xticks;
 }

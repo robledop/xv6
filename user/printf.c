@@ -13,7 +13,7 @@ printint(int fd, int xx, int base, int sgn)
 {
     static char digits[] = "0123456789ABCDEF";
     char buf[16];
-    uint x;
+    u32 x;
 
     int neg = 0;
     if (sgn && xx < 0)
@@ -44,7 +44,7 @@ void
 printf(int fd, const char* fmt, ...)
 {
     int state = 0;
-    uint* ap = (uint*)(void*)&fmt + 1;
+    u32* ap = (u32*)(void*)&fmt + 1;
     for (int i = 0; fmt[i]; i++)
     {
         int c = fmt[i] & 0xff;

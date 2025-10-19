@@ -31,9 +31,9 @@ switch_context:
 
 ;struct context
 ;{
-;    uint edi;
-;    uint esi;
-;    uint ebx;
-;    uint ebp;
-;    uint eip;
+;    u32 edi;
+;    u32 esi;
+;    u32 ebx;
+;    u32 ebp;
+;    u32 eip;
 ;};

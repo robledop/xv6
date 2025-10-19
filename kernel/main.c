@@ -7,6 +7,7 @@
 #include "x86.h"
 #include "multiboot.h"
 #include "debug.h"
+#include "mbr.h"
 
 /** @brief Start the non-boot (AP) processors. */
 static void startothers(void);
@@ -20,7 +21,7 @@ extern char end[]; // first address after kernel loaded from ELF file
 
 
 #define STACK_CHK_GUARD 0xe2dee396
-uint __stack_chk_guard = STACK_CHK_GUARD; // NOLINT(*-reserved-identifier)
+u32 __stack_chk_guard = STACK_CHK_GUARD; // NOLINT(*-reserved-identifier)
 
 /**
  * @brief Bootstrap processor entry point.
@@ -91,13 +92,13 @@ pde_t entrypgdir[]; // For entry.S
 static void startothers(void)
 {
     // This name depends on the path of the entryohter file. I moved it to the build folder
-    extern uchar _binary_build_entryother_start[], _binary_build_entryother_size[];
+    extern u8 _binary_build_entryother_start[], _binary_build_entryother_size[];
 
     // Write entry code to unused memory at 0x7000.
     // The linker has placed the image of entryother.S in
     // _binary_entryother_start.
-    uchar* code = P2V(0x7000);
-    memmove(code, _binary_build_entryother_start, (uint)_binary_build_entryother_size);
+    u8* code = P2V(0x7000);
+    memmove(code, _binary_build_entryother_start, (u32)_binary_build_entryother_size);
 
     cprintf("%d cpu%s\n", ncpu, ncpu == 1 ? "" : "s");
 
@@ -148,7 +149,7 @@ static void startothers(void)
  * running the low-level bootstrap code, and once at KERNBASE so the kernel can
  * execute from its linked virtual addresses (0x80100000 and above).
  */
-__attribute__((aligned(PGSIZE))) uint entrypgdir[NPDENTRIES] = {
+__attribute__((aligned(PGSIZE))) u32 entrypgdir[NPDENTRIES] = {
     [0]                          = PTE_P | PTE_W | PTE_PS,                   // maps 0x0000_0000 → 0x0000_0000
     [1]                          = (1 << PDXSHIFT) | PTE_P | PTE_W | PTE_PS, // maps 0x0040_0000 → 0x0040_0000
     [KERNBASE >> PDXSHIFT]       = PTE_P | PTE_W | PTE_PS,                   // maps 0x8000_0000 → phys 0

@@ -208,7 +208,7 @@ int sys_unlink(void)
     struct inode *ip, *dp;
     struct dirent de;
     char name[DIRSIZ], *path;
-    uint off;
+    u32 off;
 
     if (argstr(0, &path) < 0)
         return -1;
@@ -445,7 +445,7 @@ int sys_exec(void)
 {
     char *path, *argv[MAXARG];
     int i;
-    uint uargv, uarg;
+    u32 uargv, uarg;
 
     if (argstr(0, &path) < 0 || argint(1, (int*)&uargv) < 0)
     {

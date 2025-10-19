@@ -6,6 +6,7 @@
 #include "x86.h"
 #include "proc.h"
 #include "spinlock.h"
+#include "ext2.h"
 
 /** @brief Process table guarded by a spinlock. */
 struct
@@ -117,12 +118,12 @@ found:
     // Set up new context to start executing at forkret,
     // which returns to trapret.
     stack_pointer -= 4;
-    *(uint *)stack_pointer = (uint)trapret;
+    *(u32 *)stack_pointer = (u32)trapret;
 
     stack_pointer -= sizeof *p->context;
     p->context = (struct context *)stack_pointer;
     memset(p->context, 0, sizeof *p->context);
-    p->context->eip = (uint)forkret;
+    p->context->eip = (u32)forkret;
 
     return p;
 }
@@ -184,7 +185,7 @@ int growproc(int n)
 {
     struct proc *curproc = myproc();
 
-    uint sz = curproc->size;
+    u32 sz = curproc->size;
     if (n > 0) {
         if ((sz = allocuvm(curproc->page_directory, sz, sz + n)) == 0)
             return -1;
@@ -267,9 +268,9 @@ void exit(void)
         }
     }
 
-    begin_op();
-    iput(curproc->cwd);
-    end_op();
+    // begin_op();
+    curproc->cwd->iops->iput(curproc->cwd);
+    // end_op();
     curproc->cwd = nullptr;
 
     acquire(&ptable.lock);
@@ -424,8 +425,9 @@ void forkret(void)
         // of a regular process (e.g., they call sleep), and thus cannot
         // be run from main().
         first = 0;
-        iinit(ROOTDEV);
-        initlog(ROOTDEV);
+        // iinit(ROOTDEV);
+        // initlog(ROOTDEV);
+        ext2fs_iinit(ROOTDEV);
     }
 
     // Return to "caller", actually trapret (see allocproc).
@@ -441,8 +443,11 @@ void sleep(void *chan, struct spinlock *lk)
 {
     struct proc *p = myproc();
 
-    if (p == nullptr)
-        panic("sleep");
+    if (p == nullptr) {
+        sti();
+        return;
+        // panic("sleep");
+    }
 
     if (lk == nullptr)
         panic("sleep without lk");
@@ -543,7 +548,7 @@ void procdump(void)
         [ZOMBIE] = "zombie"
     };
     char *state;
-    uint pc[10];
+    u32 pc[10];
 
     for (struct proc *p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
         if (p->state == UNUSED)
@@ -554,7 +559,7 @@ void procdump(void)
             state = "???";
         cprintf("%d %s %s", p->pid, state, p->name);
         if (p->state == SLEEPING) {
-            getcallerpcs((uint *)p->context->ebp + 2, pc);
+            getcallerpcs((u32 *)p->context->ebp + 2, pc);
             for (int i = 0; i < 10 && pc[i] != 0; i++)
                 cprintf(" %p", pc[i]);
         }

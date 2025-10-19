@@ -49,6 +49,9 @@ OBJS = \
 	build/vm.o\
 	build/ubsan.o\
 	build/ssp.o \
+	build/gdt.o \
+	build/mbr.o \
+	build/ext2.o \
 	build/debug.o
 
 TOOLPREFIX = i686-elf-
@@ -117,8 +120,8 @@ build/%.o: $K/%.asm asm_headers
 # great for testing the kernel on real hardware without
 # needing a scratch disk.
 MEMFSOBJS = $(filter-out build/ide.o,$(OBJS)) build/memide.o
-build/kernelmemfs: $(MEMFSOBJS) build/entry.o build/entryother $U/build/initcode fs.img
-	$(LD) $(LDFLAGS) -T $K/kernel.ld -o build/kernelmemfs build/entry.o  $(MEMFSOBJS) -b binary $U/build/initcode build/entryother fs.img
+build/kernelmemfs: $(MEMFSOBJS) build/entry.o build/entryother $U/build/initcode
+	$(LD) $(LDFLAGS) -T $K/kernel.ld -o build/kernel build/entry.o  $(MEMFSOBJS) -b binary $U/build/initcode build/entryother fs.img
 
 
 ULIB = $U/build/ulib.o $U/build/usys.o $U/build/printf.o $U/build/umalloc.o
@@ -174,11 +177,19 @@ UPROGS=\
 grub: build/kernel $(UPROGS)
 	cp build/kernel ./rootfs/boot/kernel
 	# Copy all the user programs to the root filesystem and rename them to remove the leading underscore.
+#	if [ -n "$(UPROGS)" ]; then \
+#	  for f in $(UPROGS); do \
+#	    name=$$(basename $$f); \
+#	    name=$${name#_}; \
+#	    cp "$$f" ./rootfs/bin/"$$name"; \
+#	  done; \
+#	fi
+
 	if [ -n "$(UPROGS)" ]; then \
 	  for f in $(UPROGS); do \
 	    name=$$(basename $$f); \
 	    name=$${name#_}; \
-	    cp "$$f" ./rootfs/bin/"$$name"; \
+	    cp "$$f" ./rootfs/"$$name"; \
 	  done; \
 	fi
 	./scripts/create-grub-image.sh

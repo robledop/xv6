@@ -1,9 +1,9 @@
 struct rtcdate
 {
-    uint second;
-    uint minute;
-    uint hour;
-    uint day;
-    uint month;
-    uint year;
+    u32 second;
+    u32 minute;
+    u32 hour;
+    u32 day;
+    u32 month;
+    u32 year;
 };

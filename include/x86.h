@@ -3,12 +3,20 @@
 #include "types.h"
 // Routines to let C code use special x86 instructions.
 
-static inline uchar inb(ushort port)
+static inline u8 inb(u16 port)
 {
-    uchar data;
+    u8 data;
 
     __asm__ volatile("in %1,%0" : "=a" (data) : "d" (port));
     return data;
+}
+
+
+static inline u16 inw(u16 p)
+{
+    u16 r;
+    __asm__ volatile("inw %%dx, %%ax" : "=a"(r) : "d"(p));
+    return r;
 }
 
 static inline void insl(int port, void *addr, int cnt)
@@ -20,13 +28,13 @@ static inline void insl(int port, void *addr, int cnt)
 }
 
 static inline void
-outb(ushort port, uchar data)
+outb(u16 port, u8 data)
 {
     __asm__ volatile("out %0,%1" : : "a" (data), "d" (port));
 }
 
 static inline void
-outw(ushort port, ushort data)
+outw(u16 port, u16 data)
 {
     __asm__ volatile("out %0,%1" : : "a" (data), "d" (port));
 }
@@ -57,53 +65,47 @@ static inline void stosl(void *addr, int data, int cnt)
 
 struct segdesc;
 
+extern void gdt_flush();
+
 static inline void lgdt(struct segdesc *p, int size)
 {
-    volatile ushort pd[3];
+    volatile u16 pd[3];
 
     pd[0] = size - 1;
-    pd[1] = (uint)p;
-    pd[2] = (uint)p >> 16;
+    pd[1] = (u32)p;
+    pd[2] = (u32)p >> 16;
 
     __asm__ volatile("lgdt (%0)" : : "r" (pd));
-
-    __asm__ volatile(
-        "pushl %0\n\t"
-        "pushl $1f\n\t"
-        "lret\n"
-        "1:\n"
-        :
-        : "i"(SEG_KCODE << 3)
-    );
-
+    gdt_flush();
 }
+
 
 struct gate_desc;
 
 static inline void lidt(struct gate_desc *p, int size)
 {
-    volatile ushort pd[3];
+    volatile u16 pd[3];
 
     pd[0] = size - 1;
-    pd[1] = (uint)p;
-    pd[2] = (uint)p >> 16;
+    pd[1] = (u32)p;
+    pd[2] = (u32)p >> 16;
 
     __asm__ volatile("lidt (%0)" : : "r" (pd));
 }
 
-static inline void ltr(ushort sel)
+static inline void ltr(u16 sel)
 {
     __asm__ volatile("ltr %0" : : "r" (sel));
 }
 
-static inline uint read_eflags(void)
+static inline u32 read_eflags(void)
 {
-    uint eflags;
+    u32 eflags;
     __asm__ volatile("pushfl; popl %0" : "=r" (eflags));
     return eflags;
 }
 
-static inline void load_gs(ushort v)
+static inline void load_gs(u16 v)
 {
     __asm__ volatile("movw %0, %%gs" : : "r" (v));
 }
@@ -118,9 +120,9 @@ static inline void sti(void)
     __asm__ volatile("sti");
 }
 
-static inline uint xchg(volatile uint *addr, uint newval)
+static inline u32 xchg(volatile u32 *addr, u32 newval)
 {
-    uint result;
+    u32 result;
 
     // The + in "+m" denotes a read-modify-write operand.
     __asm__ volatile("lock; xchgl %0, %1" :
@@ -130,16 +132,16 @@ static inline uint xchg(volatile uint *addr, uint newval)
     return result;
 }
 
-static inline uint
+static inline u32
 rcr2(void)
 {
-    uint val;
+    u32 val;
     __asm__ volatile("movl %%cr2,%0" : "=r" (val));
     return val;
 }
 
 static inline void
-lcr3(uint val)
+lcr3(u32 val)
 {
     __asm__ volatile("movl %0,%%cr3" : : "r" (val));
 }
@@ -154,35 +156,35 @@ static inline void hlt(void)
 struct trapframe
 {
     // registers as pushed by pusha
-    uint edi;
-    uint esi;
-    uint ebp;
-    uint oesp; // useless & ignored
-    uint ebx;
-    uint edx;
-    uint ecx;
-    uint eax;
+    u32 edi;
+    u32 esi;
+    u32 ebp;
+    u32 oesp; // useless & ignored
+    u32 ebx;
+    u32 edx;
+    u32 ecx;
+    u32 eax;
 
     // rest of trap frame
-    ushort gs;
-    ushort padding1;
-    ushort fs;
-    ushort padding2;
-    ushort es;
-    ushort padding3;
-    ushort ds;
-    ushort padding4;
-    uint trapno;
+    u16 gs;
+    u16 padding1;
+    u16 fs;
+    u16 padding2;
+    u16 es;
+    u16 padding3;
+    u16 ds;
+    u16 padding4;
+    u32 trapno;
 
     // below here defined by x86 hardware
-    uint err;
-    uint eip;
-    ushort cs;
-    ushort padding5;
-    uint eflags;
+    u32 err;
+    u32 eip;
+    u16 cs;
+    u16 padding5;
+    u32 eflags;
 
     // below here only when crossing rings, such as from user to kernel
-    uint esp;
-    ushort ss;
-    ushort padding6;
+    u32 esp;
+    u16 ss;
+    u16 padding6;
 };

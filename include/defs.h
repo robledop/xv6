@@ -15,7 +15,7 @@ struct superblock;
 
 // bio.c
 void binit(void);
-struct buf* bread(uint, uint);
+struct buf* bread(u32, u32);
 void brelse(struct buf*);
 void bwrite(struct buf*);
 
@@ -39,23 +39,24 @@ int filestat(struct file*, struct stat*);
 int filewrite(struct file*, char*, int n);
 
 // fs.c
-void readsb(int dev, struct superblock* sb);
-int dirlink(struct inode*, char*, uint);
-struct inode* dirlookup(struct inode*, char*, uint*);
-struct inode* ialloc(uint, short);
+// void readsb(int dev, struct superblock* sb);
+// int dirlink(struct inode*, char*, u32);
+// struct inode* dirlookup(struct inode*, char*, u32*);
+// struct inode* ialloc(u32, short);
 struct inode* idup(struct inode*);
-void iinit(int dev);
-void ilock(struct inode*);
-void iput(struct inode*);
-void iunlock(struct inode*);
-void iunlockput(struct inode*);
-void iupdate(struct inode*);
+struct inode *iget(u32 dev, u32 inum);
+// void iinit(int dev);
+// void ilock(struct inode*);
+// void iput(struct inode*);
+// void iunlock(struct inode*);
+// void iunlockput(struct inode*);
+// void iupdate(struct inode*);
 int namecmp(const char*, const char*);
 struct inode* namei(char*);
 struct inode* nameiparent(char*, char*);
-int readi(struct inode*, char*, uint, uint);
-void stati(struct inode*, struct stat*);
-int writei(struct inode*, char*, uint, uint);
+// int readi(struct inode*, char*, u32, u32);
+// void stati(struct inode*, struct stat*);
+// int writei(struct inode*, char*, u32, u32);
 
 // ide.c
 void ideinit(void);
@@ -64,7 +65,7 @@ void iderw(struct buf*);
 
 // ioapic.c
 void ioapicenable(int irq, int cpu);
-extern uchar ioapicid;
+extern u8 ioapicid;
 void ioapicinit(void);
 
 // kalloc.c
@@ -79,17 +80,17 @@ void kbdintr(void);
 // lapic.c
 void cmostime(struct rtcdate* r);
 int lapicid(void);
-extern volatile uint* lapic;
+extern volatile u32* lapic;
 void lapiceoi(void);
 void lapicinit(void);
-void lapicstartap(uchar, uint);
+void lapicstartap(u8, u32);
 void microdelay(int);
 
 // log.c
-void initlog(int dev);
-void log_write(struct buf*);
-void begin_op();
-void end_op();
+// void initlog(int dev);
+// void log_write(struct buf*);
+// void begin_op();
+// void end_op();
 
 // mp.c
 extern int ismp;
@@ -131,7 +132,7 @@ void switch_context(struct context**, struct context*);
 
 // spinlock.c
 void acquire(struct spinlock*);
-void getcallerpcs(void*, uint*);
+void getcallerpcs(void*, u32*);
 int holding(struct spinlock*);
 void initlock(struct spinlock*, char*);
 void release(struct spinlock*);
@@ -145,12 +146,12 @@ int holdingsleep(struct sleeplock*);
 void initsleeplock(struct sleeplock*, char*);
 
 // string.c
-int memcmp(const void*, const void*, uint);
-void* memmove(void*, const void*, uint);
-void* memset(void*, int, uint);
+int memcmp(const void*, const void*, u32);
+void* memmove(void*, const void*, u32);
+void* memset(void*, int, u32);
 char* safestrcpy(char*, const char*, int);
 int strlen(const char*);
-int strncmp(const char*, const char*, uint);
+int strncmp(const char*, const char*, u32);
 char* strncpy(char*, const char*, int);
 bool starts_with(const char pre[static 1], const char str[static 1]);
 char *strcat(char dest[static 1], const char src[static 1]);
@@ -159,8 +160,8 @@ char *strcat(char dest[static 1], const char src[static 1]);
 int argint(int, int*);
 int argptr(int, char**, int);
 int argstr(int, char**);
-int fetchint(uint, int*);
-int fetchstr(uint, char**);
+int fetchint(u32, int*);
+int fetchstr(u32, char**);
 void syscall(void);
 
 // timer.c
@@ -168,7 +169,7 @@ void timerinit(void);
 
 // trap.c
 void idtinit(void);
-extern uint ticks;
+extern u32 ticks;
 void tvinit(void);
 extern struct spinlock tickslock;
 
@@ -182,15 +183,15 @@ void seginit(void);
 void kvmalloc(void);
 pde_t* setupkvm(void);
 char* uva2ka(pde_t*, char*);
-int allocuvm(pde_t*, uint, uint);
-int deallocuvm(pde_t*, uint, uint);
+int allocuvm(pde_t*, u32, u32);
+int deallocuvm(pde_t*, u32, u32);
 void freevm(pde_t*);
-void inituvm(pde_t*, const char*, uint);
-int loaduvm(pde_t*, char*, struct inode*, uint, uint);
-pde_t* copyuvm(pde_t*, uint);
+void inituvm(pde_t*, const char*, u32);
+int loaduvm(pde_t*, char*, struct inode*, u32, u32);
+pde_t* copyuvm(pde_t*, u32);
 void switch_uvm(struct proc*);
 void switch_kvm(void);
-int copyout(pde_t*, uint, void*, uint);
+int copyout(pde_t*, u32, void*, u32);
 void clearpteu(pde_t* pgdir, const char* uva);
 
 // number of elements in a fixed-size array

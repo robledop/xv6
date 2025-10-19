@@ -9,8 +9,8 @@
 #define KERNBASE 0x80000000          // First kernel virtual address (2GB)
 #define KERNLINK (KERNBASE + EXTMEM) // Address where kernel is linked (2GB + 1MB))
 
-#define V2P(a) ((uint)(a) - KERNBASE)
-#define P2V(a) ((void *)((uint)(a) + KERNBASE))
+#define V2P(a) ((u32)(a) - KERNBASE)
+#define P2V(a) ((void *)((u32)(a) + KERNBASE))
 
 #define V2P_WO(x) ((x) - KERNBASE) // same as V2P, but without casts
 #define P2V_WO(x) ((x) + KERNBASE) // same as P2V, but without casts

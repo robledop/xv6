@@ -89,8 +89,8 @@ static void idestart(struct buf* b)
 {
     if (b == 0)
         panic("idestart");
-    if (b->blockno >= FSSIZE)
-        panic("incorrect blockno");
+    // if (b->blockno >= FSSIZE)
+    //     panic("incorrect blockno");
     int sector_per_block = BSIZE / SECTOR_SIZE;
     int sector = b->blockno * sector_per_block;
     int read_cmd = (sector_per_block == 1) ? IDE_CMD_READ : IDE_CMD_RDMUL;
@@ -161,14 +161,14 @@ void iderw(struct buf* b)
         panic("iderw: buf not locked");
     if ((b->flags & (B_VALID | B_DIRTY)) == B_VALID)
         panic("iderw: nothing to do");
-    if (b->dev != 0 && !havedisk1)
-        panic("iderw: ide disk 1 not present");
+    // if (b->dev != 0 && !havedisk1)
+    //     panic("iderw: ide disk 1 not present");
 
     acquire(&idelock); // DOC:acquire-lock
 
     // Append b to idequeue.
     b->qnext = 0;
-    for (pp = &idequeue; *pp; pp = &(*pp)->qnext) // DOC:insert-queue
+    for (pp = &idequeue; *pp; pp = &(*pp)->qnext)
         ;
     *pp = b;
 

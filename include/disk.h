@@ -10,7 +10,7 @@ typedef unsigned int DISK_TYPE;
 struct disk {
     int id;
     DISK_TYPE type;
-    uint16_t sector_size;
+    u16 sector_size;
     struct file_system *fs;
     void *fs_private;
 };

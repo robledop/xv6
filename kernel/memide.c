@@ -13,18 +13,18 @@
 #include "fs.h"
 #include "buf.h"
 
-extern uchar _binary_fs_img_start[], _binary_fs_img_size[];
+extern u8 _binary_fs_img_start[], _binary_fs_img_size[];
 
 /** @brief Number of disk blocks exposed by the in-memory disk. */
 static int disksize;
 /** @brief Pointer to the start of the in-memory disk image. */
-static uchar *memdisk;
+static u8 *memdisk;
 
 /** @brief Initialize the memory-backed disk using the embedded fs image. */
 void ideinit(void)
 {
     memdisk  = _binary_fs_img_start;
-    disksize = (uint)_binary_fs_img_size / BSIZE;
+    disksize = (u32)_binary_fs_img_size / BSIZE;
 }
 
 /** @brief Memory disk interrupt handler (no-op placeholder). */
@@ -40,7 +40,7 @@ void ideintr(void)
  */
 void iderw(struct buf *b)
 {
-    uchar *p;
+    u8 *p;
 
     if (!holdingsleep(&b->lock)) {
         panic("iderw: buf not locked");

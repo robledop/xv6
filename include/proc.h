@@ -6,11 +6,11 @@
 // Per-CPU state
 struct cpu
 {
-    uchar apicid; // Local APIC ID
+    u8 apicid; // Local APIC ID
     struct context* scheduler; // swtch() here to enter scheduler
     struct task_state task_state; // Used by x86 to find stack for interrupt
     struct segdesc gdt[NSEGS]; // x86 global descriptor table
-    volatile uint started; // Has the CPU started?
+    volatile u32 started; // Has the CPU started?
     int ncli; // Depth of pushcli nesting.
 
     // intena
@@ -33,11 +33,11 @@ extern int ncpu;
 // but it is on the stack and allocproc() manipulates it.
 struct context
 {
-    uint edi;
-    uint esi;
-    uint ebx;
-    uint ebp;
-    uint eip;
+    u32 edi;
+    u32 esi;
+    u32 ebx;
+    u32 ebp;
+    u32 eip;
 };
 
 enum procstate { UNUSED, EMBRYO, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };
@@ -45,7 +45,7 @@ enum procstate { UNUSED, EMBRYO, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };
 // Per-process state
 struct proc
 {
-    uint size; // Size of process memory (bytes)
+    u32 size; // Size of process memory (bytes)
     pde_t* page_directory; // Page table
     char* kstack; // Bottom of the kernel stack for this process
     enum procstate state; // Process state

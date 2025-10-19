@@ -5,6 +5,7 @@
 #include "defs.h"
 #include "x86.h"
 #include "elf.h"
+#include "ext2.h"
 
 /**
  * @brief Replace the current process image with a new program.
@@ -17,29 +18,22 @@ int exec(char *path, char **argv)
 {
     char *s, *last;
     int i, off;
-    uint argc, sz, sp, ustack[3 + MAXARG + 1];
+    u32 argc, sz, sp, ustack[3 + MAXARG + 1];
     struct elfhdr elf;
     struct inode *ip;
     struct proghdr ph;
     pde_t *oldpgdir;
     struct proc *curproc = myproc();
 
-    begin_op();
+    // begin_op();
 
     if ((ip = namei(path)) == nullptr) {
-        char* new_path = "/bin/";
-        strcat(new_path, path);
-
-        if ((ip = namei(new_path)) == nullptr) {
-            end_op();
-            cprintf("exec: fail\n");
-            return -1;
-        }
         // end_op();
-        // cprintf("exec: fail\n");
-        // return -1;
+        cprintf("exec: fail\n");
+        return -1;
     }
-    ilock(ip);
+
+    ip->iops->ilock(ip);
     pde_t *pgdir = 0;
 
     // NOTE: All the ELF loading is done here, but it is done in a simplified way.
@@ -56,7 +50,7 @@ int exec(char *path, char **argv)
     // program with the page-alignment check.
 
     // Check ELF header
-    if (readi(ip, (char *)&elf, 0, sizeof(elf)) != sizeof(elf))
+    if (ip->iops->readi(ip, (char *)&elf, 0, sizeof(elf)) != sizeof(elf))
         goto bad;
     if (elf.magic != ELF_MAGIC)
         goto bad;
@@ -67,7 +61,7 @@ int exec(char *path, char **argv)
     // Load program into memory.
     sz = 0;
     for (i = 0, off = elf.phoff; i < elf.phnum; i++, off += sizeof(ph)) {
-        if (readi(ip, (char *)&ph, off, sizeof(ph)) != sizeof(ph))
+        if (ip->iops->readi(ip, (char *)&ph, off, sizeof(ph)) != sizeof(ph))
             goto bad;
         if (ph.type != ELF_PROG_LOAD)
             continue;
@@ -82,8 +76,8 @@ int exec(char *path, char **argv)
         if (loaduvm(pgdir, (char *)ph.vaddr, ip, ph.off, ph.filesz) < 0)
             goto bad;
     }
-    iunlockput(ip);
-    end_op();
+    ip->iops->iunlockput(ip);
+    // end_op();
     ip = 0;
 
     // Allocate two pages at the next page boundary.
@@ -133,8 +127,8 @@ bad:
     if (pgdir)
         freevm(pgdir);
     if (ip) {
-        iunlockput(ip);
-        end_op();
+        ip->iops->iunlockput(ip);
+        // end_op();
     }
     return -1;
 }

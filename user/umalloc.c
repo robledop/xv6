@@ -13,7 +13,7 @@ union header
     struct
     {
         union header* ptr;
-        uint size;
+        u32 size;
     } s;
 
     Align x;
@@ -49,7 +49,7 @@ void free(void* ap)
     freep = p;
 }
 
-static Header* morecore(uint nu)
+static Header* morecore(u32 nu)
 {
     if (nu < 4096)
         nu = 4096;
@@ -62,11 +62,11 @@ static Header* morecore(uint nu)
     return freep;
 }
 
-void* malloc(uint nbytes)
+void* malloc(u32 nbytes)
 {
     Header* prevp;
 
-    uint nunits = (nbytes + sizeof(Header) - 1) / sizeof(Header) + 1;
+    u32 nunits = (nbytes + sizeof(Header) - 1) / sizeof(Header) + 1;
     if ((prevp = freep) == 0)
     {
         base.s.ptr = freep = prevp = &base;

@@ -64,7 +64,7 @@ void binit(void)
  *
  * Returns a locked buffer with refcount incremented.
  */
-static struct buf* bget(uint dev, uint blockno)
+static struct buf* bget(u32 dev, u32 blockno)
 {
     struct buf* b;
 
@@ -102,7 +102,7 @@ static struct buf* bget(uint dev, uint blockno)
 }
 
 /** @brief Return a locked buffer filled with the requested block. */
-struct buf* bread(uint dev, uint blockno)
+struct buf* bread(u32 dev, u32 blockno)
 {
     struct buf* b = bget(dev, blockno);
     if ((b->flags & B_VALID) == 0)

@@ -6,7 +6,8 @@
 
 
 #define ROOTINO 1  // root i-number
-#define BSIZE 512  // block size
+#define EXT2INO 2  // ext2 root i-number
+#define BSIZE 1024  // block size
 
 // Disk layout:
 // [ boot block | super block | log | inode blocks |
@@ -16,17 +17,17 @@
 // super block describes the disk layout:
 struct superblock
 {
-    uint size; // Size of file system image (blocks)
-    uint nblocks; // Number of data blocks
-    uint ninodes; // Number of inodes.
-    uint nlog; // Number of log blocks
-    uint logstart; // Block number of first log block
-    uint inodestart; // Block number of first inode block
-    uint bmapstart; // Block number of first free map block
+    u32 size; // Size of file system image (blocks)
+    u32 nblocks; // Number of data blocks
+    u32 ninodes; // Number of inodes.
+    u32 nlog; // Number of log blocks
+    u32 logstart; // Block number of first log block
+    u32 inodestart; // Block number of first inode block
+    u32 bmapstart; // Block number of first free map block
 };
 
 #define NDIRECT 12
-#define NINDIRECT (BSIZE / sizeof(uint))
+#define NINDIRECT (BSIZE / sizeof(u32))
 #define MAXFILE (NDIRECT + NINDIRECT)
 
 // On-disk inode structure
@@ -36,8 +37,8 @@ struct dinode
     short major; // Major device number (T_DEV only)
     short minor; // Minor device number (T_DEV only)
     short nlink; // Number of links to inode in file system
-    uint size; // Size of file (bytes)
-    uint addrs[NDIRECT + 1]; // Data block addresses
+    u32 size; // Size of file (bytes)
+    u32 addrs[NDIRECT + 1]; // Data block addresses
 };
 
 // Inodes per block.
@@ -57,6 +58,6 @@ struct dinode
 
 struct dirent
 {
-    ushort inum;
+    u16 inum;
     char name[DIRSIZ];
 };

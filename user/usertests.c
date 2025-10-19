@@ -863,7 +863,7 @@ concreate(void)
     char fa[40];
     struct
     {
-        ushort inum;
+        u16 inum;
         char name[14];
     } de;
 
@@ -1646,7 +1646,7 @@ void sbrktest(void)
     // can one grow address space to something big?
 #define BIG (100*1024*1024)
     a = sbrk(0);
-    uint amt = (BIG) - (uint)a;
+    u32 amt = (BIG) - (u32)a;
     char* p = sbrk(amt);
     if (p != a)
     {
@@ -1725,7 +1725,7 @@ void sbrktest(void)
         if ((pids[i] = fork()) == 0)
         {
             // allocate a lot of memory
-            sbrk(BIG - (uint)sbrk(0));
+            sbrk(BIG - (u32)sbrk(0));
             write(fds[1], "x", 1);
             // sit around until killed
             for (;;) sleep(1000);
@@ -1775,7 +1775,7 @@ void validatetest(void)
     printf(stdout, "validate test\n");
     int hi = 1100 * 1024;
 
-    for (uint p = 0; p <= (uint)hi; p += 4096)
+    for (u32 p = 0; p <= (u32)hi; p += 4096)
     {
         if ((pid = fork()) == 0)
         {
@@ -1916,8 +1916,8 @@ void uio()
 #define RTC_ADDR 0x70
 #define RTC_DATA 0x71
 
-    ushort port = 0;
-    uchar val = 0;
+    u16 port = 0;
+    u8 val = 0;
     int pid;
 
     printf(1, "uio test\n");

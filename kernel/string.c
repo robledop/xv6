@@ -2,7 +2,7 @@
 #include "x86.h"
 
 /** @brief Set n bytes of memory to c */
-void* memset(void* dst, int c, uint n)
+void* memset(void* dst, int c, u32 n)
 {
     if ((int)dst % 4 == 0 && n % 4 == 0)
     {
@@ -15,10 +15,10 @@ void* memset(void* dst, int c, uint n)
 }
 
 /** @brief Compare n bytes of memory */
-int memcmp(const void* v1, const void* v2, uint n)
+int memcmp(const void* v1, const void* v2, u32 n)
 {
-    const uchar* s1 = v1;
-    const uchar* s2 = v2;
+    const u8* s1 = v1;
+    const u8* s2 = v2;
     while (n-- > 0)
     {
         if (*s1 != *s2)
@@ -30,7 +30,7 @@ int memcmp(const void* v1, const void* v2, uint n)
 }
 
 /** @brief Move n bytes of memory */
-void* memmove(void* dst, const void* src, uint n)
+void* memmove(void* dst, const void* src, u32 n)
 {
     const char* s = src;
     char* d = dst;
@@ -50,19 +50,19 @@ void* memmove(void* dst, const void* src, uint n)
 
 // memcpy exists to placate GCC.  Use memmove.
 /** @brief Copy n bytes of memory (use memmove) */
-void* memcpy(void* dst, const void* src, uint n)
+void* memcpy(void* dst, const void* src, u32 n)
 {
     return memmove(dst, src, n);
 }
 
 /** @brief Compare n characters of strings */
-int strncmp(const char* p, const char* q, uint n)
+int strncmp(const char* p, const char* q, u32 n)
 {
     while (n > 0 && *p && *p == *q)
         n--, p++, q++;
     if (n == 0)
         return 0;
-    return (uchar) * p - (uchar) * q;
+    return (u8) * p - (u8) * q;
 }
 
 /** @brief Copy n characters of string */

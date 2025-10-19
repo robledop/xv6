@@ -20,7 +20,7 @@
  * @param ip Destination pointer in kernel space.
  * @return 0 on success, -1 if the address is invalid.
  */
-int fetchint(uint addr, int* ip)
+int fetchint(u32 addr, int* ip)
 {
     struct proc* curproc = myproc();
 
@@ -37,7 +37,7 @@ int fetchint(uint addr, int* ip)
  * @param pp Receives the user pointer.
  * @return Length excluding terminator, or -1 if invalid.
  */
-int fetchstr(uint addr, char** pp)
+int fetchstr(u32 addr, char** pp)
 {
     struct proc* curproc = myproc();
 
@@ -80,7 +80,7 @@ int argptr(int n, char** pp, int size)
 
     if (argint(n, &i) < 0)
         return -1;
-    if (size < 0 || (uint)i >= curproc->size || (uint)i + size > curproc->size)
+    if (size < 0 || (u32)i >= curproc->size || (u32)i + size > curproc->size)
         return -1;
     *pp = (char*)i;
     return 0;

@@ -29,9 +29,9 @@ volatile struct ioapic* ioapic;
 /** @brief Memory-mapped register layout of the I/O APIC. */
 struct ioapic
 {
-    uint reg;
-    uint pad[3];
-    uint data;
+    u32 reg;
+    u32 pad[3];
+    u32 data;
 };
 
 /**
@@ -40,7 +40,7 @@ struct ioapic
  * @param reg Register index to read.
  * @return Contents of the requested register.
  */
-static uint
+static u32
 ioapicread(int reg)
 {
     ioapic->reg = reg;
@@ -54,7 +54,7 @@ ioapicread(int reg)
  * @param data Value to store.
  */
 static void
-ioapicwrite(int reg, uint data)
+ioapicwrite(int reg, u32 data)
 {
     ioapic->reg = reg;
     ioapic->data = data;

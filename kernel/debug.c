@@ -7,7 +7,7 @@
 typedef struct stack_frame
 {
     struct stack_frame *ebp;
-    uint eip;
+    u32 eip;
 } stack_frame_t;
 
 extern char end[];
@@ -60,12 +60,12 @@ struct symbol debug_function_symbol_lookup(const elf32_addr address)
     if (!symbols_table) {
         return (struct symbol){0, nullptr};
     }
-    const uint symtab_entry_count = symtab_section_header->sh_size / sizeof(struct elf32_sym);
+    const u32 symtab_entry_count = symtab_section_header->sh_size / sizeof(struct elf32_sym);
 
     auto const strtab_addr = (const char *)P2V(strtab_section_header->sh_addr);
 
     const struct elf32_sym *closest_func = nullptr;
-    for (uint i = 0; i < symtab_entry_count; i++) {
+    for (u32 i = 0; i < symtab_entry_count; i++) {
         const struct elf32_sym *sym = &symbols_table[i];
 
         // Ensure we only return function symbols
@@ -120,12 +120,12 @@ void init_symbols(const multiboot_info_t *mbd)
         return;
     }
 
-    const uint num      = mbd->u.elf_sec.num;
+    const u32 num      = mbd->u.elf_sec.num;
     elf_section_headers =
         (struct elf32_shdr *)P2V(mbd->u.elf_sec.addr);
     const auto sh_strtab = (const char *)P2V(elf_section_headers[mbd->u.elf_sec.shndx].sh_addr);
 
-    for (uint i = 0; i < num; i++) {
+    for (u32 i = 0; i < num; i++) {
         struct elf32_shdr *sh    = &elf_section_headers[i];
         const char *section_name = sh_strtab + sh->sh_name;
 

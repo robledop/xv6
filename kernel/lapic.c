@@ -8,7 +8,7 @@
 #include "traps.h"
 #include "x86.h"
 
-// Local APIC registers, divided by 4 for use as uint[] indices.
+// Local APIC registers, divided by 4 for use as u32[] indices.
 #define ID (0x0020 / 4)    // ID
 #define VER (0x0030 / 4)   // Version
 #define TPR (0x0080 / 4)   // Task Priority
@@ -40,7 +40,7 @@
 #define TDCR (0x03E0 / 4)   // Timer Divide Configuration
 
 /** @brief Memory-mapped base address of the local APIC. */
-volatile uint* lapic; // Initialized in mp.c
+volatile u32* lapic; // Initialized in mp.c
 
 /**
  * @brief Write a value to a local APIC register.
@@ -139,14 +139,14 @@ void microdelay([[maybe_unused]] int us)
  * @param apicid Target processor's APIC ID.
  * @param addr Physical address of the bootstrap code.
  */
-void lapicstartap(uchar apicid, uint addr)
+void lapicstartap(u8 apicid, u32 addr)
 {
     // "The BSP must initialize CMOS shutdown code to 0AH
     // and the warm reset vector (DWORD based at 40:67) to point at
     // the AP startup code prior to the [universal startup algorithm]."
     outb(CMOS_PORT, 0xF); // offset 0xF is shutdown code
     outb(CMOS_PORT + 1, 0x0A);
-    ushort* wrv = (ushort*)P2V((0x40 << 4 | 0x67)); // Warm reset vector
+    u16* wrv = (u16*)P2V((0x40 << 4 | 0x67)); // Warm reset vector
     wrv[0] = 0;
     wrv[1] = addr >> 4;
 
@@ -188,8 +188,8 @@ void lapicstartap(uchar apicid, uint addr)
  * @param reg Register index to access.
  * @return Register contents.
  */
-static uint
-cmos_read(uint reg)
+static u32
+cmos_read(u32 reg)
 {
     outb(CMOS_PORT, reg);
     microdelay(200);

@@ -51,7 +51,7 @@ void kinit2(void* vstart, void* vend)
 /** @brief Free a range of memory */
 void freerange(void* vstart, void* vend)
 {
-    char* p = (char*)PGROUNDUP((uint)vstart);
+    char* p = (char*)PGROUNDUP((u32)vstart);
     for (; p + PGSIZE <= (char*)vend; p += PGSIZE)
     {
         kfree(p);
@@ -65,7 +65,7 @@ void freerange(void* vstart, void* vend)
  */
 void kfree(char* v)
 {
-    if ((uint)v % PGSIZE || v < end || V2P(v) >= PHYSTOP)
+    if ((u32)v % PGSIZE || v < end || V2P(v) >= PHYSTOP)
         panic("kfree");
 
     // Fill with junk to catch dangling refs.

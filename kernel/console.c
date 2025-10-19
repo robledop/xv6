@@ -33,7 +33,7 @@ static void printint(int xx, int base, int sign)
 {
     static char digits[] = "0123456789abcdef";
     char buf[16];
-    uint x;
+    u32 x;
 
     if (sign && (sign = xx < 0))
         x             = -xx;
@@ -65,7 +65,7 @@ void cprintf(char *fmt, ...)
     if (fmt == 0)
         panic("null fmt");
 
-    const uint *argp = (uint *)(void *)(&fmt + 1);
+    const u32 *argp = (u32 *)(void *)(&fmt + 1);
     for (int i = 0; (c = fmt[i] & 0xff) != 0; i++) {
         if (c != '%') {
             consputc(c);
@@ -106,7 +106,7 @@ void cprintf(char *fmt, ...)
 /** @brief Panic and print the message */
 void panic(char *s)
 {
-    // uint pcs[10];
+    // u32 pcs[10];
 
     cli();
     cons.locking = 0;
@@ -125,7 +125,7 @@ void panic(char *s)
 #define BACKSPACE 0x100
 #define CRTPORT 0x3d4
 /** @brief CGA memory */
-static ushort *crt = (ushort *)P2V(0xb8000); // CGA memory
+static u16 *crt = (u16 *)P2V(0xb8000); // CGA memory
 
 /** @brief Put a character on the CGA screen */
 static void cgaputc(int c)
@@ -184,9 +184,9 @@ void consputc(int c)
 struct
 {
     char buf[INPUT_BUF];
-    uint r; // Read index
-    uint w; // Write index
-    uint e; // Edit index
+    u32 r; // Read index
+    u32 w; // Write index
+    u32 e; // Edit index
 } input;
 
 #define C(x) ((x) - '@') // Control-x
@@ -239,14 +239,14 @@ void consoleintr(int (*getc)(void))
 /** @brief Read from console */
 int consoleread(struct inode *ip, char *dst, int n)
 {
-    iunlock(ip);
-    uint target = n;
+    ip->iops->iunlock(ip);
+    u32 target = n;
     acquire(&cons.lock);
     while (n > 0) {
         while (input.r == input.w) {
             if (myproc()->killed) {
                 release(&cons.lock);
-                ilock(ip);
+                ip->iops->ilock(ip);
                 return -1;
             }
             sleep(&input.r, &cons.lock);
@@ -267,7 +267,7 @@ int consoleread(struct inode *ip, char *dst, int n)
             break;
     }
     release(&cons.lock);
-    ilock(ip);
+   ip->iops-> ilock(ip);
 
     return target - n;
 }
@@ -275,12 +275,12 @@ int consoleread(struct inode *ip, char *dst, int n)
 /** @brief Write to console */
 int consolewrite(struct inode *ip, char *buf, int n)
 {
-    iunlock(ip);
+    ip->iops->iunlock(ip);
     acquire(&cons.lock);
     for (int i = 0; i < n; i++)
         consputc(buf[i] & 0xff);
     release(&cons.lock);
-    ilock(ip);
+    ip->iops->ilock(ip);
 
     return n;
 }

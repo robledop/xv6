@@ -13,7 +13,7 @@
 // #define SECTSIZE 512
 //
 // /** @brief Read 'count' bytes at 'offset' from kernel into physical address 'pa'. */
-// void readseg(uchar*, uint, uint);
+// void readseg(u8*, u32, u32);
 //
 // /**
 //  * @brief Load an ELF kernel image from the disk starting at sector 1 and then jumps to the kernel entry routine.
@@ -23,18 +23,18 @@
 //     struct elfhdr* elf = (struct elfhdr*)0x10000; // scratch space
 //
 //     // Read 1st page off disk
-//     readseg((uchar*)elf, 4096, 0);
+//     readseg((u8*)elf, 4096, 0);
 //
 //     // Is this an ELF executable?
 //     if (elf->magic != ELF_MAGIC)
 //         return; // let bootasm.S handle error
 //
 //     // Load each program segment (ignores ph flags).
-//     struct proghdr* ph = (struct proghdr*)((uchar*)elf + elf->phoff);
+//     struct proghdr* ph = (struct proghdr*)((u8*)elf + elf->phoff);
 //     struct proghdr* eph = ph + elf->phnum;
 //     for (; ph < eph; ph++)
 //     {
-//         uchar* pa = (uchar*)ph->paddr;
+//         u8* pa = (u8*)ph->paddr;
 //         readseg(pa, ph->filesz, ph->off);
 //         if (ph->memsz > ph->filesz)
 //             stosb(pa + ph->filesz, 0, ph->memsz - ph->filesz);
@@ -58,7 +58,7 @@
 // /**
 //  * @brief Read a single sector at offset into dst.
 //  */
-// void readsect(void* dst, uint offset)
+// void readsect(void* dst, u32 offset)
 // {
 //     // Issue command.
 //     waitdisk();
@@ -78,9 +78,9 @@
 //  * @brief Read 'count' bytes at 'offset' from kernel into physical address 'pa'.
 //  * Might copy more than asked.
 //  */
-// void readseg(uchar* pa, uint count, uint offset)
+// void readseg(u8* pa, u32 count, u32 offset)
 // {
-//     uchar* epa = pa + count;
+//     u8* epa = pa + count;
 //
 //     // Round down to sector boundary.
 //     pa -= offset % SECTSIZE;

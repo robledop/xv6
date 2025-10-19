@@ -35,31 +35,31 @@ int nblocks; // Number of data blocks
 int fsfd;
 struct superblock super_block;
 char zeroes[BSIZE];
-uint freeinode = 1;
-uint freeblock;
+u32 freeinode = 1;
+u32 freeblock;
 
 void balloc(int);
-void wsect(uint, void*);
-void winode(uint, struct dinode*);
-void rinode(uint inum, struct dinode* ip);
-void rsect(uint sec, void* buf);
-uint ialloc(ushort type);
-void iappend(uint inum, void* p, int n);
+void wsect(u32, void*);
+void winode(u32, struct dinode*);
+void rinode(u32 inum, struct dinode* ip);
+void rsect(u32 sec, void* buf);
+u32 ialloc(u16 type);
+void iappend(u32 inum, void* p, int n);
 
 // convert to intel byte order
-ushort xshort(ushort x)
+u16 xshort(u16 x)
 {
-    ushort y;
-    uchar* a = (uchar*)&y;
+    u16 y;
+    u8* a = (u8*)&y;
     a[0] = x;
     a[1] = x >> 8;
     return y;
 }
 
-uint xint(uint x)
+u32 xint(u32 x)
 {
-    uint y;
-    uchar* a = (uchar*)&y;
+    u32 y;
+    u8* a = (u8*)&y;
     a[0] = x;
     a[1] = x >> 8;
     a[2] = x >> 16;
@@ -116,7 +116,7 @@ int main(int argc, char* argv[])
     memmove(buf, &super_block, sizeof(super_block));
     wsect(1, buf);
 
-    uint rootino = ialloc(T_DIR);
+    u32 rootino = ialloc(T_DIR);
     assert(rootino == ROOTINO);
 
     bzero(&de, sizeof(de));
@@ -149,7 +149,7 @@ int main(int argc, char* argv[])
             ++argv[i];
 
 
-        uint inum = ialloc(T_FILE);
+        u32 inum = ialloc(T_FILE);
 
         bzero(&de, sizeof(de));
         de.inum = xshort(inum);
@@ -164,7 +164,7 @@ int main(int argc, char* argv[])
 
     // fix size of root inode dir
     rinode(rootino, &din);
-    uint off = xint(din.size);
+    u32 off = xint(din.size);
     off = ((off / BSIZE) + 1) * BSIZE;
     din.size = xint(off);
     winode(rootino, &din);
@@ -174,7 +174,7 @@ int main(int argc, char* argv[])
     exit(0);
 }
 
-void wsect(uint sec, void* buf)
+void wsect(u32 sec, void* buf)
 {
     if (lseek(fsfd, sec * BSIZE, 0) != sec * BSIZE)
     {
@@ -188,28 +188,28 @@ void wsect(uint sec, void* buf)
     }
 }
 
-void winode(uint inum, struct dinode* ip)
+void winode(u32 inum, struct dinode* ip)
 {
     char buf[BSIZE];
 
-    uint bn = IBLOCK(inum, super_block);
+    u32 bn = IBLOCK(inum, super_block);
     rsect(bn, buf);
     struct dinode* dip = ((struct dinode*)buf) + (inum % IPB);
     *dip = *ip;
     wsect(bn, buf);
 }
 
-void rinode(uint inum, struct dinode* ip)
+void rinode(u32 inum, struct dinode* ip)
 {
     char buf[BSIZE];
 
-    uint bn = IBLOCK(inum, super_block);
+    u32 bn = IBLOCK(inum, super_block);
     rsect(bn, buf);
     struct dinode* dip = ((struct dinode*)buf) + (inum % IPB);
     *ip = *dip;
 }
 
-void rsect(uint sec, void* buf)
+void rsect(u32 sec, void* buf)
 {
     if (lseek(fsfd, sec * BSIZE, 0) != sec * BSIZE)
     {
@@ -223,9 +223,9 @@ void rsect(uint sec, void* buf)
     }
 }
 
-uint ialloc(ushort type)
+u32 ialloc(u16 type)
 {
-    uint inum = freeinode++;
+    u32 inum = freeinode++;
     struct dinode din;
 
     bzero(&din, sizeof(din));
@@ -238,7 +238,7 @@ uint ialloc(ushort type)
 
 void balloc(int used)
 {
-    uchar buf[BSIZE];
+    u8 buf[BSIZE];
 
     printf("balloc: first %d blocks have been allocated\n", used);
     assert(used < BSIZE * 8);
@@ -253,20 +253,20 @@ void balloc(int used)
 
 #define min(a, b) ((a) < (b) ? (a) : (b))
 
-void iappend(uint inum, void* xp, int n)
+void iappend(u32 inum, void* xp, int n)
 {
     char* p = (char*)xp;
     struct dinode din;
     char buf[BSIZE];
-    uint indirect[NINDIRECT];
-    uint x;
+    u32 indirect[NINDIRECT];
+    u32 x;
 
     rinode(inum, &din);
-    uint off = xint(din.size);
+    u32 off = xint(din.size);
     // printf("append inum %d at off %d sz %d\n", inum, off, n);
     while (n > 0)
     {
-        uint fbn = off / BSIZE;
+        u32 fbn = off / BSIZE;
         assert(fbn < MAXFILE);
         if (fbn < NDIRECT)
         {
@@ -290,7 +290,7 @@ void iappend(uint inum, void* xp, int n)
             }
             x = xint(indirect[fbn - NDIRECT]);
         }
-        uint n1 = min(n, (fbn + 1) * BSIZE - off);
+        u32 n1 = min(n, (fbn + 1) * BSIZE - off);
         rsect(x, buf);
         bcopy(p, buf + off - (fbn * BSIZE), n1);
         wsect(x, buf);
