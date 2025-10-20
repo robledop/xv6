@@ -288,7 +288,6 @@ void ext2fs_ilock(struct inode *ip)
         if (ip->type == 0)
             panic("ext2fs_ilock: no type");
     }
-    return;
 }
 
 void ext2fs_iunlock(struct inode *ip)
@@ -348,8 +347,6 @@ void ext2fs_iput(struct inode *ip)
         ip->addrs = nullptr;
     }
     release(&icache.lock);
-
-    return;
 }
 
 void ext2fs_iunlockput(struct inode *ip)
@@ -590,9 +587,17 @@ int ext2fs_readi(struct inode *ip, char *dst, u32 off, u32 n)
     u32 m;
 
     if (ip->type == T_DEV) {
-        if (ip->major < 0 || ip->major >= NDEV || !devsw[ip->major].read)
+        int major = -1;
+        for (int i = 0; i < NDEV; i++) {
+            if (devtab[i]->inum == ip->inum) {
+                major = devtab[i]->major;
+                break;
+            }
+        }
+        if (major < 0 || major >= NDEV || !devsw[major].read) {
             return -1;
-        return devsw[ip->major].read(ip, dst, n);
+        }
+        return devsw[major].read(ip, dst, n);
     }
 
     if (off > ip->size || off + n < off)
