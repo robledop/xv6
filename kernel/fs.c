@@ -283,7 +283,7 @@ struct inode *iget(u32 dev, u32 inum)
             release(&icache.lock);
             return ip;
         }
-        if (empty == nullptr && ip->ref == 0) // Remember empty slot.
+        if (empty == nullptr && ip->ref == 0) // Remember the empty slot.
             empty = ip;
     }
 

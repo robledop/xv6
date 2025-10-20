@@ -1,3 +1,5 @@
+#pragma once
+#include <types.h>
 struct stat;
 struct rtcdate;
 
@@ -39,3 +41,6 @@ void* memset(void*, int, u32);
 void* malloc(u32);
 void free(void*);
 int atoi(const char*);
+int strncmp(const char *p, const char *q, u32 n);
+bool starts_with(const char pre[static 1], const char str[static 1]);
+char *strcat(char dest[static 1], const char src[static 1]);

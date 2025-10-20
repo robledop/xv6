@@ -13,6 +13,7 @@
 #include "icache.h"
 #include "mbr.h"
 
+extern struct inode *devtab[NDEV];
 struct inode_operations ext2fs_inode_ops = {
     ext2fs_dirlink,
     ext2fs_dirlookup,
@@ -120,7 +121,7 @@ static void ext2fs_bfree(int dev, u32 b)
     struct buf *bp1 = bread(dev, desc_blockno);
     memmove(&bgdesc, bp1->data + gno * sizeof(bgdesc), sizeof(bgdesc));
     struct buf *bp2 = bread(dev, bgdesc.bg_block_bitmap + first_partition_block);
-    u32 byte_index = offset / 8;
+    u32 byte_index  = offset / 8;
     if (byte_index >= EXT2_BSIZE)
         panic("ext2fs_bfree: bitmap overflow\n");
     u8 mask = 1 << (7 - (offset % 8));
@@ -159,7 +160,7 @@ struct inode *ext2fs_ialloc(u32 dev, short type)
         brelse(group_desc_buf);
 
         struct buf *ibitmap_buff = bread(dev, bgdesc.bg_inode_bitmap + first_partition_block);
-        u32 fbit        = ext2fs_get_free_bit((char *)ibitmap_buff->data, ext2_sb.s_inodes_per_group);
+        u32 fbit                 = ext2fs_get_free_bit((char *)ibitmap_buff->data, ext2_sb.s_inodes_per_group);
         if (fbit == (u32)-1) {
             brelse(ibitmap_buff);
             continue;
@@ -169,8 +170,8 @@ struct inode *ext2fs_ialloc(u32 dev, short type)
         if (inodes_per_block == 0)
             panic("ext2fs_ialloc: invalid inode size");
 
-        int bno = bgdesc.bg_inode_table + fbit / inodes_per_block + first_partition_block;
-        int iindex = fbit % inodes_per_block;
+        int bno                 = bgdesc.bg_inode_table + fbit / inodes_per_block + first_partition_block;
+        int iindex              = fbit % inodes_per_block;
         struct buf *dinode_buff = bread(dev, bno);
         u8 *slot                = dinode_buff->data + (iindex * ext2_sb.s_inode_size);
 
@@ -276,8 +277,8 @@ void ext2fs_ilock(struct inode *ip)
         } else if (S_ISCHR(din->i_mode)) {
             ip->type = T_DEV;
         }
-        ip->major = 0;
-        ip->minor = 0;
+        // ip->major = 0;
+        // ip->minor = 0;
         ip->nlink = din->i_links_count;
         ip->size  = din->i_size;
         ip->iops  = &ext2fs_inode_ops;
@@ -399,15 +400,15 @@ static u32 ext2fs_bmap(struct inode *ip, u32 bn)
     bn -= EXT2_NDIR_BLOCKS;
     if (bn < EXT2_INDIRECT) {
         if ((addr = ad->addrs[EXT2_IND_BLOCK]) == 0) {
-            addr                        = ext2fs_balloc(ip->dev, ip->inum);
-            ad->addrs[EXT2_IND_BLOCK]   = addr;
+            addr                      = ext2fs_balloc(ip->dev, ip->inum);
+            ad->addrs[EXT2_IND_BLOCK] = addr;
         }
-        bp = bread(ip->dev, first_partition_block + addr);
-        a  = (u32 *)bp->data;
+        bp        = bread(ip->dev, first_partition_block + addr);
+        a         = (u32 *)bp->data;
         u32 entry = a[bn];
         if (entry == 0) {
-            entry    = ext2fs_balloc(ip->dev, ip->inum);
-            a[bn]    = entry;
+            entry = ext2fs_balloc(ip->dev, ip->inum);
+            a[bn] = entry;
             bwrite(bp);
         }
         brelse(bp);
@@ -417,22 +418,22 @@ static u32 ext2fs_bmap(struct inode *ip, u32 bn)
 
     if (bn < EXT2_DINDIRECT) {
         if ((addr = ad->addrs[EXT2_DIND_BLOCK]) == 0) {
-            addr                         = ext2fs_balloc(ip->dev, ip->inum);
-            ad->addrs[EXT2_DIND_BLOCK]   = addr;
+            addr                       = ext2fs_balloc(ip->dev, ip->inum);
+            ad->addrs[EXT2_DIND_BLOCK] = addr;
         }
-        bp = bread(ip->dev, first_partition_block + addr);
-        a  = (u32 *)bp->data;
+        bp              = bread(ip->dev, first_partition_block + addr);
+        a               = (u32 *)bp->data;
         u32 first_index = bn / EXT2_INDIRECT;
         u32 entry       = a[first_index];
         if (entry == 0) {
-            entry            = ext2fs_balloc(ip->dev, ip->inum);
-            a[first_index]   = entry;
+            entry          = ext2fs_balloc(ip->dev, ip->inum);
+            a[first_index] = entry;
             bwrite(bp);
         }
         brelse(bp);
 
-        bp1 = bread(ip->dev, first_partition_block + entry);
-        b   = (u32 *)bp1->data;
+        bp1              = bread(ip->dev, first_partition_block + entry);
+        b                = (u32 *)bp1->data;
         u32 second_index = bn % EXT2_INDIRECT;
         u32 leaf         = b[second_index];
         if (leaf == 0) {
@@ -447,28 +448,28 @@ static u32 ext2fs_bmap(struct inode *ip, u32 bn)
 
     if (bn < EXT2_TINDIRECT) {
         if ((addr = ad->addrs[EXT2_TIND_BLOCK]) == 0) {
-            addr                         = ext2fs_balloc(ip->dev, ip->inum);
-            ad->addrs[EXT2_TIND_BLOCK]   = addr;
+            addr                       = ext2fs_balloc(ip->dev, ip->inum);
+            ad->addrs[EXT2_TIND_BLOCK] = addr;
         }
-        bp = bread(ip->dev, first_partition_block + addr);
-        a  = (u32 *)bp->data;
+        bp              = bread(ip->dev, first_partition_block + addr);
+        a               = (u32 *)bp->data;
         u32 first_index = bn / EXT2_DINDIRECT;
         u32 entry       = a[first_index];
         if (entry == 0) {
-            entry            = ext2fs_balloc(ip->dev, ip->inum);
-            a[first_index]   = entry;
+            entry          = ext2fs_balloc(ip->dev, ip->inum);
+            a[first_index] = entry;
             bwrite(bp);
         }
         brelse(bp);
 
-        bp1 = bread(ip->dev, first_partition_block + entry);
-        b   = (u32 *)bp1->data;
-        u32 remainder   = bn % EXT2_DINDIRECT;
-        u32 second_idx  = remainder / EXT2_INDIRECT;
-        u32 mid         = b[second_idx];
+        bp1            = bread(ip->dev, first_partition_block + entry);
+        b              = (u32 *)bp1->data;
+        u32 remainder  = bn % EXT2_DINDIRECT;
+        u32 second_idx = remainder / EXT2_INDIRECT;
+        u32 mid        = b[second_idx];
         if (mid == 0) {
-            mid            = ext2fs_balloc(ip->dev, ip->inum);
-            b[second_idx]  = mid;
+            mid           = ext2fs_balloc(ip->dev, ip->inum);
+            b[second_idx] = mid;
             bwrite(bp1);
         }
         brelse(bp1);
@@ -478,8 +479,8 @@ static u32 ext2fs_bmap(struct inode *ip, u32 bn)
         u32 third_idx   = remainder % EXT2_INDIRECT;
         u32 leaf        = c[third_idx];
         if (leaf == 0) {
-            leaf          = ext2fs_balloc(ip->dev, ip->inum);
-            c[third_idx]  = leaf;
+            leaf         = ext2fs_balloc(ip->dev, ip->inum);
+            c[third_idx] = leaf;
             bwrite(bp2);
         }
         brelse(bp2);
@@ -614,9 +615,17 @@ int ext2fs_writei(struct inode *ip, char *src, u32 off, u32 n)
     u32 m;
 
     if (ip->type == T_DEV) {
-        if (ip->major < 0 || ip->major >= NDEV || !devsw[ip->major].write)
+        int major = -1;
+        for (int i = 0; i < NDEV; i++) {
+            if (devtab[i]->inum == ip->inum) {
+                major = devtab[i]->major;
+                break;
+            }
+        }
+        if (major < 0 || major >= NDEV || !devsw[major].write) {
             return -1;
-        return devsw[ip->major].write(ip, src, n);
+        }
+        return devsw[major].write(ip, src, n);
     }
 
     if (off > ip->size || off + n < off)
@@ -707,9 +716,9 @@ int ext2fs_dirlink(struct inode *dp, char *name, u32 inum)
     u16 rec_len = ext2_dirent_size((u8)name_len);
 
     memset(&de, 0, sizeof(de));
-    de.inode    = inum;
-    de.rec_len  = rec_len;
-    de.name_len = name_len;
+    de.inode     = inum;
+    de.rec_len   = rec_len;
+    de.name_len  = name_len;
     de.file_type = EXT2_FT_UNKNOWN;
     memmove(de.name, name, name_len);
 

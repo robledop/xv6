@@ -8,6 +8,10 @@ $(shell mkdir -p build)
 $(shell mkdir -p $(U)/build)
 $(shell mkdir -p rootfs/bin)
 $(shell mkdir -p rootfs/boot/grub)
+$(shell mkdir -p rootfs/dev)
+$(shell mkdir -p rootfs/etc)
+$(shell touch rootfs/etc/devtab)
+
 
 # Create the grub.cfg file if it doesn't exist.
 ifeq ("$(wildcard rootfs/boot/grub/grub.cfg)","")
@@ -17,6 +21,12 @@ ifeq ("$(wildcard rootfs/boot/grub/grub.cfg)","")
             echo '	multiboot /boot/kernel' >> rootfs/boot/grub/grub.cfg && \
             echo '}' >> rootfs/boot/grub/grub.cfg)
 endif
+
+$(shell chmod 777 rootfs/etc/devtab)
+
+$(shell echo "# /etc/devtab" > rootfs/etc/devtab && \
+		echo "# inum   type    major   minor  # optional notes" >> rootfs/etc/devtab && \
+	    echo "9	char	1	1	#/dev/console" >> rootfs/etc/devtab)
 
 OBJS = \
 	build/bio.o\
@@ -52,6 +62,8 @@ OBJS = \
 	build/gdt.o \
 	build/mbr.o \
 	build/ext2.o \
+	build/math.o \
+	build/printf.o \
 	build/debug.o
 
 TOOLPREFIX = i686-elf-
@@ -177,21 +189,21 @@ UPROGS=\
 grub: build/kernel $(UPROGS)
 	cp build/kernel ./rootfs/boot/kernel
 	# Copy all the user programs to the root filesystem and rename them to remove the leading underscore.
-#	if [ -n "$(UPROGS)" ]; then \
-#	  for f in $(UPROGS); do \
-#	    name=$$(basename $$f); \
-#	    name=$${name#_}; \
-#	    cp "$$f" ./rootfs/bin/"$$name"; \
-#	  done; \
-#	fi
-
 	if [ -n "$(UPROGS)" ]; then \
 	  for f in $(UPROGS); do \
 	    name=$$(basename $$f); \
 	    name=$${name#_}; \
-	    cp "$$f" ./rootfs/"$$name"; \
+	    cp "$$f" ./rootfs/bin/"$$name"; \
 	  done; \
 	fi
+
+#	if [ -n "$(UPROGS)" ]; then \
+#	  for f in $(UPROGS); do \
+#	    name=$$(basename $$f); \
+#	    name=$${name#_}; \
+#	    cp "$$f" ./rootfs/"$$name"; \
+#	  done; \
+#	fi
 	./scripts/create-grub-image.sh
 
 fs.img: mkfs/mkfs $(UPROGS)

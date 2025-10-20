@@ -485,8 +485,7 @@ void sleep(void *chan, struct spinlock *lk)
  *
  * Requires ::ptable.lock to be held.
  */
-static void
-wakeup1(void *chan)
+static void wakeup1(void *chan)
 {
     for (struct proc *p = ptable.proc; p < &ptable.proc[NPROC]; p++)
         if (p->state == SLEEPING && p->chan == chan)

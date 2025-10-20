@@ -22,6 +22,7 @@ void bwrite(struct buf*);
 // console.c
 void consoleinit(void);
 void cprintf(char*, ...);
+void consputc(int c);
 void consoleintr(int (*)(void));
 void panic(char*) __attribute__
 ((noreturn));
@@ -155,6 +156,11 @@ int strncmp(const char*, const char*, u32);
 char* strncpy(char*, const char*, int);
 bool starts_with(const char pre[static 1], const char str[static 1]);
 char *strcat(char dest[static 1], const char src[static 1]);
+void reverse(char s[static 1]);
+int itoa(int n, char s[static 1]);
+char *strchr(const char *s, int c);
+char *strtok(char *str, const char delim[static 1]);
+int sscanf(const char *str, const char *format, ...);
 
 // syscall.c
 int argint(int, int*);
@@ -163,6 +169,8 @@ int argstr(int, char**);
 int fetchint(u32, int*);
 int fetchstr(u32, char**);
 void syscall(void);
+
+int open_file(char *path, int omode);
 
 // timer.c
 void timerinit(void);

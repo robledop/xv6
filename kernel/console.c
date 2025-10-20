@@ -16,7 +16,7 @@
 #include "x86.h"
 #include "debug.h"
 
-static void consputc(int);
+// static void consputc(int);
 
 /** @brief Flag indicating if the system has panicked */
 static int panicked = 0;

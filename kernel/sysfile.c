@@ -15,6 +15,11 @@
 #include "sleeplock.h"
 #include "file.h"
 #include "fcntl.h"
+#include "printf.h"
+
+extern struct inode *devtab[NDEV];
+bool devtab_parsed = false;
+void parse_devtab();
 
 /**
  * @brief Fetch a file descriptor argument and return its struct file.
@@ -22,10 +27,9 @@
  * @param n Argument index.
  * @param pfd Optional destination for the descriptor value.
  * @param pf Optional destination for the file pointer.
- * @return ::0 on success, ::-1 if the descriptor is invalid.
+ * @return 0 on success, -1 if the descriptor is invalid.
  */
-static int
-argfd(int n, int *pfd, struct file **pf)
+static int argfd(int n, int *pfd, struct file **pf)
 {
     int fd;
     struct file *f;
@@ -47,10 +51,9 @@ argfd(int n, int *pfd, struct file **pf)
  * Takes ownership of the reference on success.
  *
  * @param f File to install.
- * @return Descriptor index or ::-1 if the table is full.
+ * @return Descriptor index or -1 if the table is full.
  */
-static int
-fdalloc(struct file *f)
+static int fdalloc(struct file *f)
 {
     struct proc *curproc = myproc();
 
@@ -128,7 +131,7 @@ int sys_fstat(void)
 /**
  * @brief Create a new hard link to an existing inode.
  *
- * @return ::0 on success, ::-1 on error.
+ * @return 0 on success, -1 on error.
  */
 int sys_link(void)
 {
@@ -185,8 +188,7 @@ bad:
  * @param dp Directory inode.
  * @return Non-zero if empty, zero otherwise.
  */
-static int
-isdirempty(struct inode *dp)
+static int isdirempty(struct inode *dp)
 {
     struct dirent de;
 
@@ -202,7 +204,7 @@ isdirempty(struct inode *dp)
 /**
  * @brief Remove a directory entry.
  *
- * @return ::0 on success, ::-1 on error.
+ * @return 0 on success, -1 on error.
  */
 int sys_unlink(void)
 {
@@ -269,7 +271,7 @@ bad:
  * @param minor Device minor number (for T_DEV).
  * @return Referenced inode on success, or 0 on failure.
  */
-static struct inode * create(char *path, short type, short major, short minor)
+static struct inode *create(char *path, short type, short major, short minor)
 {
     struct inode *ip, *dp;
     char name[DIRSIZ];
@@ -310,50 +312,120 @@ static struct inode * create(char *path, short type, short major, short minor)
 
     dp->iops->iunlockput(dp);
 
+    if (ip->type == T_DEV && (major != 0 || minor != 0)) {
+        const int fd      = open_file("/etc/devtab", O_RDWR);
+        struct file *file = myproc()->ofile[fd];
+        char buf[64];
+        const int n = snprintf(buf, sizeof(buf), "%d\tchar\t%d\t%d\t#%s\n", ip->inum, major, minor, path);
+
+        filewrite(file, buf, n);
+        fileclose(file);
+
+        bool found = false;
+        for (int i = 0; i < NDEV; i++) {
+            if (devtab[i] && devtab[i]->inum == ip->inum) {
+                devtab[i] = ip;
+                found     = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            for (int i = 0; i < NDEV; i++) {
+                if (devtab[i] == nullptr) {
+                    devtab[i] = ip;
+                    break;
+                }
+            }
+        }
+    }
+
     return ip;
 }
 
-/** @brief Open or create a file. */
-int sys_open(void)
+void parse_devtab()
 {
-    char *path;
-    int fd, omode;
+    const int fd      = open_file("/etc/devtab", O_RDWR);
+    struct file *file = myproc()->ofile[fd];
+    char buf[512];
+    struct stat st;
+    filestat(file, &st);
+    const int n = fileread(file, buf, st.size);
+    buf[n]      = '\0';
+
+    for (char *line = strtok(buf, "\n"); line != nullptr; line = strtok(nullptr, "\n")) {
+        u32 inum, major, minor;
+        char type[16];
+        if (sscanf(line, "%d\t%s\t%d\t%d", &inum, type, &major, &minor) == 4) {
+            struct inode *ip = iget(ROOTDEV, inum);
+            ip->iops->ilock(ip);
+            ip->type  = T_DEV;
+            ip->nlink = 1;
+            ip->dev   = 0;
+            ip->ref   = 1;
+            ip->valid = 1;
+            ip->major = major;
+            ip->minor = minor;
+            ip->iops->iunlock(ip);
+            ip->iops->iput(ip);
+
+            // bool found = false;
+            // for (int i = 0; i < NDEV; i++) {
+            //     if (devtab[i] && devtab[i]->inum == inum) {
+            //         devtab[i] = ip;
+            //         found     = true;
+            //         break;
+            //     }
+            // }
+            //
+            // if (!found) {
+            //     for (int i = 0; i < NDEV; i++) {
+            //         if (devtab[i] == nullptr) {
+            //             devtab[i] = ip;
+            //             break;
+            //         }
+            //     }
+            // }
+        }
+    }
+    fileclose(file);
+}
+
+int open_file(char *path, int omode)
+{
+    int fd;
     struct file *f;
     struct inode *ip;
 
-    if (argstr(0, &path) < 0 || argint(1, &omode) < 0)
-        return -1;
-
-    // begin_op();
+    if (!devtab_parsed) {
+        devtab_parsed = true;
+        parse_devtab();
+    }
 
     if (omode & O_CREATE) {
         ip = create(path, T_FILE, 0, 0);
         if (ip == nullptr) {
-            // end_op();
             return -1;
         }
     } else {
         if ((ip = namei(path)) == nullptr) {
-            // end_op();
             return -1;
         }
         ip->iops->ilock(ip);
         if (ip->type == T_DIR && omode != O_RDONLY) {
             ip->iops->iunlockput(ip);
-            // end_op();
             return -1;
         }
     }
 
     if ((f = filealloc()) == nullptr || (fd = fdalloc(f)) < 0) {
-        if (f)
+        if (f) {
             fileclose(f);
+        }
         ip->iops->iunlockput(ip);
-        // end_op();
         return -1;
     }
     ip->iops->iunlock(ip);
-    // end_op();
 
     f->type     = FD_INODE;
     f->ip       = ip;
@@ -363,19 +435,29 @@ int sys_open(void)
     return fd;
 }
 
+/** @brief Open or create a file. */
+int sys_open(void)
+{
+    char *path;
+    int omode;
+
+    if (argstr(0, &path) < 0 || argint(1, &omode) < 0)
+        return -1;
+
+    return open_file(path, omode);
+}
+
+
 /** @brief Create a new directory. */
 int sys_mkdir(void)
 {
     char *path;
     struct inode *ip;
 
-    // begin_op();
     if (argstr(0, &path) < 0 || (ip = create(path, T_DIR, 0, 0)) == nullptr) {
-        // end_op();
         return -1;
     }
     ip->iops->iunlockput(ip);
-    // end_op();
     return 0;
 }
 
@@ -457,7 +539,7 @@ int sys_exec(void)
 /**
  * @brief Create a unidirectional pipe and return descriptor pair.
  *
- * @return ::0 on success, ::-1 on failure.
+ * @return 0 on success, -1 on failure.
  */
 int sys_pipe(void)
 {
