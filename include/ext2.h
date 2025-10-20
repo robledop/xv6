@@ -11,6 +11,8 @@ extern struct icache icache;
 // Block size for ext2
 #define EXT2_BSIZE 1024
 
+#define EXT2_MAX_INODE_SIZE EXT2_BSIZE
+
 #define GET_GROUP_NO(inum, ext2_sb) 	((inum - 1) / ext2_sb.s_inodes_per_group)
 #define GET_INODE_INDEX(inum, ext2_sb) 	((inum - 1) % ext2_sb.s_inodes_per_group)
 
@@ -31,6 +33,15 @@ extern struct icache icache;
 
 // for directory entry
 #define EXT2_NAME_LEN 255
+
+#define EXT2_FT_UNKNOWN 0
+#define EXT2_FT_REG_FILE 1
+#define EXT2_FT_DIR 2
+#define EXT2_FT_CHRDEV 3
+#define EXT2_FT_BLKDEV 4
+#define EXT2_FT_FIFO 5
+#define EXT2_FT_SOCK 6
+#define EXT2_FT_SYMLINK 7
 
 struct ext2fs_addrs
 {
