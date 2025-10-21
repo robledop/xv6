@@ -28,9 +28,33 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="badc6783-4aa1-42d3-aec1-fa09c6e3af57" name="Changes" comment=".">
+    <list default="true" id="badc6783-4aa1-42d3-aec1-fa09c6e3af57" name="Changes" comment="Enable the text cursor as GRUB doesn't do that for us">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kernel/console.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/console.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/date.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/date.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/disk.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/fcntl.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/fcntl.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/kbd.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/kbd.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/mp.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/mp.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/multiboot.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/multiboot.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/stream.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/user.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/user.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/x86.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/x86.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/proc.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/proc.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/cat.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/cat.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/echo.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/echo.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/grep.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/grep.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/init.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/init.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/kill.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/kill.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/ln.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/ln.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/mkdir.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/mkdir.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/printf.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/printf.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/rm.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/rm.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/sh.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/sh.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/ulib.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/ulib.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/umalloc.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/umalloc.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/usertests.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/usertests.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/wc.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/wc.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/zombie.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/zombie.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -536,7 +560,7 @@
       <workItem from="1760872070160" duration="20371000" />
       <workItem from="1760910189341" duration="10003000" />
       <workItem from="1760984075996" duration="20624000" />
-      <workItem from="1761079457210" duration="3058000" />
+      <workItem from="1761079457210" duration="5910000" />
     </task>
     <task id="LOCAL-00001" summary="Improve code consistency and readability by renaming variables and structures, removing unnecessary comments, and updating formatting across multiple files.">
       <option name="closed" value="true" />
@@ -786,7 +810,15 @@
       <option name="project" value="LOCAL" />
       <updated>1761082263658</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="Enable the text cursor as GRUB doesn't do that for us">
+      <option name="closed" value="true" />
+      <created>1761082618958</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1761082618958</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -817,7 +849,8 @@
     <MESSAGE value="Add directory walking tests and improve concreate function in usertests" />
     <MESSAGE value="Improve directory handling by updating name length checks and enhancing error handling in namei and sysfile functions" />
     <MESSAGE value="." />
-    <option name="LAST_COMMIT_MESSAGE" value="." />
+    <MESSAGE value="Enable the text cursor as GRUB doesn't do that for us" />
+    <option name="LAST_COMMIT_MESSAGE" value="Enable the text cursor as GRUB doesn't do that for us" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -841,11 +874,6 @@
           <url>file://$PROJECT_DIR$/kernel/fs.c</url>
           <line>770</line>
           <option name="timeStamp" value="143" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/user/init.c</url>
-          <line>13</line>
-          <option name="timeStamp" value="172" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

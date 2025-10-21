@@ -1,3 +1,6 @@
+#pragma once
+#include "types.h"
+
 struct rtcdate
 {
     u32 second;

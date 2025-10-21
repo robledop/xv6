@@ -18,11 +18,25 @@ int strcmp(const char *p, const char *q)
     return (u8)*p - (u8)*q;
 }
 
+
 u32 strlen(const char *s)
 {
     int n;
 
     for (n = 0; s[n]; n++);
+    return n;
+}
+
+
+u32 strnlen(const char *s, const u32 maxlen)
+{
+    u32 n;
+
+    for (n = 0; s[n]; n++) {
+        if (n == maxlen) {
+            break;
+        }
+    }
     return n;
 }
 

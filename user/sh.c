@@ -69,7 +69,7 @@ struct cmd *parsecmd(char *);
     struct pipecmd *pcmd;
     struct redircmd *rcmd;
 
-    if (cmd == 0)
+    if (cmd == nullptr)
         exit();
 
     switch (cmd->type) {
@@ -141,7 +141,9 @@ int getcmd(char *buf, int nbuf)
     memset(buf, 0, nbuf);
     gets(buf, nbuf);
     if (buf[0] == 0) // EOF
+    {
         return -1;
+    }
     return 0;
 }
 
@@ -166,6 +168,11 @@ int main(void)
             if (chdir(buf + 3) < 0)
                 printf(2, "cannot cd %s\n", buf + 3);
             continue;
+        }
+
+        const u32 input_len = strnlen(buf, 100);
+        if (strncmp("exit", buf, 4) == 0 && input_len == 5 /* including newline */) {
+            exit();
         }
 
         if (!starts_with("/bin", buf)) {

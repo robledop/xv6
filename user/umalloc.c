@@ -12,7 +12,7 @@ union header
 {
     struct
     {
-        union header* ptr;
+        union header *ptr;
         u32 size;
     } s;
 
@@ -22,73 +22,69 @@ union header
 typedef union header Header;
 
 static Header base;
-static Header* freep;
+static Header *freep;
 
-void free(void* ap)
+void free(void *ap)
 {
-    Header* p;
+    Header *p;
 
-    Header* bp = (Header*)ap - 1;
-    for (p = freep; !(bp > p && bp < p->s.ptr); p = p->s.ptr)
-        if (p >= p->s.ptr && (bp > p || bp < p->s.ptr))
+    Header *bp = (Header *)ap - 1;
+    for (p = freep; !(bp > p && bp < p->s.ptr); p = p->s.ptr) {
+        if (p >= p->s.ptr && (bp > p || bp < p->s.ptr)) {
             break;
-    if (bp + bp->s.size == p->s.ptr)
-    {
+        }
+    }
+    if (bp + bp->s.size == p->s.ptr) {
         bp->s.size += p->s.ptr->s.size;
         bp->s.ptr = p->s.ptr->s.ptr;
-    }
-    else
+    } else {
         bp->s.ptr = p->s.ptr;
-    if (p + p->s.size == bp)
-    {
+    }
+    if (p + p->s.size == bp) {
         p->s.size += bp->s.size;
         p->s.ptr = bp->s.ptr;
-    }
-    else
+    } else {
         p->s.ptr = bp;
+    }
     freep = p;
 }
 
-static Header* morecore(u32 nu)
+static Header *morecore(u32 nu)
 {
     if (nu < 4096)
         nu = 4096;
-    char* p = sbrk(nu * sizeof(Header));
-    if (p == (char*)-1)
-        return 0;
-    Header* hp = (Header*)p;
+    char *p = sbrk(nu * sizeof(Header));
+    if (p == (char *)-1)
+        return nullptr;
+    Header *hp = (Header *)p;
     hp->s.size = nu;
-    free((void*)(hp + 1));
+    free((void *)(hp + 1));
     return freep;
 }
 
-void* malloc(u32 nbytes)
+void *malloc(u32 nbytes)
 {
-    Header* prevp;
+    Header *prevp;
 
     u32 nunits = (nbytes + sizeof(Header) - 1) / sizeof(Header) + 1;
-    if ((prevp = freep) == 0)
-    {
-        base.s.ptr = freep = prevp = &base;
+    if ((prevp = freep) == nullptr) {
+        base.s.ptr  = freep = prevp = &base;
         base.s.size = 0;
     }
-    for (Header* p = prevp->s.ptr; ; prevp = p, p = p->s.ptr)
-    {
-        if (p->s.size >= nunits)
-        {
+    for (Header *p = prevp->s.ptr; ; prevp = p, p = p->s.ptr) {
+        if (p->s.size >= nunits) {
             if (p->s.size == nunits)
                 prevp->s.ptr = p->s.ptr;
-            else
-            {
+            else {
                 p->s.size -= nunits;
                 p += p->s.size;
                 p->s.size = nunits;
             }
             freep = prevp;
-            return (void*)(p + 1);
+            return (void *)(p + 1);
         }
         if (p == freep)
-            if ((p = morecore(nunits)) == 0)
-                return 0;
+            if ((p = morecore(nunits)) == nullptr)
+                return nullptr;
     }
 }

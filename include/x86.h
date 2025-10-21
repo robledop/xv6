@@ -27,14 +27,12 @@ static inline void insl(int port, void *addr, int cnt)
         "memory", "cc");
 }
 
-static inline void
-outb(u16 port, u8 data)
+static inline void outb(u16 port, u8 data)
 {
     __asm__ volatile("out %0,%1" : : "a" (data), "d" (port));
 }
 
-static inline void
-outw(u16 port, u16 data)
+static inline void outw(u16 port, u16 data)
 {
     __asm__ volatile("out %0,%1" : : "a" (data), "d" (port));
 }
@@ -132,16 +130,14 @@ static inline u32 xchg(volatile u32 *addr, u32 newval)
     return result;
 }
 
-static inline u32
-rcr2(void)
+static inline u32 rcr2(void)
 {
     u32 val;
     __asm__ volatile("movl %%cr2,%0" : "=r" (val));
     return val;
 }
 
-static inline void
-lcr3(u32 val)
+static inline void lcr3(u32 val)
 {
     __asm__ volatile("movl %0,%%cr3" : : "r" (val));
 }

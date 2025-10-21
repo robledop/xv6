@@ -1,3 +1,5 @@
+#pragma once
+#include "types.h"
 // See MultiProcessor Specification Version 1.[14]
 
 struct mp

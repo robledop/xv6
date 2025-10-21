@@ -7,8 +7,7 @@
 char buf[1024];
 int match(char*, char*);
 
-void
-grep(char* pattern, int fd)
+void grep(char* pattern, int fd)
 {
     int n;
     char* q;
@@ -39,8 +38,7 @@ grep(char* pattern, int fd)
     }
 }
 
-int
-main(int argc, char* argv[])
+int main(int argc, char* argv[])
 {
     int fd;
 
@@ -76,8 +74,7 @@ main(int argc, char* argv[])
 int matchhere(char*, char*);
 int matchstar(int, char*, char*);
 
-int
-match(char* re, char* text)
+int match(char* re, char* text)
 {
     if (re[0] == '^')
         return matchhere(re + 1, text);

@@ -40,8 +40,7 @@ printint(int fd, int xx, int base, int sgn)
 }
 
 // Print to the given fd. Only understands %d, %x, %p, %s.
-void
-printf(int fd, const char* fmt, ...)
+void printf(int fd, const char* fmt, ...)
 {
     int state = 0;
     u32* ap = (u32*)(void*)&fmt + 1;

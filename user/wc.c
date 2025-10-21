@@ -4,8 +4,7 @@
 
 char buf[512];
 
-void
-wc(int fd, char* name)
+void wc(int fd, char* name)
 {
     int n;
     int w, c;
@@ -36,8 +35,7 @@ wc(int fd, char* name)
     printf(1, "%d %d %d %s\n", l, w, c, name);
 }
 
-int
-main(int argc, char* argv[])
+int main(int argc, char* argv[])
 {
     int fd;
 
