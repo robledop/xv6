@@ -282,7 +282,7 @@ void dirtest(void)
 void exectest(void)
 {
     printf(stdout, "exec test\n");
-    if (exec("echo", echoargv) < 0) {
+    if (exec("/bin/echo", echoargv) < 0) {
         printf(stdout, "exec echo failed\n");
         exit();
     }
@@ -1190,7 +1190,6 @@ bigfile(void)
 void
 fourteen(void)
 {
-    // DIRSIZ is 14.
     printf(1, "fourteen test\n");
 
     if (mkdir("12345678901234") != 0) {
@@ -1201,25 +1200,32 @@ fourteen(void)
         printf(1, "mkdir 12345678901234/123456789012345 failed\n");
         exit();
     }
-    int fd = open("123456789012345/123456789012345/123456789012345", O_CREATE);
+
+    int fd = open("12345678901234/123456789012345/123456789012345", O_CREATE | O_RDWR);
     if (fd < 0) {
-        printf(1, "create 123456789012345/123456789012345/123456789012345 failed\n");
-        exit();
-    }
-    close(fd);
-    fd = open("12345678901234/12345678901234/12345678901234", 0);
-    if (fd < 0) {
-        printf(1, "open 12345678901234/12345678901234/12345678901234 failed\n");
+        printf(1, "create 12345678901234/123456789012345/123456789012345 failed\n");
         exit();
     }
     close(fd);
 
-    if (mkdir("12345678901234/12345678901234") == 0) {
-        printf(1, "mkdir 12345678901234/12345678901234 succeeded!\n");
+    fd = open("12345678901234/123456789012345/123456789012345", 0);
+    if (fd < 0) {
+        printf(1, "open 12345678901234/123456789012345/123456789012345 failed\n");
+        exit();
+    }
+    close(fd);
+
+    if (open("123456789012345/123456789012345/123456789012345", 0) >= 0) {
+        printf(1, "open 123456789012345/123456789012345/123456789012345 unexpectedly succeeded\n");
+        exit();
+    }
+
+    if (mkdir("12345678901234/12345678901234") != 0) {
+        printf(1, "mkdir 12345678901234/12345678901234 failed\n");
         exit();
     }
     if (mkdir("123456789012345/12345678901234") == 0) {
-        printf(1, "mkdir 12345678901234/123456789012345 succeeded!\n");
+        printf(1, "mkdir 123456789012345/12345678901234 unexpectedly succeeded\n");
         exit();
     }
 
@@ -1598,7 +1604,7 @@ void bigargtest(void)
                 "bigargs test: failed\n                                                                                                                                                                                                       ";
         args[MAXARG - 1] = 0;
         printf(stdout, "bigarg test\n");
-        exec("echo", args);
+        exec("/bin/echo", args);
         printf(stdout, "bigarg test ok\n");
         fd = open("bigarg-ok", O_CREATE);
         close(fd);

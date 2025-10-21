@@ -692,12 +692,11 @@ static char *skipelem(char *path, char *name)
         path++;
     }
     const u32 len = path - s;
-    if (len >= dirlen) {
-        memmove(name, s, dirlen);
-    } else {
-        memmove(name, s, len);
-        name[len] = 0;
+    if (len > dirlen) {
+        return (char *)-1;
     }
+    memmove(name, s, len);
+    name[len] = 0;
     while (*path == '/') {
         path++;
     }
@@ -726,13 +725,21 @@ static struct inode *namex(char *path, int nameiparent, char *name)
         ip = idup(myproc()->cwd);
     }
 
-    while ((path = skipelem(path, name)) != nullptr) {
+    while (true) {
+        char *nextp = skipelem(path, name);
+        if (nextp == nullptr)
+            break;
+        if (nextp == (char *)-1) {
+            ip->iops->iput(ip);
+            return nullptr;
+        }
+
         ip->iops->ilock(ip);
         if (ip->type != T_DIR) {
             ip->iops->iunlockput(ip);
             return nullptr;
         }
-        if (nameiparent && *path == '\0') {
+        if (nameiparent && *nextp == '\0') {
             // Stop one level early.
             ip->iops->iunlock(ip);
             return ip;
@@ -742,7 +749,8 @@ static struct inode *namex(char *path, int nameiparent, char *name)
             return nullptr;
         }
         ip->iops->iunlockput(ip);
-        ip = next;
+        ip   = next;
+        path = nextp;
     }
     if (nameiparent) {
         ip->iops->iput(ip);
@@ -759,7 +767,7 @@ static struct inode *namex(char *path, int nameiparent, char *name)
  */
 struct inode *namei(char *path)
 {
-    char name[EXT2_NAME_LEN];
+    char name[EXT2_NAME_LEN + 1];
     return namex(path, 0, name);
 }
 

@@ -136,7 +136,7 @@ int sys_fstat(void)
  */
 int sys_link(void)
 {
-    char name[DIRSIZ], *
+    char name[EXT2_NAME_LEN + 1], *
          new, *old;
     struct inode *dp, *ip;
 
@@ -224,7 +224,7 @@ static int isdirempty(struct inode *dp)
 int sys_unlink(void)
 {
     struct inode *ip, *dp;
-    char name[DIRSIZ], *path;
+    char name[EXT2_NAME_LEN + 1], *path;
     u32 off;
 
     if (argstr(0, &path) < 0)
@@ -239,7 +239,8 @@ int sys_unlink(void)
     dp->iops->ilock(dp);
 
     // Cannot unlink "." or "..".
-    if (namecmp(name, ".") == 0 || namecmp(name, "..") == 0)
+    if ((name[0] == '.' && name[1] == '\0') ||
+        (name[0] == '.' && name[1] == '.' && name[2] == '\0'))
         goto bad;
 
     if ((ip = dp->iops->dirlookup(dp, name, &off)) == nullptr)
@@ -288,7 +289,7 @@ bad:
 static struct inode *create(char *path, short type, short major, short minor)
 {
     struct inode *ip, *dp;
-    char name[DIRSIZ];
+    char name[EXT2_NAME_LEN + 1];
 
     if ((dp = nameiparent(path, name)) == nullptr)
         return nullptr;

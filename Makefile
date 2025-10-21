@@ -76,7 +76,7 @@ LD = $(TOOLPREFIX)ld
 INCLUDE = -I./include
 OBJCOPY = $(TOOLPREFIX)objcopy
 OBJDUMP = $(TOOLPREFIX)objdump
-CFLAGS = -nostdlib -ffreestanding -fno-pic -static -fno-builtin -fno-strict-aliasing -O0 -Wall -MD -ggdb -m32 -fno-omit-frame-pointer -std=gnu23
+CFLAGS = -nostdlib -ffreestanding -fno-pic -static -fno-builtin -fno-strict-aliasing -O3 -Wall -MD -ggdb -m32 -fno-omit-frame-pointer -std=gnu23
 #CFLAGS += $(shell $(CC) -fstack-protector -E -x c /dev/null >/dev/null 2>&1 && echo -fstack-protector)
 CFLAGS += $(INCLUDE)
 #ASFLAGS = -m32 -gdwarf-2 -Wa,-divide
