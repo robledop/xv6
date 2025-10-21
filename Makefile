@@ -156,13 +156,6 @@ $U/build/_forktest: $U/build/forktest.o $(ULIB)
 	# in order to be able to max out the proc table.
 	$(LD) $(LDFLAGS) -N -e main -Ttext 0 -o $U/build/_forktest $U/build/forktest.o $U/build/ulib.o $U/build/usys.o
 
-mkfs/mkfs: mkfs/mkfs.c
-	rm -f mkfs/*.h
-	cp ./include/fs.h ./mkfs/fs.h
-	cp ./include/types.h ./mkfs/types.h
-	cp ./include/stat.h ./mkfs/stat.h
-	cp ./include/param.h ./mkfs/param.h
-	gcc -Werror -Wall -o mkfs/mkfs mkfs/mkfs.c
 
 # Prevent deletion of intermediate files, e.g. cat.o, after first build, so
 # that disk image changes after first build are persistent until clean.  More
@@ -199,9 +192,6 @@ grub: build/kernel $(UPROGS)
 	fi
 	./scripts/create-grub-image.sh
 
-fs.img: mkfs/mkfs $(UPROGS)
-	./mkfs/mkfs fs.img $(UPROGS)
-
 -include build/*.d $U/build/*.d
 
 
@@ -237,7 +227,7 @@ clean:
 	rm -f *.tex *.dvi *.idx *.aux *.log *.ind *.ilg \
 	*.o *.d *.asm *.sym vectors.S bootblock entryother \
 	initcode initcode.out kernel/*.o kernel/*.d user/*.o user/*.d xv6.img fs.img kernelmemfs \
-	xv6memfs.img mkfs/mkfs mkfs/*.h \
+	xv6memfs.img \
 	$(UPROGS)
 	rm -rf rootfs
 	rm -rf build
