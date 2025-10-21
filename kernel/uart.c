@@ -33,8 +33,9 @@ void uartinit(void)
     outb(COM1 + 1, 0x01); // Enable receive interrupts.
 
     // If status is 0xFF, no serial port.
-    if (inb(COM1 + 5) == 0xFF)
+    if (inb(COM1 + 5) == 0xFF) {
         return;
+    }
     uart = 1;
 
     // Acknowledge pre-existing interrupt conditions;
@@ -44,8 +45,9 @@ void uartinit(void)
     ioapicenable(IRQ_COM1, 0);
 
     // Announce that we're here.
-    for (char* p = "xv6...\n"; *p; p++)
+    for (char *p = "xv6...\n"; *p; p++) {
         uartputc(*p);
+    }
 }
 
 /**
@@ -55,10 +57,12 @@ void uartinit(void)
  */
 void uartputc(int c)
 {
-    if (!uart)
+    if (!uart) {
         return;
-    for (int i = 0; i < 128 && !(inb(COM1 + 5) & 0x20); i++)
+    }
+    for (int i = 0; i < 128 && !(inb(COM1 + 5) & 0x20); i++) {
         microdelay(10);
+    }
     outb(COM1 + 0, c);
 }
 
@@ -69,10 +73,12 @@ void uartputc(int c)
  */
 static int uartgetc(void)
 {
-    if (!uart)
+    if (!uart) {
         return -1;
-    if (!(inb(COM1 + 5) & 0x01))
+    }
+    if (!(inb(COM1 + 5) & 0x01)) {
         return -1;
+    }
     return inb(COM1 + 0);
 }
 

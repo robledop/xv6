@@ -16,10 +16,10 @@
 #include "x86.h"
 #include "debug.h"
 
-// static void consputc(int);
-
 /** @brief Flag indicating if the system has panicked */
 static int panicked = 0;
+
+#define VGA_WIDTH 80
 
 /** @brief Console lock and locking flag */
 static struct
@@ -27,6 +27,7 @@ static struct
     struct spinlock lock;
     int locking;
 } cons;
+
 
 /** @brief Print an integer in the given base */
 static void printint(int xx, int base, int sign)
@@ -48,8 +49,9 @@ static void printint(int xx, int base, int sign)
     if (sign)
         buf[i++] = '-';
 
-    while (--i >= 0)
+    while (--i >= 0) {
         consputc(buf[i]);
+    }
 }
 
 /** @brief Print to the console. only understands %d, %x, %p, %s. */
@@ -136,13 +138,16 @@ static void cgaputc(int c)
     outb(CRTPORT, 15);
     pos |= inb(CRTPORT + 1);
 
-    if (c == '\n')
+    if (c == '\n' || c == '\r')
         pos += 80 - pos % 80;
     else if (c == BACKSPACE) {
         if (pos > 0)
             --pos;
-    } else
+    } else if (c == '\t') {
+        pos += 4;
+    } else {
         crt[pos++] = (c & 0xff) | 0x0700; // black on white
+    }
 
     if (pos < 0 || pos > 25 * 80)
         panic("pos under/overflow");
@@ -173,8 +178,9 @@ void consputc(int c)
         uartputc('\b');
         uartputc(' ');
         uartputc('\b');
-    } else
+    } else {
         uartputc(c);
+    }
     cgaputc(c);
 }
 
@@ -236,7 +242,7 @@ void consoleintr(int (*getc)(void))
     }
 }
 
-/** @brief Read from console */
+/** @brief Read from the console */
 int consoleread(struct inode *ip, char *dst, int n)
 {
     ip->iops->iunlock(ip);
@@ -267,7 +273,7 @@ int consoleread(struct inode *ip, char *dst, int n)
             break;
     }
     release(&cons.lock);
-   ip->iops-> ilock(ip);
+    ip->iops->ilock(ip);
 
     return target - n;
 }

@@ -52,7 +52,6 @@ OBJS = \
 	build/syscall.o\
 	build/sysfile.o\
 	build/sysproc.o\
-	build/trapasm.o\
 	build/trap.o\
 	build/uart.o\
 	build/vectors.o\
@@ -195,7 +194,7 @@ grub: build/kernel $(UPROGS)
 -include build/*.d $U/build/*.d
 
 
-CPUS := 1
+CPUS := 2
 MEMORY := 512
 QEMUEXTRA := -display gtk,zoom-to-fit=on,gl=off,window-close=on,grab-on-hover=off
 QEMUGDB = -S -gdb tcp::1234 -d int -D qemu.log

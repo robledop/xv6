@@ -11,6 +11,11 @@ vector%1:
   %endif
   push dword %1 ; Push the interrupt number
 
+  jmp alltraps
+
+%endmacro
+
+alltraps:
   push ds
   push es
   push fs
@@ -27,10 +32,17 @@ vector%1:
   extern trap
   call trap
   add esp, 4
-  extern trapret
-  jmp trapret
 
-%endmacro
+; Return falls through to trapret...
+global trapret:function
+trapret:
+  popad
+  pop gs
+  pop fs
+  pop es
+  pop ds
+  add esp, 0x8  ; remove trapno and errcode from stack
+  iretd
 
 ; Generate all 256 interrupt vectors
 %assign i 0
