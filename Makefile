@@ -136,13 +136,14 @@ build/kernelmemfs: $(MEMFSOBJS) build/entry.o build/entryother $U/build/initcode
 	$(LD) $(LDFLAGS) -T $K/kernel.ld -o build/kernel build/entry.o  $(MEMFSOBJS) -b binary $U/build/initcode build/entryother fs.img
 
 
-ULIB = $U/build/ulib.o $U/build/usys.o $U/build/printf.o $U/build/umalloc.o
+ULIB = $U/build/ulib.o $U/build/usys.o $U/build/printf.o $U/build/umalloc.o $U/build/dirwalk.o
 
 $(ULIB): asm_headers
 	$(CC) $(CFLAGS) -c -o $U/build/ulib.o $U/ulib.c
 	$(AS) $(ASFLAGS) -f elf $U/usys.asm -o $U/build/usys.o
 	$(CC) $(CFLAGS) -c -o $U/build/printf.o $U/printf.c
 	$(CC) $(CFLAGS) -c -o $U/build/umalloc.o $U/umalloc.c
+	$(CC) $(CFLAGS) -c -o $U/build/dirwalk.o $U/dirwalk.c
 
 $U/build/%.o: $U/%.c
 	$(CC) $(CFLAGS) -c -o $@ $<

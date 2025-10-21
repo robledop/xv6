@@ -648,8 +648,7 @@ fourfiles(void)
 }
 
 // four processes create and delete different files in same directory
-void
-createdelete(void)
+void createdelete(void)
 {
     enum { N = 20 };
     int i, fd, pi;
@@ -673,6 +672,7 @@ createdelete(void)
             for (i = 0; i < N; i++)
             {
                 name[1] = '0' + i;
+                printf(1, "creating %s\n", name);
                 fd = open(name, O_CREATE | O_RDWR);
                 if (fd < 0)
                 {
@@ -683,6 +683,7 @@ createdelete(void)
                 if (i > 0 && (i % 2) == 0)
                 {
                     name[1] = '0' + (i / 2);
+                    printf(1, "deleting %s\n", name);
                     if (unlink(name) < 0)
                     {
                         printf(1, "unlink failed\n");
@@ -728,6 +729,7 @@ createdelete(void)
         {
             name[0] = 'p' + i;
             name[1] = '0' + i;
+            printf(1, "final deleting %s\n", name);
             unlink(name);
         }
     }
@@ -736,8 +738,7 @@ createdelete(void)
 }
 
 // can I unlink a file and still read it?
-void
-unlinkread(void)
+void unlinkread(void)
 {
     printf(1, "unlinkread test\n");
     int fd = open("unlinkread", O_CREATE | O_RDWR);
@@ -1944,7 +1945,7 @@ void uio()
 
 void argptest()
 {
-    int fd = open("init", O_RDONLY);
+    int fd = open("/bin/init", O_RDONLY);
     if (fd < 0)
     {
         printf(2, "open failed\n");

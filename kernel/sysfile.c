@@ -11,6 +11,7 @@
 #include "mmu.h"
 #include "proc.h"
 #include "fs.h"
+#include "ext2.h"
 #include "spinlock.h"
 #include "sleeplock.h"
 #include "file.h"
@@ -190,13 +191,27 @@ bad:
  */
 static int isdirempty(struct inode *dp)
 {
-    struct dirent de;
+    struct ext2_dir_entry_2 de;
 
-    for (int off = 2 * sizeof(de); off < dp->size; off += sizeof(de)) {
-        if (dp->iops->readi(dp, (char *)&de, off, sizeof(de)) != sizeof(de))
-            panic("isdirempty: readi");
-        if (de.inum != 0)
-            return 0;
+    for (u32 off = 0; off < dp->size;) {
+        memset(&de, 0, sizeof(de));
+        if (dp->iops->readi(dp, (char *)&de, off, 8) != 8)
+            panic("isdirempty: read header");
+        if (de.rec_len < 8 || de.rec_len > EXT2_BSIZE)
+            panic("isdirempty: bad rec_len");
+        if (de.name_len > EXT2_NAME_LEN)
+            panic("isdirempty: bad name_len");
+        if (de.name_len > 0) {
+            if (dp->iops->readi(dp, de.name, off + 8, de.name_len) != de.name_len)
+                panic("isdirempty: read name");
+        }
+        if (de.inode != 0) {
+            int isdot = (de.name_len == 1 && de.name[0] == '.');
+            int isdotdot = (de.name_len == 2 && de.name[0] == '.' && de.name[1] == '.');
+            if (!isdot && !isdotdot)
+                return 0;
+        }
+        off += de.rec_len;
     }
     return 1;
 }
@@ -209,7 +224,6 @@ static int isdirempty(struct inode *dp)
 int sys_unlink(void)
 {
     struct inode *ip, *dp;
-    struct dirent de;
     char name[DIRSIZ], *path;
     u32 off;
 
@@ -239,9 +253,9 @@ int sys_unlink(void)
         goto bad;
     }
 
-    memset(&de, 0, sizeof(de));
-    if (dp->iops->writei(dp, (char *)&de, off, sizeof(de)) != sizeof(de))
-        panic("unlink: writei");
+    u32 zero = 0;
+    if (dp->iops->writei(dp, (char *)&zero, off, sizeof(zero)) != sizeof(zero))
+        panic("unlink: write inode");
     if (ip->type == T_DIR) {
         dp->nlink--;
         ip->iops->iupdate(dp);
