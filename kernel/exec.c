@@ -25,10 +25,7 @@ int exec(char *path, char **argv)
     pde_t *oldpgdir;
     struct proc *curproc = myproc();
 
-    // begin_op();
-
     if ((ip = namei(path)) == nullptr) {
-        // end_op();
         cprintf("exec: fail\n");
         return -1;
     }
@@ -78,7 +75,7 @@ int exec(char *path, char **argv)
     }
     ip->iops->iunlockput(ip);
     // end_op();
-    ip = 0;
+    ip = nullptr;
 
     // Allocate two pages at the next page boundary.
     // Make the first inaccessible.  Use the second as the user stack.
@@ -128,7 +125,6 @@ bad:
         freevm(pgdir);
     if (ip) {
         ip->iops->iunlockput(ip);
-        // end_op();
     }
     return -1;
 }

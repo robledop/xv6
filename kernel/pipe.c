@@ -32,7 +32,7 @@ struct pipe
  *
  * @param f0 Output pointer for the read end file.
  * @param f1 Output pointer for the write end file.
- * @return ::0 on success, ::-1 on allocation failure.
+ * @return 0 on success, -1 on allocation failure.
  */
 int pipealloc(struct file** f0, struct file** f1)
 {
@@ -101,7 +101,7 @@ void pipeclose(struct pipe* p, int writable)
  * @param p Pipe to write to.
  * @param addr User buffer with bytes to copy.
  * @param n Number of bytes requested.
- * @return Count of bytes written or ::-1 if interrupted/closed.
+ * @return Count of bytes written or -1 if interrupted/closed.
  */
 int pipewrite(struct pipe* p, char* addr, int n)
 {

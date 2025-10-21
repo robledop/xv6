@@ -28,33 +28,18 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="badc6783-4aa1-42d3-aec1-fa09c6e3af57" name="Changes" comment="Enable the text cursor as GRUB doesn't do that for us">
+    <list default="true" id="badc6783-4aa1-42d3-aec1-fa09c6e3af57" name="Changes" comment="Improve code consistency by updating formatting, adding missing includes, and correcting variable declarations across multiple files.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/date.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/date.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/disk.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/fcntl.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/fcntl.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/kbd.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/kbd.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/mp.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/mp.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/multiboot.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/multiboot.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/stream.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/user.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/user.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/x86.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/x86.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/exec.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/exec.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/ext2.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/ext2.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/fs.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/fs.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/log.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/mbr.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/mbr.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/pipe.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/pipe.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kernel/proc.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/proc.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user/cat.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/cat.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user/echo.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/echo.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user/grep.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/grep.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user/init.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/init.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user/kill.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/kill.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user/ln.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/ln.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user/mkdir.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/mkdir.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user/printf.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/printf.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user/rm.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/rm.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user/sh.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/sh.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user/ulib.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/ulib.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user/umalloc.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/umalloc.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user/usertests.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/usertests.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user/wc.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/wc.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user/zombie.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/zombie.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/sysfilexit.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/kernel/sysproc.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/sysproc.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -118,11 +103,14 @@
 }</component>
   <component name="HighlightingSettingsPerFile">
     <setting file="mock:///AIAssistantSnippet.." root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/include/asm.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/include/buf.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/include/debug.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/include/defs.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/include/disk.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/include/ext2.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/include/file.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/include/fs.h" root0="FORCE_HIGHLIGHTING" />
@@ -132,7 +120,6 @@
     <setting file="file://$PROJECT_DIR$/include/param.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/include/sleeplock.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/include/spinlock.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/include/stream.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/include/traps.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/include/types.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/include/x86.h" root0="FORCE_HIGHLIGHTING" />
@@ -560,7 +547,7 @@
       <workItem from="1760872070160" duration="20371000" />
       <workItem from="1760910189341" duration="10003000" />
       <workItem from="1760984075996" duration="20624000" />
-      <workItem from="1761079457210" duration="5910000" />
+      <workItem from="1761079457210" duration="6856000" />
     </task>
     <task id="LOCAL-00001" summary="Improve code consistency and readability by renaming variables and structures, removing unnecessary comments, and updating formatting across multiple files.">
       <option name="closed" value="true" />
@@ -818,14 +805,21 @@
       <option name="project" value="LOCAL" />
       <updated>1761082618958</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="Improve code consistency by updating formatting, adding missing includes, and correcting variable declarations across multiple files.">
+      <option name="closed" value="true" />
+      <created>1761085598071</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1761085598071</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Improve code consistency and readability by renaming variables and structures, removing unnecessary comments, and updating formatting across multiple files." />
     <MESSAGE value="Add #pragma once to header files and improve code documentation with detailed comments" />
     <MESSAGE value="Add .gitignore file and improve variable declarations for consistency" />
     <MESSAGE value="Improve code consistency and readability by standardizing function declarations and formatting across multiple files" />
@@ -850,33 +844,10 @@
     <MESSAGE value="Improve directory handling by updating name length checks and enhancing error handling in namei and sysfile functions" />
     <MESSAGE value="." />
     <MESSAGE value="Enable the text cursor as GRUB doesn't do that for us" />
-    <option name="LAST_COMMIT_MESSAGE" value="Enable the text cursor as GRUB doesn't do that for us" />
+    <MESSAGE value="Improve code consistency by updating formatting, adding missing includes, and correcting variable declarations across multiple files." />
+    <option name="LAST_COMMIT_MESSAGE" value="Improve code consistency by updating formatting, adding missing includes, and correcting variable declarations across multiple files." />
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/kernel/trap.c</url>
-          <line>86</line>
-          <option name="timeStamp" value="72" />
-        </line-breakpoint>
-        <line-breakpoint type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/kernel/syscall.c</url>
-          <line>164</line>
-          <option name="timeStamp" value="92" />
-        </line-breakpoint>
-        <line-breakpoint type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/kernel/ext2.c</url>
-          <line>277</line>
-          <option name="timeStamp" value="132" />
-        </line-breakpoint>
-        <line-breakpoint type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/kernel/fs.c</url>
-          <line>770</line>
-          <option name="timeStamp" value="143" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
     <watches-manager>
       <configuration name="CLion_Remote">
         <watch expression="$esp" />

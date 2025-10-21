@@ -497,7 +497,7 @@ static void wakeup1(void *chan)
 /**
  * @brief Wake any processes sleeping on @p chan.
  *
- * Acquires and releases ::ptable.lock internally.
+ * Acquires and releases ptable.lock internally.
  */
 void wakeup(void *chan)
 {

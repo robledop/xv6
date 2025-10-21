@@ -7,20 +7,20 @@
 #include "mmu.h"
 #include "proc.h"
 
-/** @brief System call wrapper for ::fork. */
+/** @brief System call wrapper for fork. */
 int sys_fork(void)
 {
     return fork();
 }
 
-/** @brief System call wrapper for ::exit. */
+/** @brief System call wrapper for exit. */
 int sys_exit(void)
 {
     exit();
     return 0; // not reached
 }
 
-/** @brief System call wrapper for ::wait. */
+/** @brief System call wrapper for wait. */
 int sys_wait(void)
 {
     return wait();
@@ -45,7 +45,7 @@ int sys_getpid(void)
 /**
  * @brief Adjust process memory size by a delta (syscall handler).
  *
- * @return Previous end-of-heap address or ::-1 on error.
+ * @return Previous end-of-heap address or -1 on error.
  */
 int sys_sbrk(void)
 {

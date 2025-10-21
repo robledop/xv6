@@ -39,7 +39,6 @@ OBJS = \
 	build/kalloc.o\
 	build/kbd.o\
 	build/lapic.o\
-	build/log.o\
 	build/main.o\
 	build/mp.o\
 	build/picirq.o\

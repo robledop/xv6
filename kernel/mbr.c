@@ -54,7 +54,6 @@ void mbr_load()
     if (mbr.signature != 0xAA55) {
         cprintf("Invalid MBR signature: 0x%X\n", mbr.signature);
         panic("Invalid MBR signature");
-        return;
     }
     mbr_init_fs();
 }
