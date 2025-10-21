@@ -28,9 +28,8 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="badc6783-4aa1-42d3-aec1-fa09c6e3af57" name="Changes" comment="Enhance 'ls' command functionality with directory traversal and improved path handling">
+    <list default="true" id="badc6783-4aa1-42d3-aec1-fa09c6e3af57" name="Changes" comment="Implement directory walking functionality for ext2 filesystem">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kernel/ext2.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/ext2.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/user/usertests.c" beforeDir="false" afterPath="$PROJECT_DIR$/user/usertests.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -94,6 +93,10 @@
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
@@ -3141,7 +3144,7 @@
       <workItem from="1760786465413" duration="33166000" />
       <workItem from="1760872070160" duration="20371000" />
       <workItem from="1760910189341" duration="10003000" />
-      <workItem from="1760984075996" duration="17555000" />
+      <workItem from="1760984075996" duration="18041000" />
     </task>
     <task id="LOCAL-00001" summary="Improve code consistency and readability by renaming variables and structures, removing unnecessary comments, and updating formatting across multiple files.">
       <option name="closed" value="true" />
@@ -3327,7 +3330,23 @@
       <option name="project" value="LOCAL" />
       <updated>1761005012600</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="Fix bitmap overflow in ext2 inode free function and improve usertests formatting">
+      <option name="closed" value="true" />
+      <created>1761005425231</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1761005425231</updated>
+    </task>
+    <task id="LOCAL-00025" summary="Implement directory walking functionality for ext2 filesystem">
+      <option name="closed" value="true" />
+      <created>1761005538107</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1761005538107</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -3354,7 +3373,9 @@
     <MESSAGE value="Replacing the FS with EXT2.&#10;It's still very buggy, but it can successfully launch the shell again." />
     <MESSAGE value="ext2 WIP" />
     <MESSAGE value="Enhance 'ls' command functionality with directory traversal and improved path handling" />
-    <option name="LAST_COMMIT_MESSAGE" value="Enhance 'ls' command functionality with directory traversal and improved path handling" />
+    <MESSAGE value="Fix bitmap overflow in ext2 inode free function and improve usertests formatting" />
+    <MESSAGE value="Implement directory walking functionality for ext2 filesystem" />
+    <option name="LAST_COMMIT_MESSAGE" value="Implement directory walking functionality for ext2 filesystem" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

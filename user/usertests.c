@@ -4,6 +4,7 @@
 #include "user.h"
 #include "fs.h"
 #include "fcntl.h"
+#include "dirwalk.h"
 #include "syscall.h"
 #include "traps.h"
 #include "memlayout.h"
@@ -111,7 +112,7 @@ void openiputtest(void)
 void opentest(void)
 {
     printf(stdout, "open test\n");
-    int fd = open("echo", 0);
+    int fd = open("/bin/echo", 0);
     if (fd < 0) {
         printf(stdout, "open echo failed!\n");
         exit();
@@ -731,17 +732,42 @@ linktest(void)
 }
 
 // test concurrent create/link/unlink of the same file
+struct concreate_ctx
+{
+    char *fa;
+    int count;
+    int error;
+};
+
+static int concreate_visit(const struct dirent_view *entry, void *arg)
+{
+    struct concreate_ctx *ctx = (struct concreate_ctx *)arg;
+    if (entry->name_len != 2)
+        return 0;
+    if (entry->name[0] != 'C' || entry->name[2] != '\0')
+        return 0;
+    int idx = entry->name[1] - '0';
+    if (idx < 0 || idx >= 40) {
+        printf(1, "concreate weird file %s\n", entry->name);
+        ctx->error = 1;
+        return -1;
+    }
+    if (ctx->fa[idx]) {
+        printf(1, "concreate duplicate file %s\n", entry->name);
+        ctx->error = 1;
+        return -1;
+    }
+    ctx->fa[idx] = 1;
+    ctx->count++;
+    return 0;
+}
+
 void
 concreate(void)
 {
     char file[3];
     int i, pid, fd;
     char fa[40];
-    struct
-    {
-        u16 inum;
-        char name[14];
-    } de;
 
     printf(1, "concreate test\n");
     file[0] = 'C';
@@ -769,29 +795,26 @@ concreate(void)
     }
 
     memset(fa, 0, sizeof(fa));
-    fd    = open(".", 0);
-    int n = 0;
-    while (read(fd, &de, sizeof(de)) > 0) {
-        if (de.inum == 0)
-            continue;
-        if (de.name[0] == 'C' && de.name[2] == '\0') {
-            i = de.name[1] - '0';
-            if (i < 0 || i >= sizeof(fa)) {
-                printf(1, "concreate weird file %s\n", de.name);
-                exit();
-            }
-            if (fa[i]) {
-                printf(1, "concreate duplicate file %s\n", de.name);
-                exit();
-            }
-            fa[i] = 1;
-            n++;
-        }
+    fd = open(".", 0);
+    if (fd < 0) {
+        printf(1, "concreate: cannot open .\n");
+        exit();
     }
+    struct concreate_ctx ctx = {
+        .fa    = fa,
+        .count = 0,
+        .error = 0,
+    };
+    int walk_rc = dirwalk(fd, concreate_visit, &ctx);
     close(fd);
+    if (walk_rc < 0 || ctx.error) {
+        if (!ctx.error)
+            printf(1, "concreate: dirwalk failed\n");
+        exit();
+    }
 
-    if (n != 40) {
-        printf(1, "concreate not enough files in directory listing: %d\n", n);
+    if (ctx.count != 40) {
+        printf(1, "concreate not enough files in directory listing: %d\n", ctx.count);
         exit();
     }
 
