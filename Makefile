@@ -197,14 +197,6 @@ grub: build/kernel $(UPROGS)
 	    cp "$$f" ./rootfs/bin/"$$name"; \
 	  done; \
 	fi
-
-#	if [ -n "$(UPROGS)" ]; then \
-#	  for f in $(UPROGS); do \
-#	    name=$$(basename $$f); \
-#	    name=$${name#_}; \
-#	    cp "$$f" ./rootfs/"$$name"; \
-#	  done; \
-#	fi
 	./scripts/create-grub-image.sh
 
 fs.img: mkfs/mkfs $(UPROGS)
