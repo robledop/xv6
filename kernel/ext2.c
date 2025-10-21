@@ -309,12 +309,15 @@ static void ext2fs_ifree(struct inode *ip)
     memmove(&bgdesc, bp1->data + gno * sizeof(bgdesc), sizeof(bgdesc));
     brelse(bp1);
     struct buf *bp2 = bread(ip->dev, bgdesc.bg_inode_bitmap + first_partition_block);
-    int index       = (ip->inum - 1) % ext2_sb.s_inodes_per_group;
-    int mask        = 1 << (index % 8);
+    int index      = (ip->inum - 1) % ext2_sb.s_inodes_per_group;
+    int byte_index = index / 8;
+    if (byte_index >= EXT2_BSIZE)
+        panic("ext2fs_ifree: bitmap overflow\n");
+    u8 mask = 1 << (7 - (index % 8));
 
-    if ((bp2->data[index / 8] & mask) == 0)
+    if ((bp2->data[byte_index] & mask) == 0)
         panic("ext2fs_ifree: inode already free\n");
-    bp2->data[index / 8] = bp2->data[index / 8] & ~mask;
+    bp2->data[byte_index] &= ~mask;
     bwrite(bp2);
     brelse(bp2);
 }
