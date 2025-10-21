@@ -30,16 +30,7 @@
   <component name="ChangeListManager">
     <list default="true" id="badc6783-4aa1-42d3-aec1-fa09c6e3af57" name="Changes" comment=".">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kernel/console.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/console.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kernel/kbd.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/kbd.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kernel/stream.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/kernel/trapasm.asm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/kernel/uart.c" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/uart.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kernel/vectors.asm" beforeDir="false" afterPath="$PROJECT_DIR$/kernel/vectors.asm" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/printpcs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/sign.pl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/vectors.pl" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -102,6 +93,7 @@
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="mock:///AIAssistantSnippet.." root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/include/asm.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/include/buf.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/include/debug.h" root0="FORCE_HIGHLIGHTING" />
@@ -123,12 +115,10 @@
     <setting file="file://$PROJECT_DIR$/kernel/bio.c" root0="FORCE_HIGHLIGHTING" />
     <setting file="mock:///home/robledo/source/osdev/xv6/kernel/console.c" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/kernel/debug.c" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/kernel/disk.c" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/kernel/file.c" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/kernel/lapic.c" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/kernel/memide.c" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/kernel/pipe.c" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/kernel/stream.c" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/kernel/sysfile.c" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/kernel/vm.c" root0="FORCE_HIGHLIGHTING" />
   </component>
@@ -546,7 +536,7 @@
       <workItem from="1760872070160" duration="20371000" />
       <workItem from="1760910189341" duration="10003000" />
       <workItem from="1760984075996" duration="20624000" />
-      <workItem from="1761079457210" duration="2620000" />
+      <workItem from="1761079457210" duration="3058000" />
     </task>
     <task id="LOCAL-00001" summary="Improve code consistency and readability by renaming variables and structures, removing unnecessary comments, and updating formatting across multiple files.">
       <option name="closed" value="true" />
@@ -780,7 +770,23 @@
       <option name="project" value="LOCAL" />
       <updated>1761008282097</updated>
     </task>
-    <option name="localTasksCounter" value="30" />
+    <task id="LOCAL-00030" summary=".">
+      <option name="closed" value="true" />
+      <created>1761082083354</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1761082083354</updated>
+    </task>
+    <task id="LOCAL-00031" summary=".">
+      <option name="closed" value="true" />
+      <created>1761082263658</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1761082263658</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

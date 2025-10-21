@@ -129,6 +129,15 @@ void panic(char *s)
 /** @brief CGA memory */
 static u16 *crt = (u16 *)P2V(0xb8000); // CGA memory
 
+/** @brief Enable the hardware text cursor using standard scanlines */
+static void enable_cursor(void)
+{
+    outb(CRTPORT, 0x0A);
+    outb(CRTPORT + 1, (inb(CRTPORT + 1) & 0xC0) | 14);
+    outb(CRTPORT, 0x0B);
+    outb(CRTPORT + 1, (inb(CRTPORT + 1) & 0xE0) | 15);
+}
+
 /** @brief Put a character on the CGA screen */
 static void cgaputc(int c)
 {
@@ -300,5 +309,6 @@ void consoleinit(void)
     devsw[CONSOLE].read  = consoleread;
     cons.locking         = 1;
 
+    enable_cursor();
     ioapicenable(IRQ_KBD, 0);
 }
