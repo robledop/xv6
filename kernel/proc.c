@@ -14,6 +14,7 @@
 struct
 {
     struct spinlock lock;
+    int active_count;
     struct proc proc[NPROC];
 } ptable;
 
@@ -355,9 +356,12 @@ void scheduler(void)
 
         // Loop over the process table looking for a process to run.
         acquire(&ptable.lock);
+        ptable.active_count = 0;
         for (struct proc *p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
             if (p->state != RUNNABLE)
                 continue;
+
+            ptable.active_count++;
 
             // Switch to the chosen process.  It is the process's job
             // to release ptable.lock and then reacquire it
@@ -373,7 +377,14 @@ void scheduler(void)
             // It should have changed its p->state before coming back.
             current_cpu->proc = nullptr;
         }
+
         release(&ptable.lock);
+
+        // Idle "thread"
+        if (ptable.active_count == 0) {
+            sti();
+            hlt();
+        }
     }
 }
 
@@ -485,7 +496,7 @@ void sleep(void *chan, struct spinlock *lk)
 /**
  * @brief Wake all processes sleeping on a channel.
  *
- * Requires ::ptable.lock to be held.
+ * Requires ptable.lock to be held.
  */
 static void wakeup1(void *chan)
 {
@@ -566,7 +577,6 @@ void procdump(void)
             getcallerpcs((u32 *)p->context->ebp + 2, pc);
             for (int i = 0; i < 10 && pc[i] != 0; i++) {
                 struct symbol symbol = debug_function_symbol_lookup(pc[i]);
-                // cprintf(" %p", pc[i]);
                 cprintf("\t[%p] %s\n", pc[i], (symbol.name == nullptr) ? "[unknown]" : symbol.name);
             }
         }

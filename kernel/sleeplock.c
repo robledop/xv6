@@ -14,7 +14,7 @@
  * @brief Initialize a sleeplock that can block and wake processes.
  *
  * @param lk Sleeplock instance to initialize.
- * @param name Human readable lock name for debugging.
+ * @param name Human-readable lock name for debugging.
  */
 void initsleeplock(struct sleeplock *lk, char *name)
 {

@@ -19,7 +19,7 @@ void initlock(struct spinlock* lk, char* name)
 {
     lk->name = name;
     lk->locked = 0;
-    lk->cpu = 0;
+    lk->cpu = nullptr;
 }
 
 /**
@@ -38,7 +38,7 @@ void acquire(struct spinlock* lk)
     while (xchg(&lk->locked, 1) != 0);
 
     // Tell the C compiler and the processor to not move loads or stores
-    // past this point, to ensure that the critical section's memory
+    // past this point to ensure that the critical section's memory
     // references happen after the lock is acquired.
     __sync_synchronize();
 
@@ -56,7 +56,7 @@ void release(struct spinlock* lk)
         panic("release");
 
     lk->pcs[0] = 0;
-    lk->cpu = 0;
+    lk->cpu = nullptr;
 
     // Tell the C compiler and the processor to not move loads or stores
     // past this point, to ensure that all the stores in the critical
@@ -68,7 +68,7 @@ void release(struct spinlock* lk)
     // Release the lock, equivalent to lk->locked = 0.
     // This code can't use a C assignment, since it might
     // not be atomic. A real OS would use C atomics here.
-    asm volatile("movl $0, %0" : "+m"(lk->locked) :);
+    __asm__ volatile("movl $0, %0" : "+m"(lk->locked) :);
 
     popcli();
 }
@@ -86,7 +86,7 @@ void getcallerpcs(void* v, u32 pcs[])
     u32* ebp = (u32*)v - 2;
     for (i = 0; i < 10; i++)
     {
-        if (ebp == 0 || ebp < (u32*)KERNBASE || ebp == (u32*)0xffffffff)
+        if (ebp == nullptr || ebp < (u32*)KERNBASE || ebp == (u32*)0xffffffff)
             break;
         pcs[i] = ebp[1]; // saved %eip
         ebp = (u32*)ebp[0]; // saved %ebp
