@@ -21,6 +21,11 @@ struct
 /** @brief Pointer to the very first user process. */
 static struct proc *initproc;
 
+static struct proc idle_proc_ = {};
+static struct proc *idle_proc = &idle_proc_;
+
+extern pde_t *kpgdir;
+
 /** @brief Next PID to assign during process creation. */
 int nextpid = 1;
 extern void forkret(void);
@@ -33,10 +38,28 @@ extern void trapret(void);
  */
 static void wakeup1(void *chan);
 
+
+static inline void stack_push_pointer(char **stack_pointer, const u32 value)
+{
+    *(u32 *)stack_pointer -= sizeof(u32); // make room for a pointer
+    **(u32 **)stack_pointer = value;      // push the pointer onto the stack
+}
+
 /** @brief Initialize the process table lock. */
 void pinit(void)
 {
     initlock(&ptable.lock, "ptable");
+}
+
+[[noreturn]] void idle()
+{
+    while (true) {
+        sti();
+        hlt();
+        acquire(&ptable.lock);
+        sched();
+        release(&ptable.lock);
+    }
 }
 
 /**
@@ -83,30 +106,8 @@ struct proc *myproc(void)
     return p;
 }
 
-/**
- * @brief Allocate and partially initialize a process structure.
- *
- * @return Pointer to the new process or 0 if none are available.
- */
-static struct proc *alloc_proc(void)
+static struct proc *init_proc(struct proc *p)
 {
-    struct proc *p;
-
-    acquire(&ptable.lock);
-
-    for (p = ptable.proc; p < &ptable.proc[NPROC]; p++)
-        if (p->state == UNUSED)
-            goto found;
-
-    release(&ptable.lock);
-    return nullptr;
-
-found:
-    p->state = EMBRYO;
-    p->pid = nextpid++;
-
-    release(&ptable.lock);
-
     // Allocate kernel stack.
     if ((p->kstack = kalloc()) == nullptr) {
         p->state = UNUSED;
@@ -132,12 +133,61 @@ found:
 }
 
 /**
+ * @brief Allocate and partially initialize a process structure.
+ *
+ * @return Pointer to the new process or 0 if none are available.
+ */
+static struct proc *alloc_proc(void)
+{
+    struct proc *p;
+
+    acquire(&ptable.lock);
+
+    for (p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+        if (p->state == UNUSED)
+            goto found;
+
+    release(&ptable.lock);
+    return nullptr;
+
+found:
+    p->state = EMBRYO;
+    p->pid = nextpid++;
+
+    release(&ptable.lock);
+
+    return init_proc(p);
+}
+
+static struct proc *alloc_kernel_proc(struct proc *p, void (*entry_point)(void))
+{
+    if ((p->kstack = kalloc()) == nullptr) {
+        p->state = UNUSED;
+        return nullptr;
+    }
+    char *stack_pointer = p->kstack + KSTACKSIZE;
+
+    stack_push_pointer(&stack_pointer, (u32)entry_point);
+    p->page_directory = kpgdir;
+
+    stack_pointer -= sizeof *p->context;
+    p->context = (struct context *)stack_pointer;
+    memset(p->context, 0, sizeof *p->context);
+    p->context->eip = (u32)forkret;
+    p->state        = EMBRYO;
+
+    return p;
+}
+
+/**
  * @brief Create the initial user process containing initcode.
  */
 void user_init(void)
 {
     // This name depends on the path of the initcode file. I moved it to the user/build folder
     extern char _binary_user_build_initcode_start[], _binary_user_build_initcode_size[];
+
+    idle_proc = alloc_kernel_proc(idle_proc, idle);
 
     struct proc *p = alloc_proc();
 
@@ -378,13 +428,18 @@ void scheduler(void)
             current_cpu->proc = nullptr;
         }
 
+        if (idle_proc->state == EMBRYO && strncmp(ptable.proc[0].name, "init\0", 5) == 0) {
+            idle_proc->state = RUNNABLE;
+        }
+
+        if (ptable.active_count == 0 && idle_proc->state == RUNNABLE) {
+            current_cpu->proc = idle_proc;
+            switch_context(&(current_cpu->scheduler), idle_proc->context);
+            current_cpu->proc = nullptr;
+        }
+
         release(&ptable.lock);
 
-        // Idle "thread"
-        if (ptable.active_count == 0) {
-            sti();
-            hlt();
-        }
     }
 }
 
@@ -524,7 +579,7 @@ void wakeup(void *chan)
  * space.
  *
  * @param pid Process identifier to terminate.
- * @return ::0 on success, ::-1 if no such process exists.
+ * @return 0 on success, -1 if no such process exists.
  */
 int kill(int pid)
 {

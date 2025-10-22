@@ -146,7 +146,7 @@ grub: build/kernel $(UPROGS)
 
 -include build/*.d $U/build/*.d
 
-CPUS := 8
+CPUS := 2
 MEMORY := 512
 QEMUEXTRA := -display gtk,zoom-to-fit=on,gl=off,window-close=on,grab-on-hover=off
 QEMUGDB = -S -gdb tcp::1234 -d int -D qemu.log
