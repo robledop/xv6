@@ -305,8 +305,8 @@ static void ext2fs_ifree(struct inode *ip)
     memmove(&bgdesc, bp1->data + gno * sizeof(bgdesc), sizeof(bgdesc));
     brelse(bp1);
     struct buf *bp2 = bread(ip->dev, bgdesc.bg_inode_bitmap + first_partition_block);
-    int index      = (ip->inum - 1) % ext2_sb.s_inodes_per_group;
-    int byte_index = index / 8;
+    int index       = (ip->inum - 1) % ext2_sb.s_inodes_per_group;
+    int byte_index  = index / 8;
     if (byte_index >= EXT2_BSIZE)
         panic("ext2fs_ifree: bitmap overflow\n");
     u8 mask = 1 << (7 - (index % 8));
@@ -581,18 +581,23 @@ static void ext2fs_itrunc(struct inode *ip)
     ip->iops->iupdate(ip);
 }
 
+
+inline int devtab_get_major(struct inode *ip)
+{
+    for (int i = 0; i < NDEV; i++) {
+        if (devtab[i]->inum == ip->inum) {
+            return devtab[i]->major;
+        }
+    }
+    return -1;
+}
+
 int ext2fs_readi(struct inode *ip, char *dst, u32 off, u32 n)
 {
     u32 m;
 
     if (ip->type == T_DEV) {
-        int major = -1;
-        for (int i = 0; i < NDEV; i++) {
-            if (devtab[i]->inum == ip->inum) {
-                major = devtab[i]->major;
-                break;
-            }
-        }
+        int major = devtab_get_major(ip);
         if (major < 0 || major >= NDEV || !devsw[major].read) {
             return -1;
         }
@@ -619,13 +624,7 @@ int ext2fs_writei(struct inode *ip, char *src, u32 off, u32 n)
     u32 m;
 
     if (ip->type == T_DEV) {
-        int major = -1;
-        for (int i = 0; i < NDEV; i++) {
-            if (devtab[i]->inum == ip->inum) {
-                major = devtab[i]->major;
-                break;
-            }
-        }
+        int major = devtab_get_major(ip);
         if (major < 0 || major >= NDEV || !devsw[major].write) {
             return -1;
         }
