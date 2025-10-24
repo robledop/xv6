@@ -4,14 +4,10 @@
 
 #include "types.h"
 #include "defs.h"
-#include "param.h"
 #include "traps.h"
 #include "spinlock.h"
-#include "sleeplock.h"
-#include "fs.h"
 #include "file.h"
 #include "memlayout.h"
-#include "mmu.h"
 #include "proc.h"
 #include "x86.h"
 #include "debug.h"
@@ -36,8 +32,8 @@ static void printint(int xx, int base, int sign)
     char buf[16];
     u32 x;
 
-    if (sign && (sign = xx < 0))
-        x             = -xx;
+    if (sign && ((sign = xx < 0)))
+        x              = -xx;
     else
         x = xx;
 
@@ -54,7 +50,7 @@ static void printint(int xx, int base, int sign)
     }
 }
 
-/** @brief Print to the console. only understands %d, %x, %p, %s. */
+/** @brief Print to the console. Only understands %d, %x, %p, %s. */
 void cprintf(char *fmt, ...)
 {
     int c;
@@ -64,7 +60,7 @@ void cprintf(char *fmt, ...)
     if (locking)
         acquire(&cons.lock);
 
-    if (fmt == 0)
+    if (fmt == nullptr)
         panic("null fmt");
 
     const u32 *argp = (u32 *)(void *)(&fmt + 1);
@@ -85,7 +81,7 @@ void cprintf(char *fmt, ...)
             printint(*argp++, 16, 0);
             break;
         case 's':
-            if ((s = (char *)*argp++) == 0)
+            if ((s = (char *)*argp++) == nullptr)
                 s  = "(null)";
             for (; *s; s++)
                 consputc(*s);
@@ -94,7 +90,7 @@ void cprintf(char *fmt, ...)
             consputc('%');
             break;
         default:
-            // Print unknown % sequence to draw attention.
+            // Print an unknown% sequence to draw attention.
             consputc('%');
             consputc(c);
             break;
@@ -180,6 +176,7 @@ void consputc(int c)
 {
     if (panicked) {
         cli();
+        // ReSharper disable once CppDFAEndlessLoop
         for (;;);
     }
 
@@ -255,7 +252,7 @@ void consoleintr(int (*getc)(void))
 int consoleread(struct inode *ip, char *dst, int n)
 {
     ip->iops->iunlock(ip);
-    u32 target = n;
+    int target = n;
     acquire(&cons.lock);
     while (n > 0) {
         while (input.r == input.w) {
@@ -270,8 +267,8 @@ int consoleread(struct inode *ip, char *dst, int n)
         if (c == C('D')) {
             // EOF
             if (n < target) {
-                // Save ^D for next time, to make sure
-                // caller gets a 0-byte result.
+                // Save ^D for next time to make sure
+                // the caller gets a 0-byte result.
                 input.r--;
             }
             break;
@@ -287,7 +284,7 @@ int consoleread(struct inode *ip, char *dst, int n)
     return target - n;
 }
 
-/** @brief Write to console */
+/** @brief Write to the console */
 int consolewrite(struct inode *ip, char *buf, int n)
 {
     ip->iops->iunlock(ip);

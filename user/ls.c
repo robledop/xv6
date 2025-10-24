@@ -1,7 +1,5 @@
-#include "types.h"
 #include "stat.h"
 #include "user.h"
-#include "fs.h"
 #include "dirwalk.h"
 
 #define FMTNAME_WIDTH 14
@@ -13,7 +11,8 @@ char *fmtname(char *path)
     char *p;
 
     // Find first character after last slash.
-    for (p = path + strlen(path); p >= path && *p != '/'; p--);
+    for (p = path + strlen(path); p >= path && *p != '/'; p--) {
+    }
     p++;
 
     // Return blank-padded name.
@@ -46,7 +45,7 @@ static int ls_visit(const struct dirent_view *entry, void *arg)
     struct stat st;
     if (stat(ctx->path, &st) < 0) {
         printf(1, "ls: cannot stat %s\n", ctx->path);
-        return 0;
+        return -1;
     }
 
     printf(1, "%s %d %d %d\n", fmtname(ctx->path), st.type, st.ino, st.size);

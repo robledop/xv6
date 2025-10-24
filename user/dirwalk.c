@@ -13,7 +13,7 @@ struct ext2_dirent_raw
 
 int dirwalk(int fd, dirwalk_cb cb, void *arg)
 {
-    if (cb == 0)
+    if (cb == nullptr)
         return -1;
 
     struct stat st;
@@ -27,7 +27,7 @@ int dirwalk(int fd, dirwalk_cb cb, void *arg)
     if (data == 0)
         return -1;
 
-    int total = 0;
+    u32 total = 0;
     while (total < st.size) {
         int r = read(fd, data + total, st.size - total);
         if (r < 0) {

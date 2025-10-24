@@ -1,15 +1,7 @@
 // Intel 8250 serial port (UART).
 
-#include "types.h"
 #include "defs.h"
-#include "param.h"
 #include "traps.h"
-#include "spinlock.h"
-#include "sleeplock.h"
-#include "fs.h"
-#include "file.h"
-#include "mmu.h"
-#include "proc.h"
 #include "x86.h"
 
 /** @brief Base I/O port for the primary serial interface. */
@@ -32,7 +24,7 @@ void uartinit(void)
     outb(COM1 + 4, 0);
     outb(COM1 + 1, 0x01); // Enable receive interrupts.
 
-    // If status is 0xFF, no serial port.
+    // If the status is 0xFF, no serial port.
     if (inb(COM1 + 5) == 0xFF) {
         return;
     }

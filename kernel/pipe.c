@@ -1,11 +1,7 @@
 #include "types.h"
 #include "defs.h"
-#include "param.h"
-#include "mmu.h"
 #include "proc.h"
-#include "fs.h"
 #include "spinlock.h"
-#include "sleeplock.h"
 #include "file.h"
 
 /** @brief Maximum number of buffered bytes per pipe. */
@@ -110,18 +106,17 @@ int pipewrite(struct pipe* p, char* addr, int n)
     {
         while (p->nwrite == p->nread + PIPESIZE)
         {
-            // DOC: pipewrite-full
             if (p->readopen == 0 || myproc()->killed)
             {
                 release(&p->lock);
                 return -1;
             }
             wakeup(&p->nread);
-            sleep(&p->nwrite, &p->lock); // DOC: pipewrite-sleep
+            sleep(&p->nwrite, &p->lock);
         }
         p->data[p->nwrite++ % PIPESIZE] = addr[i];
     }
-    wakeup(&p->nread); // DOC: pipewrite-wakeup1
+    wakeup(&p->nread);
     release(&p->lock);
     return n;
 }

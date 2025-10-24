@@ -1,9 +1,7 @@
 #include "types.h"
-#include "stat.h"
 #include "user.h"
 
-static void
-putc(int fd, char c)
+static void putc(int fd, char c)
 {
     write(fd, &c, 1);
 }
@@ -58,7 +56,7 @@ void printf(int fd, const char* fmt, ...)
                 putc(fd, c);
             }
         }
-        else if (state == '%')
+        else
         {
             if (c == 'd')
             {

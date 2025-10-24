@@ -3,14 +3,9 @@
 #include "defs.h"
 #include "param.h"
 #include "stat.h"
-#include "mmu.h"
 #include "proc.h"
-#include "spinlock.h"
-#include "sleeplock.h"
 #include "fs.h"
-#include "buf.h"
 #include "file.h"
-#include "mbr.h"
 #include "icache.h"
 
 #define min(a, b) ((a) < (b) ? (a) : (b))
@@ -100,7 +95,6 @@ struct inode *idup(struct inode *ip)
  *
  * @param path Input path.
  * @param name Buffer receiving the next element (DIRSIZ bytes).
- * @param dev
  * @return Pointer to the remaining path or 0 if no elements remain.
  */
 static char *skipelem(char *path, char *name)

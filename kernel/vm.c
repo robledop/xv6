@@ -5,7 +5,6 @@
 #include "memlayout.h"
 #include "mmu.h"
 #include "proc.h"
-#include "elf.h"
 #include "file.h"
 
 /** @brief End of kernel text; defined in linker script. */
@@ -138,8 +137,11 @@ pde_t *setupkvm(void)
     if ((pgdir = (pde_t *)kalloc()) == nullptr)
         return nullptr;
     memset(pgdir, 0, PGSIZE);
-    if (P2V(PHYSTOP) > (void *)DEVSPACE)
-        panic("PHYSTOP too high");
+
+#if (PHYSTOP + KERNBASE) > DEVSPACE
+    panic("PHYSTOP too high");
+#endif
+
     for (const struct kmap *k = kmap; k < &kmap[NELEM(kmap)]; k++)
         if (mappages(pgdir,
                      k->virt,
@@ -222,7 +224,7 @@ void inituvm(pde_t *pgdir, const char *init, u32 sz)
  */
 int loaduvm(pde_t *pgdir, char *addr, struct inode *ip, u32 offset, u32 sz)
 {
-    u32 n;
+    int n;
     pte_t *pte;
 
     if ((u32)addr % PGSIZE != 0)

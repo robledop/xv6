@@ -1,7 +1,6 @@
 #include "defs.h"
 #include "mbr.h"
 #include "buf.h"
-#include "ext2.h"
 
 // MBR Partition Types
 #define MBR_TYPE_EMPTY 0x00        // Empty or unused partition

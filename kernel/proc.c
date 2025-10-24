@@ -2,13 +2,11 @@
 #include "types.h"
 #include "defs.h"
 #include "param.h"
-#include "memlayout.h"
 #include "mmu.h"
 #include "x86.h"
 #include "proc.h"
 #include "spinlock.h"
 #include "ext2.h"
-#include "printf.h"
 
 /** @brief Process table guarded by a spinlock. */
 struct
@@ -146,7 +144,7 @@ found:
     return init_proc(p);
 }
 
-static struct proc *alloc_kernel_proc(struct proc *p, void (*entry_point)(void))
+[[maybe_unused]] static struct proc *alloc_kernel_proc(struct proc *p, void (*entry_point)(void))
 {
     if ((p->kstack = kalloc()) == nullptr) {
         p->state = UNUSED;

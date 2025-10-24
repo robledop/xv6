@@ -8,12 +8,8 @@
 #include "defs.h"
 #include "param.h"
 #include "stat.h"
-#include "mmu.h"
 #include "proc.h"
-#include "fs.h"
 #include "ext2.h"
-#include "spinlock.h"
-#include "sleeplock.h"
 #include "file.h"
 #include "fcntl.h"
 #include "printf.h"
@@ -206,7 +202,7 @@ static int isdirempty(struct inode *dp)
                 panic("isdirempty: read name");
         }
         if (de.inode != 0) {
-            int isdot = (de.name_len == 1 && de.name[0] == '.');
+            int isdot    = (de.name_len == 1 && de.name[0] == '.');
             int isdotdot = (de.name_len == 2 && de.name[0] == '.' && de.name[1] == '.');
             if (!isdot && !isdotdot)
                 return 0;
@@ -536,7 +532,7 @@ int sys_exec(void)
         return -1;
     }
     memset(argv, 0, sizeof(argv));
-    for (int i = 0;; i++) {
+    for (u32 i = 0;; i++) {
         if (i >= NELEM(argv))
             return -1;
         if (fetchint(uargv + 4 * i, (int *)&uarg) < 0)

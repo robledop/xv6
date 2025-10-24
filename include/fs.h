@@ -9,6 +9,8 @@
 #define EXT2INO 2  // ext2 root i-number
 #define BSIZE 1024  // block size
 
+
+
 // Disk layout:
 // [ boot block | super block | log | inode blocks |
 //                                          free bit map | data blocks]

@@ -1,10 +1,5 @@
 #include "types.h"
-#include "x86.h"
 #include "defs.h"
-#include "date.h"
-#include "param.h"
-#include "memlayout.h"
-#include "mmu.h"
 #include "proc.h"
 
 /** @brief System call wrapper for fork. */
@@ -68,14 +63,13 @@ int sys_sleep(void)
 {
     int n;
 
-    if (argint(0, &n) < 0)
+    if (argint(0, &n) < 0) {
         return -1;
+    }
     acquire(&tickslock);
     u32 ticks0 = ticks;
-    while (ticks - ticks0 < n)
-    {
-        if (myproc()->killed)
-        {
+    while (ticks - ticks0 < (u32)n) {
+        if (myproc()->killed) {
             release(&tickslock);
             return -1;
         }

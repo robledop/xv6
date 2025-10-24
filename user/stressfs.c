@@ -7,10 +7,7 @@
 //    for (i = 0; i < 40000; i++)
 //      asm volatile("");
 
-#include "types.h"
-#include "stat.h"
 #include "user.h"
-#include "fs.h"
 #include "fcntl.h"
 
 int

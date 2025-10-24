@@ -22,8 +22,6 @@
 #include "defs.h"
 #include "param.h"
 #include "spinlock.h"
-#include "sleeplock.h"
-#include "fs.h"
 #include "buf.h"
 
 /**
@@ -46,7 +44,7 @@ void binit(void)
 {
     initlock(&bcache.lock, "bcache");
 
-    // Create linked list of buffers
+    // Create a linked list of buffers
     bcache.head.prev = &bcache.head;
     bcache.head.next = &bcache.head;
     for (struct buf* b = bcache.buf; b < bcache.buf + NBUF; b++)

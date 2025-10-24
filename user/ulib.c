@@ -7,7 +7,7 @@
 char *strcpy(char *s, const char *t)
 {
     char *os = s;
-    while ((*s++ = *t++) != 0);
+    while ((*s++ = *t++) != 0) {}
     return os;
 }
 
@@ -23,7 +23,7 @@ u32 strlen(const char *s)
 {
     int n;
 
-    for (n = 0; s[n]; n++);
+    for (n = 0; s[n]; n++) {}
     return n;
 }
 
@@ -51,7 +51,7 @@ char *strchr(const char *s, char c)
     for (; *s; s++)
         if (*s == c)
             return (char *)s;
-    return 0;
+    return nullptr;
 }
 
 char *gets(char *buf, int max)

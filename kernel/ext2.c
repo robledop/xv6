@@ -55,8 +55,7 @@ static void ext2fs_bzero(int dev, int bno)
     brelse(bp);
 }
 
-// check if a block is free and return it's bit number
-
+// check if a block is free and return its bit number
 static u32 ext2fs_get_free_bit(char *bitmap, u32 nbits)
 {
     const u32 bytes = (nbits + 7) / 8;
@@ -134,8 +133,7 @@ void ext2fs_iinit(int dev)
 {
     mbr_load();
     ext2fs_readsb(dev, &ext2_sb);
-    cprintf("ext2_sb: magic_number %x size %d nblocks %d ninodes %d \
-inodes_per_group %d inode_size %d\n",
+    cprintf("ext2_sb: magic_number %x size %d nblocks %d ninodes %d inodes_per_group %d inode_size %d\n",
             ext2_sb.s_magic,
             1024 << ext2_sb.s_log_block_size,
             ext2_sb.s_blocks_count,
@@ -209,7 +207,7 @@ void ext2fs_iupdate(struct inode *ip)
 
     u8 raw[EXT2_MAX_INODE_SIZE];
     memmove(raw, bp1->data + iindex * ext2_sb.s_inode_size, ext2_sb.s_inode_size);
-    struct ext2_inode *din = (struct ext2_inode *)raw;
+    auto din = (struct ext2_inode *)raw;
 
     if (ip->type == T_DIR) {
         din->i_mode = S_IFDIR;
@@ -294,7 +292,7 @@ void ext2fs_iunlock(struct inode *ip)
     releasesleep(&ip->lock);
 }
 
-// Free a inode
+// Free an inode
 static void ext2fs_ifree(struct inode *ip)
 {
     struct ext2_group_desc bgdesc;
@@ -492,7 +490,7 @@ static u32 ext2fs_bmap(struct inode *ip, u32 bn)
 // not an open file or current directory).
 static void ext2fs_itrunc(struct inode *ip)
 {
-    int i, j;
+    u32 i, j;
     struct buf *bp1, *bp2;
     u32 *a, *b;
     struct ext2fs_addrs *ad = (struct ext2fs_addrs *)ip->addrs;
@@ -556,7 +554,7 @@ static void ext2fs_itrunc(struct inode *ip)
                     if (b[j]) {
                         struct buf *bp3 = bread(ip->dev, b[j] + first_partition_block);
                         u32 *c          = (u32 *)bp3->data;
-                        for (int k = 0; k < EXT2_INDIRECT; k++) {
+                        for (u32 k = 0; k < EXT2_INDIRECT; k++) {
                             if (c[k]) {
                                 ext2fs_bfree(ip->dev, c[k]);
                                 c[k] = 0;

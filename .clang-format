@@ -10,7 +10,7 @@ AlwaysBreakTemplateDeclarations: Yes
 BraceWrapping:
   AfterCaseLabel: false
   AfterClass: true
-  AfterControlStatement: false
+  AfterControlStatement: true
   AfterEnum: false
   AfterFunction: false
   AfterNamespace: true

@@ -8,7 +8,6 @@
 #include "memlayout.h"
 #include "mp.h"
 #include "x86.h"
-#include "mmu.h"
 #include "proc.h"
 
 struct cpu cpus[NCPU];
@@ -113,7 +112,7 @@ mpsearch1(u32 a, int len)
     for (u8* p = addr; p < e; p += sizeof(struct mp))
         if (memcmp(p, "_MP_", 4) == 0 && sum(p, sizeof(struct mp)) == 0)
             return (struct mp*)p;
-    return 0;
+    return nullptr;
 }
 
 // Search for the MP Floating Pointer Structure, which according to the
@@ -160,15 +159,15 @@ static struct mpconf* mpconfig(struct mp** pmp)
 {
     struct mp* mp;
 
-    if ((mp = mpsearch()) == 0 || mp->physaddr == 0)
-        return 0;
+    if ((mp = mpsearch()) == nullptr || mp->physaddr == nullptr)
+        return nullptr;
     struct mpconf* conf = (struct mpconf*)P2V((u32)mp->physaddr);
     if (memcmp(conf, "PCMP", 4) != 0)
-        return 0;
+        return nullptr;
     if (conf->version != 1 && conf->version != 4)
-        return 0;
+        return nullptr;
     if (sum((u8*)conf, conf->length) != 0)
-        return 0;
+        return nullptr;
     *pmp = mp;
     return conf;
 }
@@ -179,7 +178,7 @@ static int mpinit_legacy(void)
     struct mp* mp;
     struct mpconf* conf;
 
-    if ((conf = mpconfig(&mp)) == 0)
+    if ((conf = mpconfig(&mp)) == nullptr)
         return 0;
 
     int ismp_ = 1;
@@ -245,7 +244,7 @@ static struct acpi_rsdp* acpi_rsdp_search(u32 phys_addr, int len)
             if (sum(p, length) == 0)
                 return rsdp;
         }
-    return 0;
+    return nullptr;
 }
 
 static struct acpi_rsdp* acpi_find_rsdp(void)
@@ -320,7 +319,7 @@ static int acpi_parse_madt(struct acpi_madt* madt)
         p += entry->length;
     }
 
-    return ncpu > 0 && lapic != 0;
+    return ncpu > 0 && lapic != nullptr;
 }
 
 static int acpi_visit_sdt(struct acpi_sdt_header* table, int entry_size)
@@ -370,7 +369,7 @@ static int acpi_init(void)
         {
             struct acpi_sdt_header* rsdt = (struct acpi_sdt_header*)P2V(rsdp->rsdt_addr);
             if (memcmp(rsdt->signature, "RSDT", 4) == 0 && acpi_visit_sdt(rsdt, 4))
-                return lapic != 0 && ncpu > 0;
+                return lapic != nullptr && ncpu > 0;
         }
     }
 
@@ -383,7 +382,7 @@ static int acpi_init(void)
             {
                 struct acpi_sdt_header* xsdt = (struct acpi_sdt_header*)P2V((u32)rsdp2->xsdt_addr);
                 if (memcmp(xsdt->signature, "XSDT", 4) == 0 && acpi_visit_sdt(xsdt, 8))
-                    return lapic != 0 && ncpu > 0;
+                    return lapic != nullptr && ncpu > 0;
             }
         }
     }
@@ -394,7 +393,7 @@ static int acpi_init(void)
 void mpinit(void)
 {
     ncpu = 0;
-    lapic = 0;
+    lapic = nullptr;
     ioapicid = 0;
 
     int legacy = mpinit_legacy();
