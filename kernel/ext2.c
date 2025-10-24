@@ -582,10 +582,10 @@ static void ext2fs_itrunc(struct inode *ip)
 }
 
 
-inline int devtab_get_major(struct inode *ip)
+inline int devtab_get_major(u32 inum)
 {
     for (int i = 0; i < NDEV; i++) {
-        if (devtab[i]->inum == ip->inum) {
+        if (devtab[i]->inum == inum) {
             return devtab[i]->major;
         }
     }
@@ -597,7 +597,7 @@ int ext2fs_readi(struct inode *ip, char *dst, u32 off, u32 n)
     u32 m;
 
     if (ip->type == T_DEV) {
-        int major = devtab_get_major(ip);
+        int major = devtab_get_major(ip->inum);
         if (major < 0 || major >= NDEV || !devsw[major].read) {
             return -1;
         }
@@ -624,7 +624,7 @@ int ext2fs_writei(struct inode *ip, char *src, u32 off, u32 n)
     u32 m;
 
     if (ip->type == T_DEV) {
-        int major = devtab_get_major(ip);
+        int major = devtab_get_major(ip->inum);
         if (major < 0 || major >= NDEV || !devsw[major].write) {
             return -1;
         }

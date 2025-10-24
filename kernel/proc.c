@@ -21,8 +21,6 @@ struct
 /** @brief Pointer to the very first user process. */
 static struct proc *initproc;
 
-static struct proc idle_proc_ = {};
-static struct proc *idle_proc = &idle_proc_;
 
 extern pde_t *kpgdir;
 
@@ -49,17 +47,6 @@ static inline void stack_push_pointer(char **stack_pointer, const u32 value)
 void pinit(void)
 {
     initlock(&ptable.lock, "ptable");
-}
-
-[[noreturn]] void idle()
-{
-    while (true) {
-        sti();
-        hlt();
-        acquire(&ptable.lock);
-        sched();
-        release(&ptable.lock);
-    }
 }
 
 /**
@@ -186,8 +173,6 @@ void user_init(void)
 {
     // This name depends on the path of the initcode file. I moved it to the user/build folder
     extern char _binary_user_build_initcode_start[], _binary_user_build_initcode_size[];
-
-    idle_proc = alloc_kernel_proc(idle_proc, idle);
 
     struct proc *p = alloc_proc();
 
@@ -428,18 +413,13 @@ void scheduler(void)
             current_cpu->proc = nullptr;
         }
 
-        if (idle_proc->state == EMBRYO && strncmp(ptable.proc[0].name, "init\0", 5) == 0) {
-            idle_proc->state = RUNNABLE;
-        }
-
-        if (ptable.active_count == 0 && idle_proc->state == RUNNABLE) {
-            current_cpu->proc = idle_proc;
-            switch_context(&(current_cpu->scheduler), idle_proc->context);
-            current_cpu->proc = nullptr;
-        }
-
         release(&ptable.lock);
 
+        // Idle "thread"
+        if (ptable.active_count == 0) {
+            sti();
+            hlt();
+        }
     }
 }
 
