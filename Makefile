@@ -7,18 +7,18 @@ U=user
 $(shell mkdir -p build)
 $(shell mkdir -p $(U)/build)
 $(shell mkdir -p rootfs/bin)
-$(shell mkdir -p rootfs/boot/grub)
+$(shell mkdir -p rootfs/boot/grub2)
 $(shell mkdir -p rootfs/dev)
 $(shell mkdir -p rootfs/etc)
 $(shell touch rootfs/etc/devtab)
 
 # Create the grub.cfg file if it doesn't exist.
-ifeq ("$(wildcard rootfs/boot/grub/grub.cfg)","")
-    $(shell echo 'set timeout=0' > rootfs/boot/grub/grub.cfg && \
-            echo '' >> rootfs/boot/grub/grub.cfg && \
-            echo 'menuentry "xv6" {' >> rootfs/boot/grub/grub.cfg && \
-            echo '	multiboot /boot/kernel' >> rootfs/boot/grub/grub.cfg && \
-            echo '}' >> rootfs/boot/grub/grub.cfg)
+ifeq ("$(wildcard rootfs/boot/grub2/grub.cfg)","")
+    $(shell echo 'set timeout=0' > rootfs/boot/grub2/grub.cfg && \
+            echo '' >> rootfs/boot/grub2/grub.cfg && \
+            echo 'menuentry "xv6" {' >> rootfs/boot/grub2/grub.cfg && \
+            echo '	multiboot /boot/kernel' >> rootfs/boot/grub2/grub.cfg && \
+            echo '}' >> rootfs/boot/grub2/grub.cfg)
 endif
 
 $(shell chmod 777 rootfs/etc/devtab)

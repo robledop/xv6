@@ -576,7 +576,7 @@ void createdelete(void)
             name[2] = '\0';
             for (i = 0; i < N; i++) {
                 name[1] = '0' + i;
-                fd = open(name, O_CREATE | O_RDWR);
+                fd      = open(name, O_CREATE | O_RDWR);
                 if (fd < 0) {
                     printf(1, "create failed\n");
                     exit();
@@ -800,7 +800,7 @@ concreate(void)
         exit();
     }
     struct concreate_ctx ctx = {
-        .fa    = fa,
+        .fa = fa,
         .count = 0,
         .error = 0,
     };
@@ -880,11 +880,10 @@ linkunlink()
 }
 
 // directory that uses indirect blocks
-void
-bigdir(void)
+void bigdir(void)
 {
     int i;
-    char name[10];
+    char dirname[10];
 
     printf(1, "bigdir test\n");
     unlink("bd");
@@ -897,11 +896,11 @@ bigdir(void)
     close(fd);
 
     for (i = 0; i < 500; i++) {
-        name[0] = 'x';
-        name[1] = '0' + (i / 64);
-        name[2] = '0' + (i % 64);
-        name[3] = '\0';
-        if (link("bd", name) != 0) {
+        dirname[0] = 'x';
+        dirname[1] = '0' + (i / 64);
+        dirname[2] = '0' + (i % 64);
+        dirname[3] = '\0';
+        if (link("bd", dirname) != 0) {
             printf(1, "bigdir link failed\n");
             exit();
         }
@@ -909,11 +908,11 @@ bigdir(void)
 
     unlink("bd");
     for (i = 0; i < 500; i++) {
-        name[0] = 'x';
-        name[1] = '0' + (i / 64);
-        name[2] = '0' + (i % 64);
-        name[3] = '\0';
-        if (unlink(name) != 0) {
+        dirname[0] = 'x';
+        dirname[1] = '0' + (i / 64);
+        dirname[2] = '0' + (i % 64);
+        dirname[3] = '\0';
+        if (unlink(dirname) != 0) {
             printf(1, "bigdir unlink failed");
             exit();
         }
@@ -1531,11 +1530,10 @@ void sbrktest(void)
     printf(stdout, "sbrk test OK\n");
 }
 
-void
-validateint(int *p)
+void validateint(int *p)
 {
     int res;
-    asm("mov %%esp, %%ebx\n\t"
+    __asm__("mov %%esp, %%ebx\n\t"
         "mov %3, %%esp\n\t"
         "int %2\n\t"
         "mov %%ebx, %%esp" :
